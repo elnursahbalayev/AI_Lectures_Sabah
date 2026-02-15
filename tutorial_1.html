@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1 Tutorial: Practical Optimization | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Article specific overrides */
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+            /* Space for fixed navbar */
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: #d4d4d8;
+            /* Zinc 300 */
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .tool-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: rgba(24, 24, 27, 0.6);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        /* Interactive Playground Styles */
+        .simulation-wrapper {
+            background: #000;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        .canvas-container {
+            height: 300px;
+            width: 100%;
+            background: #111;
+            border-radius: 8px;
+            position: relative;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .ball {
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: absolute;
+            /* Center the ball on its coordinates */
+            transform: translate(-50%, 50%);
+            bottom: 0%;
+            left: 50%;
+            transition: left 0.4s ease-out, bottom 0.4s ease-out;
+            box-shadow: 0 0 15px var(--accent);
+            z-index: 10;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="index.html#resources">Resources</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 01 Tutorial</span>
+            <h1>Practical Optimization & <br>The Search for Minima</h1>
+            <p class="subtitle">Bridging the gap between Calculus theory and Python implementation.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> • AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="content-section text-content">
+            <h2>1. Introduction</h2>
+            <p>Welcome to the first practical session of "Modern Artificial Intelligence". In the lecture, we discussed
+                the theoretical concept of "Learning" as an optimization problem. Today, we stop talking about math and
+                start <strong>implementing</strong> it.</p>
+            <p>Our goal today is simple yet profound: We want to write a computer program that can find the bottom of a
+                valley without being able to see the landscape. This algorithm, <strong>Gradient Descent</strong>, is
+                the engine that powers everything from simple regressions to ChatGPT.</p>
+        </section>
+
+        <section class="content-section text-content">
+            <h2>2. Your Workbench: Jupyter & Colab</h2>
+            <p>Before we code, we need to understand our tools. In this course, we do not use standard text editors
+                (like Notepad or typical IDEs) for experimentation. We use <strong>Notebooks</strong>.</p>
+
+            <div class="tool-comparison">
+                <div class="tool-card">
+                    <h3><i data-lucide="monitor" style="color: var(--primary)"></i> Jupyter Lab</h3>
+                    <p><strong>What is it?</strong><br>A local web-based interactive development environment for
+                        notebooks, code, and data.</p>
+                    <p><strong>Why use it?</strong><br>It runs on your machine. You have full control over files,
+                        libraries, and resources. You don't need internet access once installed.</p>
+                    <p><strong>Key Feature:</strong><br>The <code>.ipynb</code> file format allows you to mix Markdown
+                        text (like this) with executable code cells. This is perfect for Data Science where
+                        <em>explaining</em> your analysis is as important as the code itself.
+                    </p>
+                </div>
+                <div class="tool-card">
+                    <h3><i data-lucide="cloud" style="color: var(--accent)"></i> Google Colab</h3>
+                    <p><strong>What is it?</strong><br>Jupyter Notebooks running in the cloud, hosted by Google.</p>
+                    <p><strong>Why use it?</strong><br>Zero configuration required. It works in your browser.</p>
+                    <p><strong>Killer Feature: Free GPUs</strong><br>Deep Learning requires massive parallel
+                        computation. Google Colab gives you free access to NVIDIA GPUs (T4s) which are essential for
+                        Weeks 9-13. <strong>For this week, a CPU is sufficient.</strong></p>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <h4><i data-lucide="alert-circle"></i> Practical Task 1</h4>
+                <p>Open your environment of choice (Jupyter Lab or Colab) and run the following sanity check. If
+                    <code>numpy</code> isn't installed, nothing else will work.
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+print(f"My Numpy Version: {np.__version__}")
+# Expected output: 1.2x.x or newer</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section text-content">
+            <h2>3. The Mathematical Intuition</h2>
+            <p>We are trying to minimize a <strong>Cost Function</strong> (also called a Loss Function). Think of this
+                function as a measurement of "Error". If the function value is high, our model is bad. If it is low, our
+                model is good. Therefore, we want to find the input \(x\) that results in the lowest possible output
+                \(f(x)\).</p>
+
+            <p>Let's use a simple quadratic function as our "Error Landscape":</p>
+            <div style="font-size: 1.5rem; text-align: center; margin: 2rem 0; color: white;">
+                \[ f(x) = x^2 - 4x + 6 \]
+            </div>
+
+            <p>Using calculus, we can find the derivative (slope) of this function with respect to \(x\):</p>
+            <div style="font-size: 1.5rem; text-align: center; margin: 2rem 0; color: white;">
+                \[ \frac{df}{dx} = f'(x) = 2x - 4 \]
+            </div>
+
+            <p><strong>Why is the derivative meaningful?</strong></p>
+            <ul>
+                <li>If \(f'(x)\) is <strong>positive</strong>, the function is sloping <strong>upwards</strong>. To go
+                    down, we must step <strong>left</strong> (negative direction).</li>
+                <li>If \(f'(x)\) is <strong>negative</strong>, the function is sloping <strong>downwards</strong> (from
+                    left to right). To continue going down, we must step <strong>right</strong> (positive direction).
+                </li>
+            </ul>
+            <p>This leads us to the Golden Rule of Deep Learning:</p>
+            <blockquote style="border-left: 2px solid white; padding-left: 1rem; font-style: italic; color: white;">
+                "Always step in the opposite direction of the gradient."
+            </blockquote>
+
+            <div class="simulation-wrapper" style="margin-top: 3rem;">
+                <h3 style="margin-top: 0">📐 Gradient Explorer</h3>
+                <p>Move your mouse over the curve below. The <span style="color: #ef4444">Red Line</span> is the
+                    <strong>Tangent</strong> (Slope). The <span style="color: #4ade80">Green Arrow</span> shows where
+                    Gradient Descent would take a step.</p>
+
+                <div class="canvas-container" id="gradExplorerContainer"
+                    style="position: relative; height: 300px; background: #111; border-radius: 8px; overflow: hidden; cursor: crosshair;">
+                    <!-- Background Grid -->
+                    <div
+                        style="position: absolute; width: 100%; height: 100%; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3;">
+                    </div>
+
+                    <!-- Axis -->
+                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: #555;">
+                    </div>
+                    <div style="position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: #555;">
+                    </div>
+
+                    <!-- SVG for Curve and Tangent -->
+                    <svg id="gradSvg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <!-- Visual Path: M0,0 (Top Left) -> Quad(50,200) -> 100,0 (Top Right) 
+                              This roughly corresponds to y = (x-50)^2 scaled.
+                         -->
+                        <path d="M 0,0 Q 50,200 100,0" fill="none" stroke="#3b82f6" stroke-width="2"
+                            vector-effect="non-scaling-stroke" />
+
+                        <!-- Tangent Line (Dynamic) -->
+                        <line id="tangentLine" x1="0" y1="0" x2="100" y2="0" stroke="#ef4444" stroke-width="2"
+                            stroke-dasharray="5,5" visibility="hidden" />
+
+                        <!-- Point on curve -->
+                        <circle id="pointOnCurve" cx="50" cy="100" r="2" fill="#ef4444" visibility="hidden" />
+                    </svg>
+
+                    <!-- Info Overlay -->
+                    <div id="gradInfo"
+                        style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 6px; border: 1px solid #333; font-family: 'JetBrains Mono'; font-size: 0.85rem; pointer-events: none; opacity: 0; transition: opacity 0.2s;">
+                        <div>x: <span id="xVal">0.0</span></div>
+                        <div>Slope: <span id="slopeVal" style="font-weight: bold;">0.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Logic for Gradient Explorer
+                (function () {
+                    const container = document.getElementById('gradExplorerContainer');
+                    const svg = document.getElementById('gradSvg');
+                    const tangentLine = document.getElementById('tangentLine');
+                    const point = document.getElementById('pointOnCurve');
+                    const infoBox = document.getElementById('gradInfo');
+                    const xDisplay = document.getElementById('xVal');
+                    const slopeDisplay = document.getElementById('slopeVal');
+
+                    // Math Model for visual path M 0,0 Q 50,200 100,0
+                    // This Bezier visually approximates a parabola with vertex at bottom.
+                    // Let's model the "Cost" function $C(x)$ visually.
+                    // Visual X: 0 to 100.
+                    // Visual Y (SVG units): 0 (top) to 100 (bottom).
+                    // We want vertex at 50, 100.
+                    // Approx Equation: Y_svg = 100 - k(x-50)^2.  Wait, M0,0 means at x=0, y=0.
+                    // 0 = 100 - k(-50)^2 => 100 = 2500k => k = 0.04.
+                    // So Y_svg = 100 - 0.04(x-50)^2.
+                    // Wait, this is opening DOWN visually (Y gets smaller as we move away from center).
+                    // BUT in SVG, smaller Y is HIGHER on screen.
+                    // So visually this IS a bowl. Perfect.
+
+                    // Derivative (Slope in visual space): dY/dx = -0.08(x-50).
+                    // NOTE: Visual slope is inverted cost slope because Y axis is inverted.
+                    // High Cost = Low Y_svg. Low Cost = High Y_svg.
+                    // Real optimized Slope $m$: if x < 50, we are on left wall. Tangent points DOWN to right. Negative Slope.
+                    // Visually: x < 50. x=25. Y_svg = 100 - 0.04(625) = 75. 
+                    // x=26. Y_svg = ...
+                    // Let's just use the visual tangent logic.
+
+                    container.addEventListener('mousemove', (e) => {
+                        const rect = container.getBoundingClientRect();
+                        const xRel = e.clientX - rect.left;
+                        const width = rect.width;
+                        const height = rect.height;
+
+                        // Map to SVG coords (0-100)
+                        const svgX = (xRel / width) * 100;
+
+                        // Calculate SVG Y
+                        // Y = 100 - 0.04 * (x-50)^2
+                        const svgY = 100 - 0.04 * Math.pow(svgX - 50, 2);
+
+                        // Calculate Visual Slope (dY/dx)
+                        // derivative = -0.08 * (svgX - 50)
+                        const dydx = -0.08 * (svgX - 50);
+
+                        // The "Real World" Slope (Cost Function derivative) 
+                        // Since typically Y is UP for Cost, and here Y is DOWN for visual coordinate...
+                        // If we are at x=25 (left side), we want 'negative slope' roughly.
+                        // Visual dY/dx at 25: -0.08 * (-25) = +2.0. Visual line goes DOWN-RIGHT (positive SVG slope).
+                        // In Math Graph (Y up), this would be negative slope.
+                        const mathSlope = -dydx;
+
+                        // Update Point
+                        point.setAttribute('cx', svgX);
+                        point.setAttribute('cy', svgY); // svgY is correct for pos
+                        point.style.visibility = 'visible';
+
+                        // Update Tangent Line
+                        // y - y1 = m(x - x1)
+                        // let's draw a line segment of length +/- 20 units
+                        const delta = 20;
+                        const x1 = svgX - delta;
+                        const x2 = svgX + delta;
+
+                        // y1 = svgY + m * (x1 - svgX)
+                        // Using visual slope 'dydx'
+                        const y1 = svgY + dydx * (x1 - svgX);
+                        const y2 = svgY + dydx * (x2 - svgX);
+
+                        tangentLine.setAttribute('x1', x1);
+                        tangentLine.setAttribute('y1', y1);
+                        tangentLine.setAttribute('x2', x2);
+                        tangentLine.setAttribute('y2', y2);
+                        tangentLine.style.visibility = 'visible';
+
+                        // Update Info text
+                        infoBox.style.opacity = '1';
+                        // Center x around 0 for display (-5.0 to 5.0)
+                        const centerOffsetX = (svgX - 50) / 10;
+                        xDisplay.textContent = centerOffsetX.toFixed(2);
+                        slopeDisplay.textContent = mathSlope.toFixed(2);
+
+                        // Color code slope
+                        if (mathSlope > 0) slopeDisplay.style.color = '#ef4444'; // Positive slope -> Neg step
+                        else if (mathSlope < 0) slopeDisplay.style.color = '#3b82f6'; // Neg slope -> Pos step
+                        else slopeDisplay.style.color = '#fff';
+
+                        // Position Info Box
+                        // keep it near mouse but not overlapping
+                        // We use the raw mouse position 'xRel'
+                        let leftPos = xRel + 20;
+                        if (leftPos > width - 120) leftPos = xRel - 140;
+                        infoBox.style.left = leftPos + 'px';
+                        infoBox.style.top = '20px'; // Keep at top
+                    });
+
+                    container.addEventListener('mouseleave', () => {
+                        tangentLine.style.visibility = 'hidden';
+                        point.style.visibility = 'hidden';
+                        infoBox.style.opacity = '0';
+                    });
+                })();
+            </script>
+        </section>
+
+        <section class="content-section text-content">
+            <h2>4. Implementing Gradient Descent</h2>
+            <p>Let's translate that math directly into Python. We need three components: the function, its derivative,
+                and the update loop.</p>
+
+            <h3>Step 1: Define the Landscape</h3>
+            <pre><code class="language-python">def f(x):
+    """The Cost Function we want to minimize."""
+    return x**2 - 4*x + 6
+
+def df(x):
+    """The Derivative (Gradient) of the Cost Function."""
+    return 2*x - 4</code></pre>
+
+            <h3>Step 2: The Optimization Loop</h3>
+            <p>This is where the magic happens. We pick a random starting point and iteratively improve it.</p>
+            <pre><code class="language-python">def gradient_descent(start_x, learning_rate, epochs):
+    # 1. Initialize our parameter
+    x = start_x
+    history = [] # We store the path for visualization later
+    
+    for i in range(epochs):
+        # 2. Calculate the "Steepness" (Gradient)
+        grad = df(x)
+        
+        # 3. Save current state
+        history.append(x)
+        
+        # 4. The UPDATE RULE: Step opposite to the gradient
+        # parameter = parameter - (step_size * slope)
+        x = x - (learning_rate * grad)
+        
+        # Optional: Print progress
+        if i % 2 == 0:
+            print(f"Epoch {i}: x = {x:.4f}, f(x) = {f(x):.4f}")
+            
+    return x, history</code></pre>
+        </section>
+
+        <section class="content-section text-content">
+            <h2>5. Interactive Laboratory: The Learning Rate</h2>
+            <p>The <strong>Learning Rate</strong> (\(\eta\)) is the most critical "Hyperparameter" in Machine Learning.
+                It
+                determines how big of a step we take.</p>
+            <ul>
+                <li><strong>Too Small (\(\eta < 0.01\)):</strong> The model learns effectively but takes forever. It
+                            might
+                            get stuck in shallow local minima.</li>
+                <li><strong>Too Large (\(\eta > 0.8\)):</strong> The model overshoots the target. It might oscillate
+                    back
+                    and forth or even diverge completely (go to infinity).</li>
+            </ul>
+
+            <div class="simulation-wrapper">
+                <h3 style="margin-top: 0">🧪 Experiment</h3>
+                <p>Use the slider below to change the Learning Rate and observe the behavior of the gradient descent
+                    solver on our parabola.</p>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <label>Learning Rate (\(\eta\)):</label>
+                    <input type="range" id="lrSlider" min="0.01" max="1.1" step="0.01" value="0.1"
+                        style="flex-grow: 1;">
+                    <span id="lrValue" class="tag"
+                        style="background: var(--primary); padding: 0.2rem 0.6rem; border-radius: 4px;">0.1</span>
+                </div>
+
+                <div class="canvas-container"
+                    style="position: relative; height: 300px; background: #111; border-radius: 8px; overflow: hidden;">
+                    <!-- Grid background -->
+                    <div
+                        style="position: absolute; width: 100%; height: 100%; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3;">
+                    </div>
+
+                    <!-- Axis -->
+                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: #555;">
+                    </div>
+                    <div style="position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: #555;">
+                    </div>
+
+                    <!-- Parabola SVG Path 
+                         coordinate system: 0-100. 
+                         Start: 0,0 (Top Left) -> Math(-50, 2500)
+                         Vertex: 50,100 (Bottom Center) -> Math(0, 0)
+                         End: 100,0 (Top Right) -> Math(50, 2500)
+                         Quadratic Bezier Control Point approx: 50,200 (Outside viewbox implies curvature)
+                         d="M 0,0 Q 50,200 100,0" creates a downward pointing arc from 0,0 to 100,0 with vertex at bottom.
+                         This VISUALLY matches a parabola opening upwards if Y axis was normal.
+                         Since SVG Y is down: 0 is top, 100 is bottom.
+                         So 0 (top) -> High Value. 100 (bottom) -> Low Value.
+                         This matches our expectation: edges are high, center is low.
+                    -->
+                    <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <path d="M 0,0 Q 50,200 100,0" fill="none" stroke="#3b82f6" stroke-width="2"
+                            vector-effect="non-scaling-stroke" />
+                    </svg>
+
+                    <div id="simBall" class="ball"></div>
+                </div>
+
+                <p id="simStatus" style="font-family: 'JetBrains Mono', monospace;">Status: <span
+                        style="color: #4ade80">OPTIMAL CONVERGENCE</span></p>
+                <div id="simSteps" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Steps taken:
+                    0</div>
+            </div>
+        </section>
+
+        <section class="content-section text-content">
+            <h2>6. Challenge & Homework</h2>
+            <p>Real-world AI problems are not perfect bowls (Convex). They are rugged landscapes with mountains and
+                valleys (Non-Convex). Your homework explores this reality.</p>
+
+            <div class="note-box" style="border-left-color: var(--accent); background: rgba(139, 92, 246, 0.1);">
+                <h3><i data-lucide="zap"></i> Homework Assignment</h3>
+                <p><strong>Scenario:</strong> You are tasked withizing optimize a more complex function:</p>
+                \[ f(x) = x^4 - 2x^2 + x \]
+                <ol>
+                    <li><strong>Derive:</strong> Calculate the derivative \(f'(x)\) by hand.</li>
+                    <li><strong>Implement:</strong> Update your Python code with this new derivative.</li>
+                    <li><strong>Experiment:</strong> Run the optimizer starting at \(x = -1.5\) and then again at \(x =
+                        1.0\).</li>
+                </ol>
+
+                <p><strong>Bonus:</strong> Look up <em>"Momentum"</em> in optimization. Implement it to help your solver
+                    roll through small bumps.</p>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        // Syntax Highlighting
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Simulation Logic
+        const slider = document.getElementById('lrSlider');
+        const output = document.getElementById('lrValue');
+        const ball = document.getElementById('simBall');
+        const status = document.getElementById('simStatus');
+        const stepsDisplay = document.getElementById('simSteps');
+
+        let simInterval;
+
+        slider.oninput = function () {
+            output.innerHTML = this.value;
+            restartSimulation();
+        }
+
+        function restartSimulation() {
+            clearInterval(simInterval);
+            let lr = parseFloat(slider.value);
+
+            // MATH MODEL: f(x) = x^2. Gradient = 2x.
+            // Update Rule: x_new = x_old - lr * (2 * x_old)
+            // x_new = x_old * (1 - 2*lr)
+
+            // VISUALIZATION MAPPING:
+            // x varies from -50 to 50.
+            // visualLeft% = x + 50
+            // visualBottom% = 100 - (100 * (x/50)^2)? 
+            // SVG Y=0 is top. SVG PathVertex is 50,100 (bottom).
+            // So if x=0 -> y=0 (bottom=0%). Wait, in CSS bottom:0 is bottom.
+            // So if x=0 (minima), we want ball at bottom (0%).
+            // If x=50 (maxima), we want ball at top (100%).
+            // Matches: y_norm = (x/50)^2 * 100.
+
+            let x = -45; // Start near the top left
+            let steps = 0;
+
+            // Set initial position
+            updateBallPosition(x);
+
+            simInterval = setInterval(() => {
+                steps++;
+
+                let prevX = x;
+                // Core Optimization Step
+                x = x * (1 - 2.0 * lr);
+
+                // Add noise if diverging heavily to simulate explosion
+                if (Math.abs(x) > 100) {
+                    status.innerHTML = "Status: <span style='color: #ef4444'>DIVERGED! (Exploded to Infinity)</span>";
+                    clearInterval(simInterval);
+                    ball.style.opacity = '0';
+                    return;
+                } else {
+                    ball.style.opacity = '1';
+                }
+
+                // Check Convergence
+                if (Math.abs(x) < 0.5) {
+                    x = 0; // Snap to center
+                    updateBallPosition(x);
+                    status.innerHTML = "Status: <span style='color: #3b82f6'>CONVERGED (Target Reached)</span>";
+                    clearInterval(simInterval);
+                    return;
+                }
+
+                // Output Status based on LR behavior
+                if (lr >= 1.0) {
+                    status.innerHTML = "Status: <span style='color: #ef4444'>DIVERGING / CHAOTIC OSCILLATION</span>";
+                } else if (lr > 0.8) {
+                    status.innerHTML = "Status: <span style='color: #f59e0b'>OSCILLATING (Too High)</span>";
+                } else if (lr < 0.05) {
+                    status.innerHTML = "Status: <span style='color: #f59e0b'>TOO SLOW (Tiny Steps)</span>";
+                } else {
+                    status.innerHTML = "Status: <span style='color: #4ade80'>OPTIMAL CONVERGENCE</span>";
+                }
+
+                updateBallPosition(x);
+                stepsDisplay.innerHTML = `Steps taken: ${steps}`;
+
+            }, 600); // Slower speed for easier viewing
+        }
+
+        function updateBallPosition(x) {
+            // x is in range roughly -50 to 50 for visualization (though physics can go higher)
+
+            // 1. Horizontal Position (Left %)
+            // x=-50 -> 0%, x=0 -> 50%, x=50 -> 100%
+            let leftPercent = x + 50;
+
+            // 2. Vertical Position (Bottom %)
+            // Parabola y = x^2. 
+            // Normalize: At x=50 (edge), y should be 100% height.
+            // y_norm = (x / 50)^2 * 100
+            let yPercent = Math.pow(x / 50, 2) * 100;
+
+            // Clamp for visual bounds (so it doesn't fly off screen instantly)
+            if (leftPercent < 0) leftPercent = 0;
+            if (leftPercent > 100) leftPercent = 100;
+            if (yPercent > 100) yPercent = 100;
+
+            ball.style.left = `${leftPercent}%`;
+            ball.style.bottom = `${yPercent}%`;
+        }
+
+        // Start initial reference
+        restartSimulation();
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern AI & Deep Learning | Elnur Shahbalayev</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="#about">About Lecturer</a></li>
+            <li><a href="#syllabus">Syllabus</a></li>
+            <li><a href="#resources">Resources</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <div class="badge">Sabah Group Bachelor 3rd Year</div>
+            <h1>Modern Artificial Intelligence <br> <span class="gradient-text">& Deep Learning</span></h1>
+            <p class="subtitle">From Gradient Descent to Generative AI. A rigorous journey into the mathematical and
+                computational foundations of modern intelligence.</p>
+
+
+        </div>
+        <div class="hero-visual">
+            <!-- decorative neural net visual via CSS/JS -->
+            <div class="neural-net-decoration"></div>
+        </div>
+    </header>
+
+    <section id="about" class="section container">
+        <div class="section-header">
+            <h2>About Your Lecturer</h2>
+            <div class="line"></div>
+        </div>
+        <div class="lecturer-card glass">
+            <div class="lecturer-info">
+                <h3>Elnur Shahbalayev</h3>
+                <p class="role">AI Engineer @ Bayraktar Technologies | Lecturer</p>
+                <div class="bio-grid">
+                    <div class="bio-item">
+                        <i data-lucide="graduation-cap"></i>
+                        <span><strong>Bachelors:</strong> Universiti Teknologi Petronas, Malaysia</span>
+                    </div>
+                    <div class="bio-item">
+                        <i data-lucide="book-open"></i>
+                        <span><strong>Masters (Ongoing):</strong> Warwick & ASOIU Dual Diploma</span>
+                    </div>
+                    <div class="bio-item">
+                        <i data-lucide="briefcase"></i>
+                        <span><strong>Experience:</strong> 4 Years as AI Engineer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="course-info" class="section container">
+        <div class="grid-2">
+            <div class="card glass">
+                <h3><i data-lucide="target"></i> Learning Objectives</h3>
+                <ul class="feature-list">
+                    <li>Formulate AI problems as optimization tasks & solve via Gradient Descent.</li>
+                    <li>Engineer robust data pipelines for real-world datasets.</li>
+                    <li>Implement classical ML models (SVM, Random Forests) with Scikit-learn.</li>
+                    <li>Architect Deep Neural Networks (CNNs, RNNs, Transformers) in PyTorch.</li>
+                    <li>Evaluate performance using industry-standard metrics.</li>
+                </ul>
+            </div>
+            <div class="card glass">
+                <h3><i data-lucide="wrench"></i> Tools & Stack</h3>
+                <div class="tech-stack">
+                    <span class="tag">Python</span>
+                    <span class="tag">NumPy</span>
+                    <span class="tag">Pandas</span>
+                    <span class="tag">PyTorch</span>
+                    <span class="tag">Scikit-learn</span>
+                    <span class="tag">Hugging Face</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="syllabus" class="section container">
+        <div class="section-header">
+            <h2>Course Schedule</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="timeline">
+            <!-- Module 1 -->
+            <div class="module-group">
+                <div class="module-header glass">
+                    <h3>Module 1: Algorithmic Foundations</h3>
+                    <span>Weeks 1-3</span>
+                </div>
+
+                <div class="week-card glass" data-week="1">
+                    <div class="week-header">
+                        <span class="week-number">Week 01</span>
+                        <h4>Optimization & Search</h4>
+                        <div class="week-actions">
+                            <a href="lecture_1.html" class="btn-sm disabled" title="Coming Soon">Lecture</a>
+                            <a href="tutorial_1.html" class="btn-sm active">Tutorial</a>
+                        </div>
+                    </div>
+                    <div class="week-content">
+                        <p><strong>Key Concepts:</strong> Hill Climbing vs. Gradient Descent, Learning Rates, Convex vs.
+                            Non-convex functions.</p>
+                        <div class="lab-box">
+                            <i data-lucide="code"></i>
+                            <span><strong>Lab:</strong> Implement Gradient Descent from scratch.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="week-card glass" data-week="2">
+                    <div class="week-header">
+                        <span class="week-number">Week 02</span>
+                        <h4>Game Theory & Decision Making</h4>
+                        <div class="week-actions">
+                            <button class="btn-sm disabled">Lecture</button>
+                            <button class="btn-sm disabled">Tutorial</button>
+                        </div>
+                    </div>
+                    <div class="week-content">
+                        <p><strong>Key Concepts:</strong> Adversarial environments, Minimax, Alpha-Beta Pruning.</p>
+                        <div class="lab-box">
+                            <i data-lucide="gamepad-2"></i>
+                            <span><strong>Lab:</strong> Bot Battle (Tic-Tac-Toe/Connect-4 Agent).</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="week-card glass" data-week="3">
+                    <div class="week-header">
+                        <span class="week-number">Week 03</span>
+                        <h4>Data Engineering for AI</h4>
+                        <div class="week-actions">
+                            <button class="btn-sm disabled">Lecture</button>
+                            <button class="btn-sm disabled">Tutorial</button>
+                        </div>
+                    </div>
+                    <div class="week-content">
+                        <p><strong>Key Concepts:</strong> Probability review, Normalization, One-Hot Encoding, Data
+                            Cleaning.</p>
+                        <div class="lab-box">
+                            <i data-lucide="database"></i>
+                            <span><strong>Lab:</strong> Cleaning "dirty" system logs with Pandas.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module-group">
+                <div class="module-header glass">
+                    <h3>Module 2: Applied Machine Learning</h3>
+                    <span>Weeks 4-8</span>
+                </div>
+
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 04</span>
+                        <h4>Regression Analysis</h4>
+                        <div class="week-actions">
+                            <button class="btn-sm disabled">Lecture</button>
+                            <button class="btn-sm disabled">Tutorial</button>
+                        </div>
+                    </div>
+                    <div class="week-content">
+                        <p><strong>Concepts:</strong> Linear Regression, MSE Loss, Weights & Biases.</p>
+                    </div>
+                </div>
+                <!-- Simplified placeholders for 5-8 to save space, but keeping structure -->
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 05</span>
+                        <h4>Classification Algorithms (SVM, Logistic)</h4>
+                    </div>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 06</span>
+                        <h4>Ensemble Methods (Random Forests, XGBoost)</h4>
+                    </div>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 07</span>
+                        <h4>Unsupervised Learning (K-Means, PCA)</h4>
+                    </div>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 08</span>
+                        <h4>Model Eval & Deployment</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="module-group">
+                <div class="module-header glass">
+                    <h3>Module 3: Deep Learning & Neural Networks</h3>
+                    <span>Weeks 9-13</span>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 09</span>
+                        <h4>Neural Networks Intuition (MLP, Backprop)</h4>
+                    </div>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 10</span>
+                        <h4>Computer Vision (CNNs, ResNet)</h4>
+                    </div>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 11</span>
+                        <h4>Sequence Models (RNNs, LSTMs)</h4>
+                    </div>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 12</span>
+                        <h4>Transformers & LLMs (BERT, GPT)</h4>
+                    </div>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 13</span>
+                        <h4>Generative AI (GANs, Diffusion)</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="module-group">
+                <div class="module-header glass">
+                    <h3>Module 4: Advanced Applications</h3>
+                    <span>Weeks 14-15</span>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 14</span>
+                        <h4>Reinforcement Learning (DQN, Agents)</h4>
+                    </div>
+                </div>
+                <div class="week-card glass">
+                    <div class="week-header">
+                        <span class="week-number">Week 15</span>
+                        <h4>Ethics, Future Trends & Project Showcase</h4>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="grading" class="section container">
+        <div class="section-header">
+            <h2>Grading</h2>
+            <div class="line"></div>
+        </div>
+        <div class="grid-3">
+            <div class="stat-card glass">
+                <div class="percentage">40%</div>
+                <h4>Lab Assignments</h4>
+                <p>Weekly/Bi-weekly coding tasks (Python/Jupyter).</p>
+            </div>
+            <div class="stat-card glass">
+                <div class="percentage">25%</div>
+                <h4>Midterm Exam</h4>
+                <p>Theory validation: Gradient Descent math, Probability, Search Trees.</p>
+            </div>
+            <div class="stat-card glass">
+                <div class="percentage">35%</div>
+                <h4>Final Project</h4>
+                <p>Comprehensive group project: Full ML pipeline (Data to Deploy).</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="resources" class="section container">
+        <div class="section-header">
+            <h2>Recommended Resources & Prerequisites</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Prerequisites -->
+            <div class="card glass">
+                <h3><i data-lucide="check-circle"></i> Prerequisites</h3>
+                <ul class="feature-list">
+                    <li>Linear Algebra & Calculus (Derivatives)</li>
+                    <li>Proficiency in Python programming</li>
+                    <li>Basic Statistics & Probability</li>
+                </ul>
+            </div>
+
+            <!-- Textbooks -->
+            <div class="card glass">
+                <h3><i data-lucide="book"></i> Textbooks</h3>
+                <ul class="feature-list">
+                    <li><strong>Hands-On Machine Learning</strong> by Aurélien Géron (Primary)</li>
+                    <li><strong>Deep Learning</strong> by Goodfellow at al. (Secondary/Theory)</li>
+                </ul>
+            </div>
+
+            <!-- Tools -->
+            <div class="card glass full-width" style="grid-column: 1 / -1;">
+                <h3><i data-lucide="cpu"></i> Tools & Envrionments</h3>
+                <div class="tools-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <a href="https://www.kaggle.com" target="_blank" class="tool-card glass"
+                        style="text-decoration: none; color: white; padding: 1rem; text-align: center;">
+                        <strong>Kaggle</strong>
+                        <p style="font-size: 0.8rem; color: #a1a1aa;">Datasets & Notebooks</p>
+                    </a>
+                    <a href="https://colab.research.google.com" target="_blank" class="tool-card glass"
+                        style="text-decoration: none; color: white; padding: 1rem; text-align: center;">
+                        <strong>Google Colab</strong>
+                        <p style="font-size: 0.8rem; color: #a1a1aa;">Free GPU Access</p>
+                    </a>
+                    <a href="https://huggingface.co" target="_blank" class="tool-card glass"
+                        style="text-decoration: none; color: white; padding: 1rem; text-align: center;">
+                        <strong>Hugging Face</strong>
+                        <p style="font-size: 0.8rem; color: #a1a1aa;">Transformer Models</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
