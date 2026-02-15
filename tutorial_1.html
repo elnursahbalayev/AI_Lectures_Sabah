@@ -163,6 +163,9 @@
 </head>
 
 <body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; hieght: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
     <div class="background-animation"></div>
 
     <nav class="navbar glass">
@@ -259,6 +262,21 @@ print(f"My Numpy Version: {np.__version__}")
                 \[ \frac{df}{dx} = f'(x) = 2x - 4 \]
             </div>
 
+            <details
+                style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 2rem; cursor: pointer;">
+                <summary style="font-weight: 600; color: var(--primary);">Math Check: Why is the derivative \(2x-4\)?
+                </summary>
+                <div style="margin-top: 1rem; font-size: 0.95rem; color: #d4d4d8;">
+                    <p>We use the <strong>Power Rule</strong> from calculus: \(\frac{d}{dx}(x^n) = nx^{n-1}\).</p>
+                    <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Derivative of \(x^2\) becomes \(2x^{2-1} = 2x\).</li>
+                        <li>Derivative of \(-4x\) (which is \(-4x^1\)) becomes \(-4(1)x^0 = -4\).</li>
+                        <li>Derivative of a constant \(6\) is \(0\).</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;">Combine them: \(2x - 4 + 0 = 2x - 4\).</p>
+                </div>
+            </details>
+
             <p><strong>Why is the derivative meaningful?</strong></p>
             <ul>
                 <li>If \(f'(x)\) is <strong>positive</strong>, the function is sloping <strong>upwards</strong>. To go
@@ -275,8 +293,8 @@ print(f"My Numpy Version: {np.__version__}")
             <div class="simulation-wrapper" style="margin-top: 3rem;">
                 <h3 style="margin-top: 0">📐 Gradient Explorer</h3>
                 <p>Move your mouse over the curve below. The <span style="color: #ef4444">Red Line</span> is the
-                    <strong>Tangent</strong> (Slope). The <span style="color: #4ade80">Green Arrow</span> shows where
-                    Gradient Descent would take a step.</p>
+                    <strong>Tangent</strong> (Slope).
+                </p>
 
                 <div class="canvas-container" id="gradExplorerContainer"
                     style="position: relative; height: 300px; background: #111; border-radius: 8px; overflow: hidden; cursor: crosshair;">
@@ -327,26 +345,7 @@ print(f"My Numpy Version: {np.__version__}")
                     const xDisplay = document.getElementById('xVal');
                     const slopeDisplay = document.getElementById('slopeVal');
 
-                    // Math Model for visual path M 0,0 Q 50,200 100,0
-                    // This Bezier visually approximates a parabola with vertex at bottom.
-                    // Let's model the "Cost" function $C(x)$ visually.
-                    // Visual X: 0 to 100.
-                    // Visual Y (SVG units): 0 (top) to 100 (bottom).
-                    // We want vertex at 50, 100.
-                    // Approx Equation: Y_svg = 100 - k(x-50)^2.  Wait, M0,0 means at x=0, y=0.
-                    // 0 = 100 - k(-50)^2 => 100 = 2500k => k = 0.04.
-                    // So Y_svg = 100 - 0.04(x-50)^2.
-                    // Wait, this is opening DOWN visually (Y gets smaller as we move away from center).
-                    // BUT in SVG, smaller Y is HIGHER on screen.
-                    // So visually this IS a bowl. Perfect.
 
-                    // Derivative (Slope in visual space): dY/dx = -0.08(x-50).
-                    // NOTE: Visual slope is inverted cost slope because Y axis is inverted.
-                    // High Cost = Low Y_svg. Low Cost = High Y_svg.
-                    // Real optimized Slope $m$: if x < 50, we are on left wall. Tangent points DOWN to right. Negative Slope.
-                    // Visually: x < 50. x=25. Y_svg = 100 - 0.04(625) = 75. 
-                    // x=26. Y_svg = ...
-                    // Let's just use the visual tangent logic.
 
                     container.addEventListener('mousemove', (e) => {
                         const rect = container.getBoundingClientRect();
@@ -357,35 +356,22 @@ print(f"My Numpy Version: {np.__version__}")
                         // Map to SVG coords (0-100)
                         const svgX = (xRel / width) * 100;
 
-                        // Calculate SVG Y
-                        // Y = 100 - 0.04 * (x-50)^2
+                        // Calculate SVG Y: Y = 100 - 0.04 * (x-50)^2
                         const svgY = 100 - 0.04 * Math.pow(svgX - 50, 2);
 
-                        // Calculate Visual Slope (dY/dx)
-                        // derivative = -0.08 * (svgX - 50)
+                        // Visual Slope derivative = -0.08 * (svgX - 50)
                         const dydx = -0.08 * (svgX - 50);
-
-                        // The "Real World" Slope (Cost Function derivative) 
-                        // Since typically Y is UP for Cost, and here Y is DOWN for visual coordinate...
-                        // If we are at x=25 (left side), we want 'negative slope' roughly.
-                        // Visual dY/dx at 25: -0.08 * (-25) = +2.0. Visual line goes DOWN-RIGHT (positive SVG slope).
-                        // In Math Graph (Y up), this would be negative slope.
-                        const mathSlope = -dydx;
+                        const mathSlope = -dydx; // Real world optimization slope
 
                         // Update Point
                         point.setAttribute('cx', svgX);
-                        point.setAttribute('cy', svgY); // svgY is correct for pos
+                        point.setAttribute('cy', svgY);
                         point.style.visibility = 'visible';
 
-                        // Update Tangent Line
-                        // y - y1 = m(x - x1)
-                        // let's draw a line segment of length +/- 20 units
-                        const delta = 20;
+                        // Update Tangent Line (Visual)
+                        const delta = 15;
                         const x1 = svgX - delta;
                         const x2 = svgX + delta;
-
-                        // y1 = svgY + m * (x1 - svgX)
-                        // Using visual slope 'dydx'
                         const y1 = svgY + dydx * (x1 - svgX);
                         const y2 = svgY + dydx * (x2 - svgX);
 
@@ -403,17 +389,15 @@ print(f"My Numpy Version: {np.__version__}")
                         slopeDisplay.textContent = mathSlope.toFixed(2);
 
                         // Color code slope
-                        if (mathSlope > 0) slopeDisplay.style.color = '#ef4444'; // Positive slope -> Neg step
-                        else if (mathSlope < 0) slopeDisplay.style.color = '#3b82f6'; // Neg slope -> Pos step
+                        if (mathSlope > 0) slopeDisplay.style.color = '#ef4444';
+                        else if (mathSlope < 0) slopeDisplay.style.color = '#3b82f6';
                         else slopeDisplay.style.color = '#fff';
 
                         // Position Info Box
-                        // keep it near mouse but not overlapping
-                        // We use the raw mouse position 'xRel'
                         let leftPos = xRel + 20;
                         if (leftPos > width - 120) leftPos = xRel - 140;
                         infoBox.style.left = leftPos + 'px';
-                        infoBox.style.top = '20px'; // Keep at top
+                        infoBox.style.top = '20px';
                     });
 
                     container.addEventListener('mouseleave', () => {
@@ -488,40 +472,49 @@ def df(x):
                     <input type="range" id="lrSlider" min="0.01" max="1.1" step="0.01" value="0.1"
                         style="flex-grow: 1;">
                     <span id="lrValue" class="tag"
-                        style="background: var(--primary); padding: 0.2rem 0.6rem; border-radius: 4px;">0.1</span>
+                        style="background: var(--primary); padding: 0.2rem 0.6rem; border-radius: 4px; min-width: 3ch; text-align: center;">0.1</span>
+                    <button id="resetSimBtn" class="btn-sm"
+                        style="padding: 0.2rem 0.6rem; border: 1px solid var(--border); background: rgba(255,255,255,0.1); border-radius: 4px; cursor: pointer;"
+                        title="Reset Simulation">
+                        <i data-lucide="rotate-ccw" width="16" height="16"></i>
+                    </button>
                 </div>
 
-                <div class="canvas-container"
-                    style="position: relative; height: 300px; background: #111; border-radius: 8px; overflow: hidden;">
-                    <!-- Grid background -->
-                    <div
-                        style="position: absolute; width: 100%; height: 100%; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: stretch;">
+                    <!-- Main Simulation -->
+                    <div class="canvas-container"
+                        style="position: relative; height: 300px; background: #111; border-radius: 8px; overflow: hidden; margin: 0;">
+                        <!-- Grid background -->
+                        <div
+                            style="position: absolute; width: 100%; height: 100%; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3;">
+                        </div>
+
+                        <!-- Axis -->
+                        <div
+                            style="position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: #555;">
+                        </div>
+                        <div style="position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: #555;">
+                        </div>
+
+                        <!-- Parabola SVG Path -->
+                        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <path d="M 0,0 Q 50,200 100,0" fill="none" stroke="#3b82f6" stroke-width="2"
+                                vector-effect="non-scaling-stroke" />
+                        </svg>
+
+                        <div id="simBall" class="ball"></div>
                     </div>
 
-                    <!-- Axis -->
-                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: #555;">
+                    <!-- NEW: Loss Chart -->
+                    <div class="loss-chart-container"
+                        style="background: #111; border-radius: 8px; padding: 10px; position: relative; height: 300px; display: flex; flex-direction: column;">
+                        <h4 style="margin: 0 0 10px 0; color: #a1a1aa; font-size: 0.8rem; text-transform: uppercase;">
+                            Loss vs Epochs</h4>
+                        <div style="flex-grow: 1; position: relative;">
+                            <canvas id="lossChart" style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                        <!-- Chart Logic is integrated below -->
                     </div>
-                    <div style="position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: #555;">
-                    </div>
-
-                    <!-- Parabola SVG Path 
-                         coordinate system: 0-100. 
-                         Start: 0,0 (Top Left) -> Math(-50, 2500)
-                         Vertex: 50,100 (Bottom Center) -> Math(0, 0)
-                         End: 100,0 (Top Right) -> Math(50, 2500)
-                         Quadratic Bezier Control Point approx: 50,200 (Outside viewbox implies curvature)
-                         d="M 0,0 Q 50,200 100,0" creates a downward pointing arc from 0,0 to 100,0 with vertex at bottom.
-                         This VISUALLY matches a parabola opening upwards if Y axis was normal.
-                         Since SVG Y is down: 0 is top, 100 is bottom.
-                         So 0 (top) -> High Value. 100 (bottom) -> Low Value.
-                         This matches our expectation: edges are high, center is low.
-                    -->
-                    <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                        <path d="M 0,0 Q 50,200 100,0" fill="none" stroke="#3b82f6" stroke-width="2"
-                            vector-effect="non-scaling-stroke" />
-                    </svg>
-
-                    <div id="simBall" class="ball"></div>
                 </div>
 
                 <p id="simStatus" style="font-family: 'JetBrains Mono', monospace;">Status: <span
@@ -547,8 +540,80 @@ def df(x):
                         1.0\).</li>
                 </ol>
 
+                <div
+                    style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; text-align: center;">
+                    <p style="font-size: 0.9rem; color: #a1a1aa; margin-bottom: 0.5rem;">Visual Hint: The "W" Landscape
+                        (\(x^4 - 2x^2 + x\))</p>
+                    <svg width="100%" height="250" viewBox="0 0 300 100" preserveAspectRatio="none"
+                        style="border: 1px dashed #555; background: #111;">
+                        <!-- Grid lines -->
+                        <line x1="0" y1="50" x2="300" y2="50" stroke="#333" stroke-width="0.5" />
+                        <line x1="150" y1="0" x2="150" y2="100" stroke="#333" stroke-width="0.5" />
+
+                        <!-- 
+                            W-Shape Path manually constructed in 300x100 space (3:1 Aspect Ratio).
+                            Scaled X coords by 3x from previous 0-100 version to prevent vertical squashing.
+                            
+                            Old X -> New X
+                            10 -> 30
+                            30 -> 90 (Local Min)
+                            50 -> 150 (Peak)
+                            75 -> 225 (Global Min)
+                            90 -> 270
+                         -->
+                        <path d="M 30,10 Q 60,85 90,65 Q 120,45 150,35 Q 180,25 225,85 Q 270,-5 270,10" fill="none"
+                            stroke="#8b5cf6" stroke-width="3" vector-effect="non-scaling-stroke" />
+
+                        <!-- Labels -->
+                        <text x="75" y="85" fill="#a1a1aa" font-size="8" font-family="sans-serif"
+                            text-anchor="middle">Local Min</text>
+                        <text x="225" y="98" fill="#a1a1aa" font-size="8" font-family="sans-serif"
+                            text-anchor="middle">Global Min</text>
+
+                        <!-- Points -->
+                        <circle cx="90" cy="65" r="3" fill="#ef4444" />
+                        <circle cx="225" cy="85" r="3" fill="#4ade80" />
+                    </svg>
+                </div>
+
                 <p><strong>Bonus:</strong> Look up <em>"Momentum"</em> in optimization. Implement it to help your solver
                     roll through small bumps.</p>
+            </div>
+        </section>
+
+        <section class="content-section"
+            style="border-top: 1px solid var(--border); padding-top: 3rem; text-align: center;">
+            <h3 style="color: var(--text-muted); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.1em;">
+                Coming Soon</h3>
+            <h2 style="border: none; padding: 0; font-size: 2.5rem; margin-bottom: 2rem;">The Real World</h2>
+
+            <div
+                style="position: relative; max-width: 600px; margin: 0 auto; height: 300px; background: #000; border-radius: 12px; overflow: hidden;">
+                <!-- Abstract 3D Landscape visual using simple CSS/SVG -->
+                <div
+                    style="position: absolute; width: 100%; height: 100%; background: linear-gradient(to bottom, #000, #111);">
+                </div>
+                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style="opacity: 0.6;">
+                    <defs>
+                        <linearGradient id="g1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#000;stop-opacity:0" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,50 Q25,30 50,50 T100,50 V100 H0 Z" fill="url(#g1)" />
+                    <path d="M0,60 Q25,40 50,60 T100,60 V100 H0 Z" fill="url(#g1)" opacity="0.7" />
+                    <path d="M0,70 Q25,50 50,70 T100,70 V100 H0 Z" fill="url(#g1)" opacity="0.4" />
+                </svg>
+                <div
+                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 80%;">
+                    <p style="color: white; font-size: 1.1rem; text-shadow: 0 4px 10px black;">
+                        You just optimized <strong>1 parameter</strong>. <br>
+                        Modern LLMs have <strong>1.76 Trillion</strong>.
+                    </p>
+                    <p style="color: #a1a1aa; font-size: 0.9rem;">
+                        The math is the same. The landscape is infinite.
+                    </p>
+                </div>
             </div>
         </section>
 
@@ -566,6 +631,51 @@ def df(x):
         hljs.highlightAll();
         lucide.createIcons();
 
+        // Add Copy Buttons to Code Blocks
+        document.querySelectorAll('pre').forEach((block) => {
+            // Create container for relative positioning
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+
+            // Insert wrapper before block, then move block inside
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+
+            const button = document.createElement('button');
+            button.className = 'copy-btn';
+            button.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            button.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 4px;
+                padding: 4px 8px;
+                color: #a1a1aa;
+                cursor: pointer;
+                transition: all 0.2s;
+            `;
+
+            button.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                button.innerHTML = '<i data-lucide="check" width="14" height="14" style="color: #4ade80"></i>';
+                setTimeout(() => {
+                    button.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+                    lucide.createIcons();
+                }, 2000);
+                lucide.createIcons();
+            });
+
+            button.addEventListener('mouseenter', () => button.style.background = 'rgba(255, 255, 255, 0.2)');
+            button.addEventListener('mouseleave', () => button.style.background = 'rgba(255, 255, 255, 0.1)');
+
+            wrapper.appendChild(button);
+        });
+        // Re-run icons for newly added buttons
+        lucide.createIcons();
+
         // Simulation Logic
         const slider = document.getElementById('lrSlider');
         const output = document.getElementById('lrValue');
@@ -573,11 +683,68 @@ def df(x):
         const status = document.getElementById('simStatus');
         const stepsDisplay = document.getElementById('simSteps');
 
+        // Chart Context
+        const canvas = document.getElementById('lossChart');
+        const ctx = canvas.getContext('2d');
+        // Fix resolution for high DPI
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        // Reset transform to draw easily in pixel coords (0 to width)
+        const chartW = rect.width;
+        const chartH = rect.height;
+
         let simInterval;
+        let lossHistory = [];
 
         slider.oninput = function () {
             output.innerHTML = this.value;
             restartSimulation();
+        }
+
+        document.getElementById('resetSimBtn').onclick = function () {
+            restartSimulation();
+        };
+
+        function drawChart(history) {
+            ctx.clearRect(0, 0, chartW, chartH);
+
+            // Background lines
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, chartH); ctx.lineTo(chartW, chartH);
+            ctx.moveTo(0, 0); ctx.lineTo(0, chartH);
+            ctx.stroke();
+
+            if (history.length < 2) return;
+
+            // Normalize Data
+            // Max loss is approx x^2 = 50^2 = 2500.
+            // Let's dynamically scale or fix scale. Fixed scale is better to see divergence.
+            const maxLoss = 5000; // Cap visual at 5000
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2;
+
+            history.forEach((loss, i) => {
+                // Map X: index -> width
+                // We show last 50 steps scrolling
+                // Or just squeeze all steps. Let's squeeze.
+                const x = (i / (history.length - 1 || 1)) * chartW;
+
+                // Map Y: loss -> height
+                // Loss 0 -> Bottom (chartH). Loss Max -> Top (0).
+                let y = chartH - (loss / maxLoss) * chartH;
+                if (y < 0) y = 0; // Clamp top
+
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
         }
 
         function restartSimulation() {
@@ -600,9 +767,12 @@ def df(x):
 
             let x = -45; // Start near the top left
             let steps = 0;
+            lossHistory = [];
 
             // Set initial position
             updateBallPosition(x);
+            lossHistory.push(x * x);
+            drawChart(lossHistory);
 
             simInterval = setInterval(() => {
                 steps++;
@@ -611,9 +781,13 @@ def df(x):
                 // Core Optimization Step
                 x = x * (1 - 2.0 * lr);
 
+                let currentLoss = x * x;
+                lossHistory.push(currentLoss);
+                drawChart(lossHistory);
+
                 // Add noise if diverging heavily to simulate explosion
                 if (Math.abs(x) > 100) {
-                    status.innerHTML = "Status: <span style='color: #ef4444'>DIVERGED! (Exploded to Infinity)</span>";
+                    status.innerHTML = "Status: <span style='color: #ef4444'>DIVERGED! (Loss Exploding)</span>";
                     clearInterval(simInterval);
                     ball.style.opacity = '0';
                     return;
@@ -625,6 +799,9 @@ def df(x):
                 if (Math.abs(x) < 0.5) {
                     x = 0; // Snap to center
                     updateBallPosition(x);
+                    lossHistory.push(0);
+                    drawChart(lossHistory);
+
                     status.innerHTML = "Status: <span style='color: #3b82f6'>CONVERGED (Target Reached)</span>";
                     clearInterval(simInterval);
                     return;
@@ -632,11 +809,11 @@ def df(x):
 
                 // Output Status based on LR behavior
                 if (lr >= 1.0) {
-                    status.innerHTML = "Status: <span style='color: #ef4444'>DIVERGING / CHAOTIC OSCILLATION</span>";
+                    status.innerHTML = "Status: <span style='color: #ef4444'>DIVERGING / CHAOTIC</span>";
                 } else if (lr > 0.8) {
-                    status.innerHTML = "Status: <span style='color: #f59e0b'>OSCILLATING (Too High)</span>";
+                    status.innerHTML = "Status: <span style='color: #f59e0b'>OSCILLATING</span>";
                 } else if (lr < 0.05) {
-                    status.innerHTML = "Status: <span style='color: #f59e0b'>TOO SLOW (Tiny Steps)</span>";
+                    status.innerHTML = "Status: <span style='color: #f59e0b'>TOO SLOW</span>";
                 } else {
                     status.innerHTML = "Status: <span style='color: #4ade80'>OPTIMAL CONVERGENCE</span>";
                 }
@@ -644,7 +821,7 @@ def df(x):
                 updateBallPosition(x);
                 stepsDisplay.innerHTML = `Steps taken: ${steps}`;
 
-            }, 600); // Slower speed for easier viewing
+            }, 400); // Speed
         }
 
         function updateBallPosition(x) {
@@ -672,6 +849,13 @@ def df(x):
         // Start initial reference
         restartSimulation();
 
+        // Scroll Progress Bar
+        window.onscroll = function () {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("readingProgress").style.width = scrolled + "%";
+        };
     </script>
 </body>
 
