@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1 Lecture: Optimization & Search | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul, .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Note / callout boxes */
+        .note-box {
+            background: rgba(59,130,246,0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139,92,246,0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245,158,11,0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        /* Math display blocks */
+        .math-block {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Comparison layout */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24,24,27,0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        /* Simulation wrapper */
+        .sim-wrapper {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .sim-wrapper h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .sim-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            align-items: center;
+        }
+
+        .ctrl-btn {
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.08);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: background 0.2s;
+        }
+
+        .ctrl-btn:hover { background: rgba(255,255,255,0.16); }
+        .ctrl-btn.primary { background: var(--primary); border-color: var(--primary); }
+        .ctrl-btn.primary:hover { background: #2563eb; }
+        .ctrl-btn.accent { background: var(--accent); border-color: var(--accent); }
+        .ctrl-btn.accent:hover { background: #7c3aed; }
+
+        .info-panel {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #a1a1aa;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .info-panel span { color: white; font-weight: 700; }
+
+        canvas {
+            border-radius: 8px;
+            display: block;
+            width: 100%;
+        }
+
+        /* Key equations table */
+        .eq-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .eq-table th {
+            background: rgba(59,130,246,0.15);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+        }
+
+        .eq-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #d4d4d8;
+        }
+
+        .eq-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Programming comparison boxes */
+        .prog-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .prog-card {
+            background: rgba(24,24,27,0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .prog-card .prog-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .prog-card .prog-flow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+        }
+
+        /* Summary card at top of section 9 */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .summary-item {
+            background: rgba(24,24,27,0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .summary-item .num {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .summary-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0.3rem 0 0 0;
+        }
+
+        /* LR visualizer panels */
+        .lr-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .lr-panel {
+            background: #111;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .lr-panel canvas {
+            height: 120px;
+        }
+
+        .lr-panel .lr-label {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        @media (max-width: 700px) {
+            .compare-grid, .prog-compare, .lr-panels { grid-template-columns: 1fr; }
+            .article-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress" style="position:fixed;top:0;left:0;height:4px;background:var(--primary);z-index:9999;width:0%;transition:width 0.1s;"></div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Lectures</a></li>
+            <li><a href="tutorial_1.html">Tutorial 1</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+
+        <!-- ── HEADER ─────────────────────────────────────────────────────── -->
+        <header class="article-header">
+            <span class="badge">Week 01 Lecture</span>
+            <h1>Optimization & Search:<br>The Language of Learning</h1>
+            <p class="subtitle">How "learning" becomes mathematics, and why Gradient Descent is the engine of all modern AI.</p>
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true" width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color:var(--text-muted);font-size:0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── SECTION 1: WHAT IS LEARNING ───────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>1. What Does It Mean to "Learn"?</h2>
+
+            <p>Before writing a single line of code, we need to answer a deceptively deep question. When we say a machine "learns," what is actually happening under the hood?</p>
+
+            <p>Let's compare two programming paradigms:</p>
+
+            <div class="prog-compare">
+                <div class="prog-card">
+                    <div class="prog-label">Classical Programming</div>
+                    <div class="prog-flow">
+                        Data<br>
+                        <span style="color:#a1a1aa">+</span><br>
+                        Hand-written Rules<br>
+                        <span style="color:var(--primary)">↓</span><br>
+                        <strong style="color:#4ade80">Output</strong>
+                    </div>
+                    <p style="font-size:0.85rem;color:#a1a1aa;margin-top:1rem;">e.g., <code>if temp > 37.5: "Fever"</code></p>
+                </div>
+                <div class="prog-card">
+                    <div class="prog-label">Machine Learning</div>
+                    <div class="prog-flow">
+                        Data <span style="color:var(--accent)">+</span> Labels<br>
+                        <span style="color:#a1a1aa">+</span><br>
+                        An Algorithm<br>
+                        <span style="color:var(--primary)">↓</span><br>
+                        <strong style="color:#4ade80">Rules (Model)</strong>
+                    </div>
+                    <p style="font-size:0.85rem;color:#a1a1aa;margin-top:1rem;">The algorithm <em>discovers</em> the rules from data.</p>
+                </div>
+            </div>
+
+            <p>The fundamental shift: we stopped encoding knowledge directly and started encoding the <strong>process of acquiring knowledge</strong>. That process is <strong>search</strong> — specifically, a search through a vast space of possible models to find the one that best explains the data.</p>
+
+            <blockquote>"We don't program the intelligence. We program the <em>process</em> that finds the intelligence."</blockquote>
+        </section>
+
+        <!-- ── SECTION 2: FORMALIZING AS OPTIMIZATION ─────────────────────── -->
+        <section class="content-section text-content">
+            <h2>2. Formalizing Learning as Optimization</h2>
+
+            <p>Let's translate this philosophy into mathematics. Suppose we have:</p>
+            <ul>
+                <li>A dataset \(\mathcal{D} = \{(x_1, y_1), \ldots, (x_n, y_n)\}\) of input-output pairs.</li>
+                <li>A model \(h_\theta(x)\) parameterized by a vector of weights \(\theta\).</li>
+                <li>A <strong>Loss Function</strong> \(\mathcal{L}(\theta)\) that measures how wrong our model is.</li>
+            </ul>
+
+            <p>The entire training process is captured by a single line:</p>
+
+            <div class="math-block">
+                \[ \theta^* = \arg\min_\theta \; \mathcal{L}(\theta) \]
+            </div>
+
+            <p>Read: <em>"Find the parameter vector \(\theta^*\) that produces the smallest possible loss."</em></p>
+
+            <p>This is a pure optimization problem. The architecture, the data pipeline, the evaluation metrics — everything in ML is scaffolding built around this one equation. If you internalize this, you understand the skeleton of all of modern AI.</p>
+
+            <div class="note-box">
+                <strong>Key Insight:</strong> The particular algorithm we use to find \(\theta^*\) determines the training method. For modern deep learning, that algorithm is (a variant of) <strong>Gradient Descent</strong>.
+            </div>
+        </section>
+
+        <!-- ── SECTION 3: THE LOSS FUNCTION ──────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>3. The Loss Function: Defining Failure</h2>
+
+            <p>The Loss Function (also called Cost Function or Objective Function) is the mathematical definition of <strong>error</strong>. It answers the question: <em>"How wrong are we?"</em></p>
+
+            <h3>For Regression (continuous output)</h3>
+            <p>Mean Squared Error (MSE) — the average squared distance between predictions and reality:</p>
+            <div class="math-block">
+                \[ \mathcal{L}_{MSE}(\theta) = \frac{1}{n} \sum_{i=1}^{n} \left( h_\theta(x_i) - y_i \right)^2 \]
+            </div>
+
+            <h3>For Classification (discrete output)</h3>
+            <p>Cross-Entropy Loss — measures the dissimilarity between predicted probability distributions:</p>
+            <div class="math-block">
+                \[ \mathcal{L}_{CE}(\theta) = -\frac{1}{n} \sum_{i=1}^{n} \left[ y_i \log(\hat{y}_i) + (1 - y_i)\log(1 - \hat{y}_i) \right] \]
+            </div>
+
+            <h3>Critical Properties of a Well-Designed Loss Function</h3>
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">✓ Must Have</h4>
+                    <ul style="color:#d4d4d8;margin:0;padding-left:1.2rem;">
+                        <li><strong>Differentiable</strong> — Gradients must exist everywhere (or almost everywhere)</li>
+                        <li><strong>Sensitive to errors</strong> — Wrong predictions produce non-zero loss</li>
+                        <li><strong>Minimizable</strong> — The minimum corresponds to the best model</li>
+                    </ul>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:#f59e0b;">⚠ Watch Out For</h4>
+                    <ul style="color:#d4d4d8;margin:0;padding-left:1.2rem;">
+                        <li><strong>Non-differentiable points</strong> — Breaks Gradient Descent</li>
+                        <li><strong>Flat regions</strong> — Gradient ≈ 0, learning stalls</li>
+                        <li><strong>Poor scale</strong> — Causes instability in multi-layer networks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Our Working Example</h3>
+            <p>For this lecture and the tutorial, we use a simple 1D function as our "loss landscape":</p>
+            <div class="math-block">
+                \[ f(x) = x^2 - 4x + 6 \]
+            </div>
+            <p>This has a known minimum at \(x = 2\), \(f(2) = 2\). Our computer doesn't know this — it has to find it by searching.</p>
+        </section>
+
+        <!-- ── SECTION 4: THE LOSS LANDSCAPE ─────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>4. The Loss Landscape</h2>
+
+            <p>Imagine plotting \(\mathcal{L}(\theta)\) as a geometric surface over all possible parameter values. This is the <strong>Loss Landscape</strong>.</p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="font-family:'JetBrains Mono',monospace;color:var(--primary);">1 Parameter</h4>
+                    <p style="color:#a1a1aa;font-size:0.9rem;">A 2D curve. Visualizable. Like a valley.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="font-family:'JetBrains Mono',monospace;color:var(--primary);">2 Parameters</h4>
+                    <p style="color:#a1a1aa;font-size:0.9rem;">A 3D surface. Mountainous terrain with peaks and valleys.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="font-family:'JetBrains Mono',monospace;color:var(--accent);">10,000 Parameters</h4>
+                    <p style="color:#a1a1aa;font-size:0.9rem;">A 10,000-dimensional manifold. No longer visualizable.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="font-family:'JetBrains Mono',monospace;color:var(--accent);">1.76 Trillion (GPT-4)</h4>
+                    <p style="color:#a1a1aa;font-size:0.9rem;">Unimaginable. Yet the algorithm that navigates it is the same.</p>
+                </div>
+            </div>
+
+            <p>The goal is always the same: <strong>find the lowest point in this landscape</strong>. The challenge is doing so without a map — we can only see the local slope at our current position.</p>
+
+            <div class="insight-box">
+                <strong>The Fundamental Challenge:</strong> We cannot see the whole landscape. We can only measure the <em>slope</em> (gradient) at our current location. Every search algorithm is a strategy for navigating under this constraint.
+            </div>
+        </section>
+
+        <!-- ── SECTION 5: SEARCH STRATEGIES (Hill Climbing) ──────────────── -->
+        <section class="content-section text-content">
+            <h2>5. Search Strategies: From Brute Force to Smart</h2>
+
+            <h3>Strategy A: Grid Search (Brute Force)</h3>
+            <p>Divide the parameter space into a grid. Evaluate \(\mathcal{L}(\theta)\) at every point. Return the minimum.</p>
+
+            <div class="warning-box">
+                <strong>The Curse of Dimensionality:</strong> If we evaluate 100 points per dimension:
+                <ul style="margin: 0.5rem 0 0 1.2rem;">
+                    <li>1 parameter → \(100^1 = 100\) evaluations ✓</li>
+                    <li>10 parameters → \(100^{10} = 10^{20}\) evaluations ✗</li>
+                    <li>1,000 parameters → computationally impossible ✗</li>
+                </ul>
+            </div>
+
+            <h3>Strategy B: Hill Climbing</h3>
+            <p>Hill Climbing uses <em>local search</em>: from the current position, explore nearby positions and move to the best one.</p>
+
+            <pre><code class="language-python">def hill_climbing(start_x, step_size, max_iters):
+    x = start_x
+    for _ in range(max_iters):
+        # Generate a random small perturbation
+        x_candidate = x + random.uniform(-step_size, step_size)
+
+        # Accept if it improves the loss
+        if f(x_candidate) < f(x):
+            x = x_candidate
+    return x</code></pre>
+
+            <p><strong>Analogy:</strong> A blindfolded hiker who feels the ground around their feet and always steps toward lower terrain.</p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:#4ade80;">Advantages</h4>
+                    <ul style="color:#d4d4d8;font-size:0.9rem;padding-left:1.2rem;margin:0;">
+                        <li>Simple to implement</li>
+                        <li>Works on non-differentiable functions</li>
+                        <li>No gradient computation needed</li>
+                    </ul>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:#ef4444;">Disadvantages</h4>
+                    <ul style="color:#d4d4d8;font-size:0.9rem;padding-left:1.2rem;margin:0;">
+                        <li>Gets <strong>stuck at local minima</strong></li>
+                        <li>No sense of direction — wastes evaluations</li>
+                        <li>Slow: many steps produce no improvement</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE 1: Hill Climbing vs GD Race -->
+            <div class="sim-wrapper">
+                <h3>⚡ The Race: Hill Climbing vs Gradient Descent</h3>
+                <p style="color:#a1a1aa;font-size:0.9rem;">Both start at the same point on the same parabola. Watch how each strategy searches for the minimum.</p>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+                    <div>
+                        <div style="font-size:0.8rem;color:#a1a1aa;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">HILL CLIMBING (Random Steps)</div>
+                        <canvas id="hcCanvas" height="200" style="background:#0a0a0a;border:1px solid #222;"></canvas>
+                        <div id="hcInfo" class="info-panel" style="margin-top:0.5rem;">Steps: <span id="hcSteps">0</span> &nbsp; x = <span id="hcX">0.00</span></div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.8rem;color:#a1a1aa;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">GRADIENT DESCENT (Exact Direction)</div>
+                        <canvas id="gdRaceCanvas" height="200" style="background:#0a0a0a;border:1px solid #222;"></canvas>
+                        <div id="gdRaceInfo" class="info-panel" style="margin-top:0.5rem;">Steps: <span id="gdSteps">0</span> &nbsp; x = <span id="gdX">0.00</span></div>
+                    </div>
+                </div>
+
+                <div class="sim-controls">
+                    <button class="ctrl-btn primary" id="raceBtn">▶ Start Race</button>
+                    <button class="ctrl-btn" id="raceResetBtn">↺ Reset</button>
+                    <span id="raceWinner" style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:#4ade80;"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── SECTION 6: GRADIENT DESCENT ───────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>6. Gradient Descent: The Engine of AI</h2>
+
+            <p>The key insight missing from Hill Climbing: <em>if the function is differentiable, we can compute the exact direction of steepest descent without random guessing</em>.</p>
+
+            <p>The <strong>gradient</strong> \(f'(x)\) (or \(\nabla f\) in multiple dimensions) is a vector pointing in the direction of <strong>steepest ascent</strong>. Therefore, to descend, we step in the <em>opposite</em> direction.</p>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1.5rem 0;">
+                <div class="note-box" style="margin:0;">
+                    <strong>If \(f'(x) > 0\):</strong><br>
+                    Slope goes uphill to the right.<br>
+                    Step <strong>left</strong> (negative direction).
+                </div>
+                <div class="note-box" style="margin:0;border-color:var(--accent);background:rgba(139,92,246,0.08);">
+                    <strong>If \(f'(x) < 0\):</strong><br>
+                    Slope goes downhill to the right.<br>
+                    Step <strong>right</strong> (positive direction).
+                </div>
+            </div>
+
+            <blockquote>"Always step in the direction <em>opposite</em> to the gradient."</blockquote>
+
+            <h3>The Update Rule</h3>
+            <p>In one dimension:</p>
+            <div class="math-block">
+                \[ x_{t+1} = x_t - \eta \cdot f'(x_t) \]
+            </div>
+            <p>In the general multi-dimensional case:</p>
+            <div class="math-block">
+                \[ \theta_{t+1} = \theta_t - \eta \cdot \nabla_\theta \mathcal{L}(\theta_t) \]
+            </div>
+
+            <p>Where \(\eta\) (eta) is the <strong>Learning Rate</strong> — we'll examine it closely in the next section.</p>
+
+            <h3>Why Does This Work? (Taylor's Theorem)</h3>
+            <details style="background:rgba(255,255,255,0.05);padding:1rem 1.5rem;border-radius:8px;margin-bottom:2rem;cursor:pointer;">
+                <summary style="font-weight:600;color:var(--primary);">Math Derivation: Proof of Descent</summary>
+                <div style="margin-top:1rem;color:#d4d4d8;line-height:1.8;">
+                    <p>By the first-order Taylor expansion around \(x_t\):</p>
+                    \[ f(x_t + \delta) \approx f(x_t) + \delta \cdot f'(x_t) \]
+                    <p>We choose our step \(\delta = -\eta \cdot f'(x_t)\). Substituting:</p>
+                    \[ f(x_{t+1}) \approx f(x_t) - \eta \cdot [f'(x_t)]^2 \]
+                    <p>Since \(\eta > 0\) and \([f'(x_t)]^2 \geq 0\):</p>
+                    \[ f(x_{t+1}) \leq f(x_t) \]
+                    <p>Gradient descent is <strong>guaranteed to decrease (or maintain) the loss</strong> at every step, for small enough \(\eta\).</p>
+                </div>
+            </details>
+
+            <h3>The Code</h3>
+            <pre><code class="language-python">def f(x):
+    """Cost Function: our 'Error Landscape'."""
+    return x**2 - 4*x + 6
+
+def df(x):
+    """Gradient: the derivative of f. Computed analytically."""
+    return 2*x - 4   # Power rule: d/dx(x²) = 2x,  d/dx(-4x) = -4
+
+def gradient_descent(start_x, learning_rate, epochs):
+    x = start_x
+    history = []
+
+    for epoch in range(epochs):
+        gradient = df(x)                       # 1. Compute slope at current x
+        history.append((x, f(x)))             # 2. Record position
+        x = x - learning_rate * gradient      # 3. Step OPPOSITE to gradient
+
+    return x, history
+
+# Result: converges toward x = 2.0 (the true minimum)
+final_x, path = gradient_descent(start_x=0.0, learning_rate=0.1, epochs=30)</code></pre>
+
+            <!-- INTERACTIVE 2: GD Step-by-Step Visualizer -->
+            <div class="sim-wrapper">
+                <h3>🔬 Step-by-Step Gradient Descent</h3>
+                <p style="color:#a1a1aa;font-size:0.9rem;">Click <strong>Step</strong> to advance one epoch manually. Watch the gradient (red tangent) and the descent path.</p>
+
+                <canvas id="gdStepCanvas" height="260" style="background:#0a0a0a;border:1px solid #222;margin-bottom:0.75rem;"></canvas>
+
+                <div class="sim-controls">
+                    <button class="ctrl-btn" id="stepPrev">◀ Prev</button>
+                    <button class="ctrl-btn primary" id="stepAuto">▶ Auto</button>
+                    <button class="ctrl-btn" id="stepNext">Next ▶</button>
+                    <button class="ctrl-btn" id="stepReset">↺ Reset</button>
+                </div>
+
+                <div class="info-panel">
+                    Epoch: <span id="stepEpoch">0</span> &nbsp;
+                    x = <span id="stepX">0.0000</span> &nbsp;
+                    f(x) = <span id="stepFx">6.0000</span> &nbsp;
+                    f'(x) = <span id="stepGrad" style="color:#ef4444;">-4.0000</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── SECTION 7: LEARNING RATE ───────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>7. The Learning Rate \(\eta\) — The Critical Hyperparameter</h2>
+
+            <p>The Learning Rate is arguably <strong>the single most important hyperparameter</strong> in training any ML model. It controls how large a step we take in parameter space at each iteration.</p>
+
+            <div class="lr-panels">
+                <div class="lr-panel">
+                    <canvas id="lrSmallCanvas" height="120"></canvas>
+                    <div class="lr-label" style="color:#f59e0b;">\(\eta = 0.01\) — Too Slow</div>
+                    <div style="font-size:0.75rem;color:#a1a1aa;margin-top:0.3rem;">Tiny steps. Takes forever. May stall in shallow minima.</div>
+                </div>
+                <div class="lr-panel">
+                    <canvas id="lrGoodCanvas" height="120"></canvas>
+                    <div class="lr-label" style="color:#4ade80;">\(\eta = 0.2\) — Just Right</div>
+                    <div style="font-size:0.75rem;color:#a1a1aa;margin-top:0.3rem;">Efficient, smooth convergence.</div>
+                </div>
+                <div class="lr-panel">
+                    <canvas id="lrBigCanvas" height="120"></canvas>
+                    <div class="lr-label" style="color:#ef4444;">\(\eta = 1.05\) — Diverging</div>
+                    <div style="font-size:0.75rem;color:#a1a1aa;margin-top:0.3rem;">Overshoots. Oscillates. Loss explodes.</div>
+                </div>
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:#f59e0b;">Too Small (\(\eta \ll 0.1\))</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Steps are tiny. Convergence takes thousands of epochs. May be killed by time budget before reaching the minimum.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:#ef4444;">Too Large (\(\eta \gtrsim 1.0\))</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Overshoots the minimum. Bounces back and forth. Can diverge completely — loss goes to infinity.</p>
+                </div>
+            </div>
+
+            <h3>Mathematical Intuition for Divergence</h3>
+            <p>For the parabola \(f(x) = x^2\), the update rule gives:</p>
+            <div class="math-block">
+                \[ x_{t+1} = x_t - \eta \cdot 2x_t = x_t(1 - 2\eta) \]
+            </div>
+            <p>GD converges only when \(|1 - 2\eta| < 1\), which means \(\eta < 1\). At \(\eta = 1\), it oscillates. At \(\eta > 1\), it diverges exponentially.</p>
+
+            <div class="note-box">
+                <strong>Preview — Adaptive Learning Rates:</strong> In practice, manually tuning \(\eta\) is painful. Modern optimizers like <strong>Adam</strong> automatically adapt the learning rate for each parameter based on gradient history. We cover this in Module 3 when building neural networks.
+            </div>
+        </section>
+
+        <!-- ── SECTION 8: CONVEX VS NON-CONVEX ───────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>8. Convex vs. Non-Convex Loss Landscapes</h2>
+
+            <p>This is the most theoretically important distinction in optimization, and it determines the guarantees we can make about training.</p>
+
+            <h3>Convex Functions</h3>
+            <p><strong>Definition:</strong> A function is convex if for any two points \(a\) and \(b\):</p>
+            <div class="math-block">
+                \[ f(\lambda a + (1-\lambda)b) \leq \lambda f(a) + (1-\lambda)f(b), \quad \forall\, \lambda \in [0,1] \]
+            </div>
+            <p>Intuitively: the line segment connecting any two points on the graph lies <em>above</em> the graph.</p>
+            <p><strong>Consequence:</strong> A convex function has <strong>exactly one critical point</strong>, which is the global minimum. GD starting from <em>any</em> point is guaranteed to find it.</p>
+
+            <h3>Non-Convex Functions</h3>
+            <p>Non-convex functions have multiple local minima, saddle points, and flat regions. GD provides no global guarantee — it will find <em>some</em> local minimum, which may or may not be the global one.</p>
+
+            <p>The starting point determines which minimum you reach:</p>
+
+            <!-- INTERACTIVE 3: Landscape Explorer -->
+            <div class="sim-wrapper">
+                <h3>🗺 Landscape Explorer</h3>
+                <p style="color:#a1a1aa;font-size:0.9rem;"><strong>Click anywhere</strong> on either canvas to set a starting point, then watch Gradient Descent run from there.</p>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div>
+                        <div style="font-size:0.8rem;color:#4ade80;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">
+                            CONVEX — f(x) = x² − 4x + 6
+                        </div>
+                        <canvas id="convexCanvas" height="220" style="background:#0a0a0a;border:1px solid #333;cursor:crosshair;"></canvas>
+                        <div id="convexResult" style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:#4ade80;margin-top:0.4rem;min-height:1.2rem;"></div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.8rem;color:#f59e0b;font-family:'JetBrains Mono',monospace;margin-bottom:0.5rem;">
+                            NON-CONVEX — f(x) = x⁴ − 2x² + x
+                        </div>
+                        <canvas id="nonConvexCanvas" height="220" style="background:#0a0a0a;border:1px solid #333;cursor:crosshair;"></canvas>
+                        <div id="nonConvexResult" style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:#f59e0b;margin-top:0.4rem;min-height:1.2rem;"></div>
+                    </div>
+                </div>
+                <p style="font-size:0.8rem;color:#a1a1aa;margin-top:1rem;">
+                    <span style="color:#4ade80">●</span> Start point &nbsp;
+                    <span style="color:#3b82f6">●</span> Path &nbsp;
+                    <span style="color:#8b5cf6">●</span> Converged minimum
+                </p>
+            </div>
+
+            <h3>The Deep Learning Paradox</h3>
+            <p>Real neural networks always have non-convex loss landscapes. Yet they train successfully. Why?</p>
+            <ol>
+                <li><strong>High-dimensional geometry:</strong> In billions of dimensions, most critical points are saddle points, not local minima. Momentum-based optimizers escape saddle points naturally.</li>
+                <li><strong>Equivalent optima:</strong> Local minima in deep networks tend to have <em>similar loss values</em> to the global minimum. Finding any "good" minimum is enough.</li>
+                <li><strong>Flat minima generalize better:</strong> Wide, flat minima that GD prefers tend to generalize to unseen data better than sharp global minima.</li>
+            </ol>
+
+            <div class="insight-box">
+                <strong>The Practical Takeaway:</strong> Don't worry about finding the global minimum. Training deep networks is about finding a <em>good enough</em> local minimum — and modern optimizers are extremely good at this.
+            </div>
+        </section>
+
+        <!-- ── SECTION 9: KEY EQUATIONS ───────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>9. Key Equations — Quick Reference</h2>
+
+            <table class="eq-table">
+                <thead>
+                    <tr><th>Concept</th><th>Formula</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Goal of ML Training</td><td>\(\theta^* = \arg\min_\theta \mathcal{L}(\theta)\)</td></tr>
+                    <tr><td>MSE Loss</td><td>\(\mathcal{L} = \frac{1}{n}\sum_{i=1}^n (h_\theta(x_i) - y_i)^2\)</td></tr>
+                    <tr><td>GD Update (1D)</td><td>\(x_{t+1} = x_t - \eta \cdot f'(x_t)\)</td></tr>
+                    <tr><td>GD Update (General)</td><td>\(\theta_{t+1} = \theta_t - \eta \cdot \nabla_\theta \mathcal{L}\)</td></tr>
+                    <tr><td>Lecture function</td><td>\(f(x) = x^2 - 4x + 6\), minimum at \(x = 2\)</td></tr>
+                    <tr><td>Its gradient</td><td>\(f'(x) = 2x - 4\)</td></tr>
+                    <tr><td>Tutorial challenge</td><td>\(f(x) = x^4 - 2x^2 + x\), \(f'(x) = 4x^3 - 4x + 1\)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ── SECTION 10: SUMMARY ────────────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>10. Lecture Summary</h2>
+
+            <div class="summary-grid">
+                <div class="summary-item"><div class="num">1</div><p>Learning = Optimization. Find \(\theta^*\) that minimizes \(\mathcal{L}(\theta)\).</p></div>
+                <div class="summary-item"><div class="num">2</div><p>Loss Function defines "error" mathematically. Must be differentiable.</p></div>
+                <div class="summary-item"><div class="num">3</div><p>Brute force fails due to the Curse of Dimensionality.</p></div>
+                <div class="summary-item"><div class="num">4</div><p>Hill Climbing is directionless. Gets stuck. No gradient info.</p></div>
+                <div class="summary-item"><div class="num">5</div><p>Gradient Descent uses the exact descent direction. It powers all of modern AI.</p></div>
+                <div class="summary-item"><div class="num">6</div><p>Learning Rate: too small = slow, too large = diverges. Tune carefully.</p></div>
+            </div>
+        </section>
+
+        <!-- ── COMING NEXT ─────────────────────────────────────────────────── -->
+        <section class="content-section" style="border-top:1px solid var(--border);padding-top:3rem;text-align:center;">
+            <h3 style="color:var(--text-muted);text-transform:uppercase;font-size:0.9rem;letter-spacing:0.1em;">Coming Next</h3>
+            <h2 style="border:none;padding:0;font-size:2.2rem;margin-bottom:0.5rem;">Tutorial 1: Into the Code</h2>
+            <p style="color:#a1a1aa;max-width:500px;margin:0 auto 2rem auto;">You just learned the theory. Now you will build it — from scratch, in Python, with your own hands.</p>
+            <a href="tutorial_1.html" class="btn btn-primary" style="display:inline-flex;margin:0 auto;">
+                <i data-lucide="arrow-right"></i> Go to Tutorial 1
+            </a>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         JAVASCRIPT
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // ── Reading Progress Bar ──────────────────────────────────────────────
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+
+        // ══════════════════════════════════════════════════════════════════════
+        // SHARED CANVAS UTILITIES
+        // ══════════════════════════════════════════════════════════════════════
+        function setupCanvas(canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return { ctx, W: rect.width, H: rect.height };
+        }
+
+        // Map mathematical x → canvas pixel x
+        function mapX(x, xMin, xMax, pxL, pxR) {
+            return pxL + (x - xMin) / (xMax - xMin) * (pxR - pxL);
+        }
+        // Map mathematical y → canvas pixel y (inverted: higher y = higher on screen)
+        function mapY(y, yMin, yMax, pyT, pyB) {
+            return pyB - (y - yMin) / (yMax - yMin) * (pyB - pyT);
+        }
+
+        function drawGrid(ctx, W, H, ML, MR, MT, MB) {
+            ctx.strokeStyle = '#1a1a1a';
+            ctx.lineWidth = 1;
+            const steps = 6;
+            for (let i = 0; i <= steps; i++) {
+                const x = ML + i / steps * (W - ML - MR);
+                ctx.beginPath(); ctx.moveTo(x, MT); ctx.lineTo(x, H - MB); ctx.stroke();
+                const y = MT + i / steps * (H - MT - MB);
+                ctx.beginPath(); ctx.moveTo(ML, y); ctx.lineTo(W - MR, y); ctx.stroke();
+            }
+        }
+
+        function drawCurve(ctx, fn, xMin, xMax, W, H, ML, MR, MT, MB, yMin, yMax, color, lineWidth) {
+            ctx.beginPath();
+            ctx.strokeStyle = color || '#3b82f6';
+            ctx.lineWidth = lineWidth || 2;
+            const samples = 200;
+            for (let i = 0; i <= samples; i++) {
+                const x = xMin + i / samples * (xMax - xMin);
+                const y = fn(x);
+                const px = mapX(x, xMin, xMax, ML, W - MR);
+                const py = mapY(y, yMin, yMax, MT, H - MB);
+                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
+
+        function drawPoint(ctx, x, y, xMin, xMax, W, H, ML, MR, MT, MB, yMin, yMax, color, radius) {
+            const px = mapX(x, xMin, xMax, ML, W - MR);
+            const py = mapY(y, yMin, yMax, MT, H - MB);
+            ctx.beginPath();
+            ctx.arc(px, py, radius || 5, 0, Math.PI * 2);
+            ctx.fillStyle = color || '#4ade80';
+            ctx.fill();
+            return { px, py };
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // INTERACTIVE 1: HILL CLIMBING vs GD RACE
+        // ══════════════════════════════════════════════════════════════════════
+        (function () {
+            const f = x => x * x - 4 * x + 6;
+            const df = x => 2 * x - 4;
+
+            const XMIN = -1, XMAX = 5.5, YMIN = 1, YMAX = 12;
+            const ML = 30, MR = 15, MT = 15, MB = 25;
+            const START_X = -0.5;
+            const HC_LR = 0.3;  // step size for hill climbing random jumps
+            const GD_LR = 0.2;
+
+            let hcC, gdC;
+            let hcCtx, hcW, hcH;
+            let gdCtx, gdW, gdH;
+
+            let hcX = START_X, gdX = START_X;
+            let hcSteps = 0, gdSteps = 0;
+            let hcPath = [START_X], gdPath = [START_X];
+            let hcDone = false, gdDone = false;
+            let raceInterval = null;
+
+            function initCanvases() {
+                hcC = document.getElementById('hcCanvas');
+                gdC = document.getElementById('gdRaceCanvas');
+                const s1 = setupCanvas(hcC); hcCtx = s1.ctx; hcW = s1.W; hcH = s1.H;
+                const s2 = setupCanvas(gdC); gdCtx = s2.ctx; gdW = s2.W; gdH = s2.H;
+            }
+
+            function baseRender(ctx, W, H, path, color) {
+                ctx.clearRect(0, 0, W, H);
+                drawGrid(ctx, W, H, ML, MR, MT, MB);
+                drawCurve(ctx, f, XMIN, XMAX, W, H, ML, MR, MT, MB, YMIN, YMAX, '#3b82f6', 2.5);
+
+                // Draw path
+                if (path.length > 1) {
+                    for (let i = 1; i < path.length; i++) {
+                        const x0 = path[i - 1], x1 = path[i];
+                        const px0 = mapX(x0, XMIN, XMAX, ML, W - MR);
+                        const py0 = mapY(f(x0), YMIN, YMAX, MT, H - MB);
+                        const px1 = mapX(x1, XMIN, XMAX, ML, W - MR);
+                        const py1 = mapY(f(x1), YMIN, YMAX, MT, H - MB);
+                        ctx.beginPath();
+                        ctx.moveTo(px0, py0); ctx.lineTo(px1, py1);
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([3, 3]);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                }
+
+                // Current point
+                const cx = path[path.length - 1];
+                drawPoint(ctx, cx, f(cx), XMIN, XMAX, W, H, ML, MR, MT, MB, YMIN, YMAX, color, 6);
+
+                // Start point
+                drawPoint(ctx, START_X, f(START_X), XMIN, XMAX, W, H, ML, MR, MT, MB, YMIN, YMAX, '#4ade80', 5);
+            }
+
+            function renderHC() {
+                baseRender(hcCtx, hcW, hcH, hcPath, '#f59e0b');
+                document.getElementById('hcSteps').textContent = hcSteps;
+                document.getElementById('hcX').textContent = hcX.toFixed(3);
+            }
+
+            function renderGD() {
+                baseRender(gdCtx, gdW, gdH, gdPath, '#ef4444');
+                document.getElementById('gdSteps').textContent = gdSteps;
+                document.getElementById('gdX').textContent = gdX.toFixed(3);
+            }
+
+            function stepHC() {
+                if (hcDone) return;
+                const candidate = hcX + (Math.random() * 2 - 1) * HC_LR;
+                if (f(candidate) < f(hcX)) {
+                    hcX = candidate;
+                }
+                hcSteps++;
+                hcPath.push(hcX);
+                if (Math.abs(f(hcX) - 2) < 0.05 || hcSteps >= 150) hcDone = true;
+            }
+
+            function stepGD() {
+                if (gdDone) return;
+                gdX = gdX - GD_LR * df(gdX);
+                gdSteps++;
+                gdPath.push(gdX);
+                if (Math.abs(gdX - 2) < 0.01 || gdSteps >= 150) gdDone = true;
+            }
+
+            function reset() {
+                clearInterval(raceInterval); raceInterval = null;
+                hcX = START_X; gdX = START_X;
+                hcSteps = 0; gdSteps = 0;
+                hcPath = [START_X]; gdPath = [START_X];
+                hcDone = false; gdDone = false;
+                document.getElementById('raceWinner').textContent = '';
+                document.getElementById('raceBtn').textContent = '▶ Start Race';
+                renderHC(); renderGD();
+            }
+
+            function startRace() {
+                if (raceInterval) { clearInterval(raceInterval); raceInterval = null; document.getElementById('raceBtn').textContent = '▶ Start Race'; return; }
+                document.getElementById('raceBtn').textContent = '⏸ Pause';
+                raceInterval = setInterval(() => {
+                    for (let i = 0; i < 3; i++) { stepHC(); stepGD(); }
+                    renderHC(); renderGD();
+                    if (hcDone && gdDone) {
+                        clearInterval(raceInterval); raceInterval = null;
+                        document.getElementById('raceBtn').textContent = '▶ Start Race';
+                        const winner = gdSteps < hcSteps ? `GD wins! (${gdSteps} steps vs ${hcSteps})` : `HC steps: ${hcSteps}, GD steps: ${gdSteps}`;
+                        document.getElementById('raceWinner').textContent = winner;
+                    }
+                    if (gdDone && !hcDone) {
+                        document.getElementById('raceWinner').textContent = `GD converged in ${gdSteps} steps!`;
+                    }
+                }, 80);
+            }
+
+            document.getElementById('raceBtn').addEventListener('click', startRace);
+            document.getElementById('raceResetBtn').addEventListener('click', reset);
+
+            window.addEventListener('load', () => { initCanvases(); reset(); });
+        })();
+
+        // ══════════════════════════════════════════════════════════════════════
+        // INTERACTIVE 2: GD STEP-BY-STEP VISUALIZER
+        // ══════════════════════════════════════════════════════════════════════
+        (function () {
+            const f = x => x * x - 4 * x + 6;
+            const df = x => 2 * x - 4;
+
+            const XMIN = -1, XMAX = 5.5, YMIN = 1, YMAX = 12;
+            const ML = 40, MR = 20, MT = 20, MB = 30;
+            const LR = 0.18;
+            const START_X = 0.0;
+
+            let canvas, ctx, W, H;
+            let history = [];   // [{x, fx, grad}]
+            let currentStep = 0;
+            let autoInterval = null;
+
+            function initCanvas() {
+                canvas = document.getElementById('gdStepCanvas');
+                const s = setupCanvas(canvas);
+                ctx = s.ctx; W = s.W; H = s.H;
+            }
+
+            function buildHistory() {
+                history = [];
+                let x = START_X;
+                for (let i = 0; i <= 40; i++) {
+                    history.push({ x, fx: f(x), grad: df(x) });
+                    x = x - LR * df(x);
+                }
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, W, H);
+                drawGrid(ctx, W, H, ML, MR, MT, MB);
+
+                // Draw curve
+                drawCurve(ctx, f, XMIN, XMAX, W, H, ML, MR, MT, MB, YMIN, YMAX, '#3b82f6', 2.5);
+
+                // Draw path so far
+                for (let i = 1; i <= currentStep && i < history.length; i++) {
+                    const x0 = history[i - 1].x, x1 = history[i].x;
+                    ctx.beginPath();
+                    ctx.moveTo(mapX(x0, XMIN, XMAX, ML, W - MR), mapY(f(x0), YMIN, YMAX, MT, H - MB));
+                    ctx.lineTo(mapX(x1, XMIN, XMAX, ML, W - MR), mapY(f(x1), YMIN, YMAX, MT, H - MB));
+                    ctx.strokeStyle = 'rgba(59,130,246,0.5)';
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([4, 4]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                // Past points (faded)
+                for (let i = 0; i < currentStep; i++) {
+                    drawPoint(ctx, history[i].x, history[i].fx, XMIN, XMAX, W, H, ML, MR, MT, MB, YMIN, YMAX, 'rgba(59,130,246,0.4)', 4);
+                }
+
+                const cur = history[currentStep];
+
+                // Draw gradient tangent line (red)
+                const tangentLen = 1.5;
+                const slope = cur.grad; // dy/dx in math space → need to adjust for canvas aspect
+                // We draw tangent in math space ±tangentLen
+                const tx1 = cur.x - tangentLen, ty1 = cur.fx - slope * tangentLen;
+                const tx2 = cur.x + tangentLen, ty2 = cur.fx + slope * tangentLen;
+                ctx.beginPath();
+                ctx.moveTo(mapX(tx1, XMIN, XMAX, ML, W - MR), mapY(ty1, YMIN, YMAX, MT, H - MB));
+                ctx.lineTo(mapX(tx2, XMIN, XMAX, ML, W - MR), mapY(ty2, YMIN, YMAX, MT, H - MB));
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6, 4]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Draw step arrow to next position (if not last)
+                if (currentStep < history.length - 1) {
+                    const next = history[currentStep + 1];
+                    const px0 = mapX(cur.x, XMIN, XMAX, ML, W - MR);
+                    const py0 = mapY(cur.fx, YMIN, YMAX, MT, H - MB);
+                    const px1 = mapX(next.x, XMIN, XMAX, ML, W - MR);
+                    const py1 = mapY(cur.fx, YMIN, YMAX, MT, H - MB); // step horizontally on f(cur.x)
+
+                    ctx.beginPath();
+                    ctx.moveTo(px0, py0); ctx.lineTo(px1, py0);
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+
+                    // Arrowhead
+                    const dir = px1 > px0 ? 1 : -1;
+                    ctx.beginPath();
+                    ctx.moveTo(px1, py0);
+                    ctx.lineTo(px1 - dir * 10, py0 - 5);
+                    ctx.lineTo(px1 - dir * 10, py0 + 5);
+                    ctx.closePath();
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fill();
+                }
+
+                // Current point (bright)
+                drawPoint(ctx, cur.x, cur.fx, XMIN, XMAX, W, H, ML, MR, MT, MB, YMIN, YMAX, '#4ade80', 7);
+
+                // Labels
+                ctx.font = '12px JetBrains Mono';
+                ctx.fillStyle = '#a1a1aa';
+                ctx.fillText('x', mapX(XMAX - 0.3, XMIN, XMAX, ML, W - MR), H - MB + 18);
+                ctx.fillText('f(x)', ML - 35, MT + 10);
+
+                // Epoch label on canvas
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 13px JetBrains Mono';
+                ctx.fillText(`Epoch ${currentStep}`, ML + 5, MT + 18);
+
+                // Update info panel
+                document.getElementById('stepEpoch').textContent = currentStep;
+                document.getElementById('stepX').textContent = cur.x.toFixed(4);
+                document.getElementById('stepFx').textContent = cur.fx.toFixed(4);
+                const gradEl = document.getElementById('stepGrad');
+                gradEl.textContent = cur.grad.toFixed(4);
+                gradEl.style.color = cur.grad > 0 ? '#ef4444' : cur.grad < 0 ? '#3b82f6' : '#ffffff';
+            }
+
+            function step(dir) {
+                currentStep = Math.max(0, Math.min(history.length - 1, currentStep + dir));
+                render();
+            }
+
+            function startAuto() {
+                if (autoInterval) {
+                    clearInterval(autoInterval); autoInterval = null;
+                    document.getElementById('stepAuto').textContent = '▶ Auto';
+                    return;
+                }
+                document.getElementById('stepAuto').textContent = '⏸ Pause';
+                autoInterval = setInterval(() => {
+                    if (currentStep >= history.length - 1) {
+                        clearInterval(autoInterval); autoInterval = null;
+                        document.getElementById('stepAuto').textContent = '▶ Auto';
+                        return;
+                    }
+                    step(1);
+                }, 350);
+            }
+
+            function reset() {
+                clearInterval(autoInterval); autoInterval = null;
+                document.getElementById('stepAuto').textContent = '▶ Auto';
+                currentStep = 0;
+                render();
+            }
+
+            document.getElementById('stepPrev').addEventListener('click', () => step(-1));
+            document.getElementById('stepNext').addEventListener('click', () => step(1));
+            document.getElementById('stepAuto').addEventListener('click', startAuto);
+            document.getElementById('stepReset').addEventListener('click', reset);
+
+            window.addEventListener('load', () => { initCanvas(); buildHistory(); render(); });
+        })();
+
+        // ══════════════════════════════════════════════════════════════════════
+        // LEARNING RATE MINI-CHARTS
+        // ══════════════════════════════════════════════════════════════════════
+        (function () {
+            const f = x => x * x;   // simplified: f(x) = x^2 for LR demo
+            const df = x => 2 * x;
+
+            function runGD(lr, steps) {
+                let x = 4.0; // start far right
+                const path = [x];
+                for (let i = 0; i < steps; i++) {
+                    x = x - lr * df(x);
+                    path.push(x);
+                    if (Math.abs(x) > 50) { path.push(50); break; }
+                }
+                return path;
+            }
+
+            function drawLRChart(canvasId, lr, steps, color) {
+                const canvas = document.getElementById(canvasId);
+                const { ctx, W, H } = setupCanvas(canvas);
+                const path = runGD(lr, steps);
+
+                // Draw parabola background
+                const XMIN = -5, XMAX = 5, YMIN = 0, YMAX = 18;
+                const ML = 10, MR = 10, MT = 10, MB = 10;
+
+                ctx.clearRect(0, 0, W, H);
+                drawCurve(ctx, f, XMIN, XMAX, W, H, ML, MR, MT, MB, YMIN, YMAX, '#333', 1.5);
+
+                // Draw path dots
+                path.forEach((x, i) => {
+                    const y = Math.min(f(x), YMAX);
+                    drawPoint(ctx, x, y, XMIN, XMAX, W, H, ML, MR, MT, MB, YMIN, YMAX, color, 3);
+                });
+
+                // Connect path
+                ctx.beginPath();
+                path.forEach((x, i) => {
+                    const y = Math.min(f(x), YMAX);
+                    const px = mapX(x, XMIN, XMAX, ML, W - MR);
+                    const py = mapY(y, YMIN, YMAX, MT, H - MB);
+                    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                });
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+
+            window.addEventListener('load', () => {
+                drawLRChart('lrSmallCanvas', 0.01, 15, '#f59e0b');
+                drawLRChart('lrGoodCanvas', 0.20, 15, '#4ade80');
+                drawLRChart('lrBigCanvas', 1.05, 10, '#ef4444');
+            });
+        })();
+
+        // ══════════════════════════════════════════════════════════════════════
+        // INTERACTIVE 3: LANDSCAPE EXPLORER (Convex vs Non-Convex)
+        // ══════════════════════════════════════════════════════════════════════
+        (function () {
+            // Convex
+            const fc = x => x * x - 4 * x + 6;
+            const dfc = x => 2 * x - 4;
+            const CX = { min: -1, max: 5.5 };
+            const CY = { min: 1, max: 12 };
+
+            // Non-convex
+            const fn = x => Math.pow(x, 4) - 2 * x * x + x;
+            const dfn = x => 4 * Math.pow(x, 3) - 4 * x + 1;
+            const NX = { min: -1.8, max: 1.8 };
+            const NY = { min: -2.5, max: 7 };
+
+            const ML = 30, MR = 15, MT = 15, MB = 20;
+            const LR = 0.04;
+            const MAX_ITER = 200;
+
+            function runGDPath(fn, dfn, startX, lr, maxIter) {
+                const path = [startX];
+                let x = startX;
+                for (let i = 0; i < maxIter; i++) {
+                    x = x - lr * dfn(x);
+                    path.push(x);
+                    if (Math.abs(dfn(x)) < 1e-5) break;
+                }
+                return path;
+            }
+
+            function renderLandscape(canvasId, fn, domain, range, path, startX) {
+                const canvas = document.getElementById(canvasId);
+                const dpr = window.devicePixelRatio || 1;
+                const { ctx, W, H } = { ctx: canvas.getContext('2d'), W: canvas.getBoundingClientRect().width, H: canvas.getBoundingClientRect().height };
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawGrid(ctx, W, H, ML, MR, MT, MB);
+                drawCurve(ctx, fn, domain.min, domain.max, W, H, ML, MR, MT, MB, range.min, range.max, canvasId.includes('non') ? '#f59e0b' : '#4ade80', 2.5);
+
+                if (!path || path.length < 2) return;
+
+                // Draw path (animated feel with opacity gradient)
+                for (let i = 1; i < path.length; i++) {
+                    const alpha = 0.2 + 0.8 * (i / path.length);
+                    const px0 = mapX(path[i - 1], domain.min, domain.max, ML, W - MR);
+                    const py0 = mapY(fn(path[i - 1]), range.min, range.max, MT, H - MB);
+                    const px1 = mapX(path[i], domain.min, domain.max, ML, W - MR);
+                    const py1 = mapY(fn(path[i]), range.min, range.max, MT, H - MB);
+                    ctx.beginPath();
+                    ctx.moveTo(px0, py0); ctx.lineTo(px1, py1);
+                    ctx.strokeStyle = `rgba(59,130,246,${alpha})`;
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                }
+
+                // Start point
+                drawPoint(ctx, startX, fn(startX), domain.min, domain.max, W, H, ML, MR, MT, MB, range.min, range.max, '#4ade80', 6);
+
+                // End point
+                const endX = path[path.length - 1];
+                drawPoint(ctx, endX, fn(endX), domain.min, domain.max, W, H, ML, MR, MT, MB, range.min, range.max, '#8b5cf6', 7);
+            }
+
+            function initCanvas(canvasId) {
+                const canvas = document.getElementById(canvasId);
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                canvas.getContext('2d').scale(dpr, dpr);
+            }
+
+            function drawBaseOnly(canvasId, fn, dfn, domain, range) {
+                const canvas = document.getElementById(canvasId);
+                const W = canvas.getBoundingClientRect().width;
+                const H = canvas.getBoundingClientRect().height;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawGrid(ctx, W, H, ML, MR, MT, MB);
+                drawCurve(ctx, fn, domain.min, domain.max, W, H, ML, MR, MT, MB, range.min, range.max, canvasId.includes('non') ? '#f59e0b' : '#4ade80', 2.5);
+            }
+
+            function handleClick(e, canvasId, fn, dfn, domain, range, resultId) {
+                const canvas = document.getElementById(canvasId);
+                const rect = canvas.getBoundingClientRect();
+                const W = rect.width, H = rect.height;
+                const clickX = e.clientX - rect.left;
+
+                // Convert pixel X to math X
+                const mathX = domain.min + (clickX - ML) / (W - ML - MR) * (domain.max - domain.min);
+                if (mathX < domain.min || mathX > domain.max) return;
+
+                // Run GD
+                const path = runGDPath(fn, dfn, mathX, LR, MAX_ITER);
+                const finalX = path[path.length - 1];
+                const finalY = fn(finalX);
+
+                // Animate frame by frame
+                let frame = 0;
+                const frameInterval = setInterval(() => {
+                    const partialPath = path.slice(0, frame + 2);
+                    renderLandscape(canvasId, fn, domain, range, partialPath, mathX);
+                    frame += 3;
+                    if (frame >= path.length) {
+                        clearInterval(frameInterval);
+                        renderLandscape(canvasId, fn, domain, range, path, mathX);
+                        const el = document.getElementById(resultId);
+                        el.textContent = `Converged to x = ${finalX.toFixed(3)}, f(x) = ${finalY.toFixed(3)}`;
+                    }
+                }, 30);
+            }
+
+            window.addEventListener('load', () => {
+                initCanvas('convexCanvas');
+                initCanvas('nonConvexCanvas');
+                drawBaseOnly('convexCanvas', fc, dfc, CX, CY);
+                drawBaseOnly('nonConvexCanvas', fn, dfn, NX, NY);
+
+                document.getElementById('convexCanvas').addEventListener('click', e => {
+                    handleClick(e, 'convexCanvas', fc, dfc, CX, CY, 'convexResult');
+                });
+                document.getElementById('nonConvexCanvas').addEventListener('click', e => {
+                    handleClick(e, 'nonConvexCanvas', fn, dfn, NX, NY, 'nonConvexResult');
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>
