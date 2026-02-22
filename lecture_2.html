@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 2 Lecture: Game Theory & Decision Making | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul, .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Note / callout boxes */
+        .note-box {
+            background: rgba(59,130,246,0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139,92,246,0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245,158,11,0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        /* Math display blocks */
+        .math-block {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Comparison layout */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24,24,27,0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        /* Programming comparison boxes */
+        .prog-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .prog-card {
+            background: rgba(24,24,27,0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .prog-card .prog-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .prog-card .prog-flow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+        }
+
+        /* Simulation wrapper */
+        .sim-wrapper {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .sim-wrapper h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .sim-controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            align-items: center;
+        }
+
+        .ctrl-btn {
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.08);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: background 0.2s;
+        }
+
+        .ctrl-btn:hover { background: rgba(255,255,255,0.16); }
+        .ctrl-btn.primary { background: var(--primary); border-color: var(--primary); }
+        .ctrl-btn.primary:hover { background: #2563eb; }
+        .ctrl-btn.accent { background: var(--accent); border-color: var(--accent); }
+        .ctrl-btn.accent:hover { background: #7c3aed; }
+
+        .info-panel {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #a1a1aa;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .info-panel span { color: white; font-weight: 700; }
+
+        canvas {
+            border-radius: 8px;
+            display: block;
+            width: 100%;
+        }
+
+        /* Key equations table */
+        .eq-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .eq-table th {
+            background: rgba(59,130,246,0.15);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+        }
+
+        .eq-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #d4d4d8;
+        }
+
+        .eq-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Summary grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .summary-item {
+            background: rgba(24,24,27,0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .summary-item .num {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .summary-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0.3rem 0 0 0;
+        }
+
+        /* Timeline / milestone table */
+        .milestone-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .milestone-table th {
+            background: rgba(139,92,246,0.15);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .milestone-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .milestone-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Agent type table */
+        .agent-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .agent-table th {
+            background: rgba(59,130,246,0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .agent-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .agent-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+        @media (max-width: 700px) {
+            .compare-grid, .prog-compare { grid-template-columns: 1fr; }
+            .article-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress" style="position:fixed;top:0;left:0;height:4px;background:var(--primary);z-index:9999;width:0%;transition:width 0.1s;"></div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Lectures</a></li>
+            <li><a href="tutorial_2.html">Tutorial 2</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+
+        <!-- ── HEADER ─────────────────────────────────────────────────────── -->
+        <header class="article-header">
+            <span class="badge">Week 02 Lecture</span>
+            <h1>Game Theory &<br>Decision Making</h1>
+            <p class="subtitle">When the landscape fights back — adversarial search, Minimax, and the birth of intelligent agents.</p>
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true" width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color:var(--text-muted);font-size:0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── SECTION 1: FROM OPTIMIZATION TO ADVERSARIAL ──────────────── -->
+        <section class="content-section text-content">
+            <h2>1. From Optimization to Adversarial Thinking</h2>
+
+            <p>Last week, we minimized \(f(x) = x^2 - 4x + 6\). The function was static — it didn't change its shape based on our moves. This is the world of <strong>single-agent optimization</strong>.</p>
+
+            <p>But the real world is full of <strong>adversarial environments</strong>: Chess opponents block your strategy. Cyber attackers adapt to your defenses. In GANs (Week 13), one neural network actively tries to fool another.</p>
+
+            <div class="prog-compare">
+                <div class="prog-card">
+                    <div class="prog-label">Week 1 — Single-Agent</div>
+                    <div class="prog-flow">
+                        \(\arg\min_\theta \mathcal{L}(\theta)\)<br>
+                        <span style="color:#a1a1aa">↓</span><br>
+                        <strong style="color:#4ade80">Minimize loss, alone.</strong>
+                    </div>
+                    <p style="font-size:0.85rem;color:#a1a1aa;margin-top:1rem;">The landscape is fixed. We search for its lowest point.</p>
+                </div>
+                <div class="prog-card">
+                    <div class="prog-label">Week 2 — Adversarial</div>
+                    <div class="prog-flow">
+                        \(\arg\max_{me} \min_{opponent}\)<br>
+                        <span style="color:#a1a1aa">↓</span><br>
+                        <strong style="color:#f59e0b">Maximize my outcome,</strong><br>
+                        <strong style="color:#ef4444">assuming opponent minimizes it.</strong>
+                    </div>
+                    <p style="font-size:0.85rem;color:#a1a1aa;margin-top:1rem;">The landscape changes with every opponent move.</p>
+                </div>
+            </div>
+
+            <blockquote>"Intelligence isn't just about optimizing alone — it's about optimizing when someone is actively trying to beat you."</blockquote>
+        </section>
+
+        <!-- ── SECTION 2: FORMALIZING GAMES ────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>2. Formalizing Games</h2>
+
+            <p>A formal game (in the AI sense) is defined by:</p>
+            <ul>
+                <li><strong>Players:</strong> Typically two — <span style="color:#3b82f6;font-weight:700;">MAX</span> (us) and <span style="color:#ef4444;font-weight:700;">MIN</span> (opponent).</li>
+                <li><strong>States:</strong> All possible configurations (e.g., all board positions).</li>
+                <li><strong>Actions:</strong> Legal moves from any state.</li>
+                <li><strong>Transition Function:</strong> \(S' = \text{Result}(S, a)\) — the state after action \(a\).</li>
+                <li><strong>Terminal Test:</strong> \(\text{Terminal}(S) \in \{\text{True}, \text{False}\}\)</li>
+                <li><strong>Utility Function:</strong> \(U(S)\) — numeric score for terminal states. Win → \(+1\), Loss → \(-1\), Draw → \(0\).</li>
+            </ul>
+
+            <h3>The Game Tree</h3>
+            <p>A <strong>Game Tree</strong> is a tree where the root is the current state, each edge is a legal move, levels alternate between MAX and MIN, and leaves are terminal states with known utility values.</p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="font-family:'JetBrains Mono',monospace;color:var(--primary);">Tic-Tac-Toe</h4>
+                    <p style="color:#a1a1aa;font-size:0.9rem;">~255,168 possible games. <strong>Fully solvable</strong> — we can search the entire tree.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="font-family:'JetBrains Mono',monospace;color:var(--primary);">Chess</h4>
+                    <p style="color:#a1a1aa;font-size:0.9rem;">\(\approx 10^{120}\) possible games. More than atoms in the observable universe. <strong>Not solvable</strong> by brute force.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="font-family:'JetBrains Mono',monospace;color:var(--accent);">Go</h4>
+                    <p style="color:#a1a1aa;font-size:0.9rem;">\(\approx 10^{360}\) possible games. Required Monte Carlo Tree Search + Deep RL (AlphaGo, 2016).</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="font-family:'JetBrains Mono',monospace;color:var(--accent);">Dota 2</h4>
+                    <p style="color:#a1a1aa;font-size:0.9rem;">Continuous actions, partial info, 5v5 teamwork. OpenAI Five (2019) used pure Reinforcement Learning.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── SECTION 3: MINIMAX ──────────────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>3. The Minimax Algorithm</h2>
+
+            <p>Minimax is the foundational algorithm for adversarial search. The logic is beautifully simple:</p>
+
+            <blockquote>"MAX assumes MIN will always play optimally (worst case for MAX). MAX then chooses the move that maximizes the outcome under this worst-case assumption."</blockquote>
+
+            <h3>The Recursive Definition</h3>
+            <div class="math-block">
+                \[\text{minimax}(S) = \begin{cases} U(S) & \text{if } S \text{ is terminal} \\ \max_{a} \text{minimax}(\text{Result}(S, a)) & \text{if MAX's turn} \\ \min_{a} \text{minimax}(\text{Result}(S, a)) & \text{if MIN's turn} \end{cases}\]
+            </div>
+
+            <!-- INTERACTIVE 1: Minimax Tree Visualizer -->
+            <div class="sim-wrapper">
+                <h3>🌳 Interactive Minimax Tree</h3>
+                <p style="color:#a1a1aa;font-size:0.9rem;">Click <strong>Step</strong> to watch Minimax evaluate the tree bottom-up. Leaf values are given; internal nodes are computed by MAX (picks highest) and MIN (picks lowest).</p>
+
+                <canvas id="minimaxTreeCanvas" height="380" style="background:#0a0a0a;border:1px solid #222;margin-bottom:0.75rem;"></canvas>
+
+                <div class="sim-controls">
+                    <button class="ctrl-btn primary" id="mmStepBtn">▶ Step</button>
+                    <button class="ctrl-btn" id="mmAutoBtn">▶ Auto</button>
+                    <button class="ctrl-btn" id="mmResetBtn">↺ Reset</button>
+                    <span id="mmStatus" style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:#4ade80;"></span>
+                </div>
+
+                <div class="info-panel">
+                    Phase: <span id="mmPhase">Waiting</span> &nbsp;
+                    Current Node: <span id="mmNode">—</span> &nbsp;
+                    Best Move: <span id="mmBestMove">—</span>
+                </div>
+            </div>
+
+            <h3>The Algorithm in Code</h3>
+            <pre><code class="language-python">def minimax(state, is_maximizing):
+    # Base case: game is over
+    if is_terminal(state):
+        return utility(state)
+
+    if is_maximizing:
+        best = -infinity
+        for action in get_actions(state):
+            child = result(state, action)
+            value = minimax(child, False)  # Opponent's turn
+            best = max(best, value)
+        return best
+    else:
+        best = +infinity
+        for action in get_actions(state):
+            child = result(state, action)
+            value = minimax(child, True)   # Our turn
+            best = min(best, value)
+        return best</code></pre>
+
+            <h3>Complexity Analysis</h3>
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Time Complexity</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">\(O(b^m)\) where \(b\) = branching factor, \(m\) = maximum depth. Exponential — scales terribly.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Space Complexity</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">\(O(b \cdot m)\) — only the current path needs to be in memory (depth-first search).</p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>The Exponential Wall:</strong>
+                <ul style="margin: 0.5rem 0 0 1.2rem;">
+                    <li>Tic-Tac-Toe: \(b \approx 5\), \(m = 9\) → ~2 million nodes ✓</li>
+                    <li>Chess: \(b \approx 35\), \(m \approx 80\) → \(10^{120}\) nodes ✗</li>
+                    <li>Go: \(b \approx 250\), \(m \approx 150\) → \(10^{360}\) nodes ✗</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ── SECTION 4: ALPHA-BETA PRUNING ──────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>4. Alpha-Beta Pruning</h2>
+
+            <p>Alpha-Beta Pruning is one of the most elegant ideas in computer science. It produces the <strong>exact same result</strong> as Minimax but skips evaluating branches that <strong>cannot possibly influence the final decision</strong>.</p>
+
+            <h3>The Key Insight</h3>
+            <p>During search, we maintain two bounds:</p>
+            <ul>
+                <li>\(\alpha\) = the best (highest) value <span style="color:#3b82f6;">MAX</span> can guarantee so far.</li>
+                <li>\(\beta\) = the best (lowest) value <span style="color:#ef4444;">MIN</span> can guarantee so far.</li>
+            </ul>
+
+            <div class="note-box">
+                <strong>Pruning Rule:</strong> If at any point \(\alpha \geq \beta\), stop evaluating the current subtree. The remaining branches are irrelevant — one player already has a better option elsewhere.
+            </div>
+
+            <!-- INTERACTIVE 2: Alpha-Beta Visualizer -->
+            <div class="sim-wrapper">
+                <h3>✂ Alpha-Beta Pruning Visualizer</h3>
+                <p style="color:#a1a1aa;font-size:0.9rem;">Watch the same tree from above, but now with pruning. <span style="color:#ef4444;">Red X</span> marks pruned branches — nodes that are <strong>never evaluated</strong>.</p>
+
+                <canvas id="abTreeCanvas" height="380" style="background:#0a0a0a;border:1px solid #222;margin-bottom:0.75rem;"></canvas>
+
+                <div class="sim-controls">
+                    <button class="ctrl-btn primary" id="abStepBtn">▶ Step</button>
+                    <button class="ctrl-btn" id="abAutoBtn">▶ Auto</button>
+                    <button class="ctrl-btn" id="abResetBtn">↺ Reset</button>
+                    <span id="abStatus" style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:#4ade80;"></span>
+                </div>
+
+                <div class="info-panel">
+                    \(\alpha\) = <span id="abAlpha">-∞</span> &nbsp;
+                    \(\beta\) = <span id="abBeta">+∞</span> &nbsp;
+                    Nodes evaluated: <span id="abEvaluated">0</span> &nbsp;
+                    Pruned: <span id="abPruned" style="color:#ef4444;">0</span>
+                </div>
+            </div>
+
+            <h3>The Pruned Algorithm</h3>
+            <pre><code class="language-python">def alpha_beta(state, alpha, beta, is_maximizing):
+    if is_terminal(state):
+        return utility(state)
+
+    if is_maximizing:
+        value = -infinity
+        for action in get_actions(state):
+            child = result(state, action)
+            value = max(value, alpha_beta(child, alpha, beta, False))
+            alpha = max(alpha, value)
+            if alpha >= beta:
+                break  # β cutoff — MIN has a better path
+        return value
+    else:
+        value = +infinity
+        for action in get_actions(state):
+            child = result(state, action)
+            value = min(value, alpha_beta(child, alpha, beta, True))
+            beta = min(beta, value)
+            if alpha >= beta:
+                break  # α cutoff — MAX has a better path
+        return value</code></pre>
+
+            <h3>How Much Does It Save?</h3>
+            <p>With perfect move ordering (best moves first):</p>
+            <div class="math-block">
+                \[\text{Minimax: } O(b^m) \qquad \longrightarrow \qquad \text{Alpha-Beta: } O(b^{m/2})\]
+            </div>
+            <p>This effectively <strong>doubles the searchable depth</strong> for the same computation budget. It's the difference between looking 6 moves ahead and looking 12 moves ahead in Chess.</p>
+        </section>
+
+        <!-- ── SECTION 5: EVALUATION FUNCTIONS ────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>5. Evaluation Functions</h2>
+
+            <p>For complex games like Chess, even Alpha-Beta can't reach terminal states. The solution: <strong>cut off search at a fixed depth</strong> and estimate the value of non-terminal states with an <strong>Evaluation Function</strong> \(\text{Eval}(S)\).</p>
+
+            <h3>What Makes a Good Evaluation Function?</h3>
+            <ol>
+                <li><strong>Fast to compute</strong> — it's called millions of times.</li>
+                <li><strong>Correlated with true utility</strong> — high eval should mean a likely win.</li>
+                <li><strong>Orders states correctly</strong> — \(\text{Eval}(S_1) > \text{Eval}(S_2)\) should mean \(S_1\) is truly better.</li>
+            </ol>
+
+            <h3>Example: Chess Evaluation</h3>
+            <div class="math-block">
+                \[\text{Eval}(S) = w_1 \cdot \text{Material} + w_2 \cdot \text{Mobility} + w_3 \cdot \text{King Safety} + w_4 \cdot \text{Center Control}\]
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Material</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Piece values: Queen=9, Rook=5, Bishop/Knight=3, Pawn=1. Sum yours minus opponent's.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Mobility</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Count of legal moves available. More options = stronger position.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--accent);">King Safety</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Is the king exposed? Castled? Pawn shield intact?</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--accent);">Center Control</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">How many central squares (d4, d5, e4, e5) are controlled?</p>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <strong>The ML Connection:</strong> This evaluation function is a <em>weighted sum</em> — the exact structure as a linear model! Modern chess engines (Stockfish NNUE, AlphaZero) replaced hand-crafted eval with <strong>neural networks</strong> trained on millions of games. Game AI and Machine Learning converge.
+            </div>
+
+            <h3>Depth-Limited Minimax</h3>
+            <pre><code class="language-python">def minimax_depth_limited(state, depth, is_maximizing):
+    if is_terminal(state):
+        return utility(state)
+    if depth == 0:
+        return evaluate(state)  # Heuristic estimate
+
+    if is_maximizing:
+        best = -infinity
+        for action in get_actions(state):
+            child = result(state, action)
+            value = minimax_depth_limited(child, depth - 1, False)
+            best = max(best, value)
+        return best
+    else:
+        best = +infinity
+        for action in get_actions(state):
+            child = result(state, action)
+            value = minimax_depth_limited(child, depth - 1, True)
+            best = min(best, value)
+        return best</code></pre>
+        </section>
+
+        <!-- ── SECTION 6: INTRODUCTION TO AGENTS ─────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>6. Introduction to Agents</h2>
+
+            <p>An <strong>Agent</strong> is an entity that perceives its environment, decides on an action, and acts on the environment.</p>
+
+            <div style="background: rgba(24,24,27,0.8); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; font-family: 'JetBrains Mono', monospace; text-align: center; font-size: 0.95rem; line-height: 2.2;">
+                Environment → <span style="color:var(--primary);">[Sensors]</span> → <strong>Agent Logic</strong> → <span style="color:var(--accent);">[Actuators]</span> → Environment<br>
+                <span style="color:#a1a1aa;font-size:0.8rem;">(Minimax, ML model, Rule-based, etc.)</span>
+            </div>
+
+            <h3>Types of Agents</h3>
+            <table class="agent-table">
+                <thead>
+                    <tr><th>Agent Type</th><th>How It Decides</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Reflex</strong></td><td><code>if condition → action</code></td><td>Thermostat</td></tr>
+                    <tr><td><strong>Model-Based</strong></td><td>Maintains internal state</td><td>Self-driving car</td></tr>
+                    <tr><td style="color:#4ade80;"><strong>Goal-Based</strong></td><td>Plans toward a goal</td><td style="color:#4ade80;">Minimax game player</td></tr>
+                    <tr><td><strong>Utility-Based</strong></td><td>Maximizes a utility function</td><td>Recommendation system</td></tr>
+                    <tr><td><strong>Learning</strong></td><td>Improves from experience</td><td>AlphaGo, ChatGPT</td></tr>
+                </tbody>
+            </table>
+
+            <p>Our Tic-Tac-Toe bot in the tutorial is a <strong>Goal-Based Agent</strong>: its goal is to win (or not lose), and it uses Minimax to plan actions toward that goal.</p>
+
+            <h3>From Games to the Real World</h3>
+            <table class="agent-table">
+                <thead>
+                    <tr><th>Property</th><th>Games (Today)</th><th>Real-World AI</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Observability</td><td>Full — we see the whole board</td><td>Partial: fog-of-war, sensor noise</td></tr>
+                    <tr><td>Determinism</td><td>No randomness</td><td>Stochastic: dice, latency</td></tr>
+                    <tr><td>Actions</td><td>Discrete, finite moves</td><td>Continuous: steering, dosage</td></tr>
+                    <tr><td>Players</td><td>Two — MAX vs MIN</td><td>Multi-agent systems</td></tr>
+                    <tr><td>Sum</td><td>Zero-sum (one wins, other loses)</td><td>Cooperative or mixed-motive</td></tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>Preview:</strong> Each relaxation requires more sophisticated algorithms — Expectiminimax for randomness, POMDP for partial observability, MCTS for huge spaces. We revisit these in <strong>Week 14: Reinforcement Learning</strong>.
+            </div>
+        </section>
+
+        <!-- ── SECTION 7: HISTORICAL CONTEXT ──────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>7. Historical Context: Games as AI's Testing Ground</h2>
+
+            <p>Games have served as the benchmark for AI progress since the very beginning of the field.</p>
+
+            <table class="milestone-table">
+                <thead>
+                    <tr><th>Year</th><th>Milestone</th><th>Algorithm</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>1950</strong></td><td>Shannon proposes chess programming</td><td>Minimax concept</td></tr>
+                    <tr><td><strong>1997</strong></td><td>Deep Blue defeats Kasparov</td><td>Alpha-Beta + custom hardware</td></tr>
+                    <tr><td><strong>2016</strong></td><td>AlphaGo defeats Lee Sedol</td><td>MCTS + Deep Reinforcement Learning</td></tr>
+                    <tr><td><strong>2017</strong></td><td>AlphaZero masters Chess, Go, Shogi</td><td>Self-play + Neural Network eval</td></tr>
+                    <tr><td><strong>2019</strong></td><td>OpenAI Five defeats Dota 2 world champions</td><td>Deep Reinforcement Learning</td></tr>
+                </tbody>
+            </table>
+
+            <div class="insight-box">
+                <strong>The Pattern:</strong> Every breakthrough combined better <strong>search</strong> with better <strong>evaluation</strong> — precisely the two concepts from today's lecture. Deep Blue used hand-crafted evaluation + hardware-accelerated Alpha-Beta. AlphaZero replaced both with learned neural network evaluation + MCTS.
+            </div>
+        </section>
+
+        <!-- ── SECTION 8: KEY EQUATIONS ───────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>8. Key Equations — Quick Reference</h2>
+
+            <table class="eq-table">
+                <thead>
+                    <tr><th>Concept</th><th>Formula</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Minimax (terminal)</td><td>\(\text{minimax}(S) = U(S)\)</td></tr>
+                    <tr><td>Minimax (MAX turn)</td><td>\(\text{minimax}(S) = \max_a \text{minimax}(\text{Result}(S,a))\)</td></tr>
+                    <tr><td>Minimax (MIN turn)</td><td>\(\text{minimax}(S) = \min_a \text{minimax}(\text{Result}(S,a))\)</td></tr>
+                    <tr><td>Alpha-Beta Prune</td><td>Prune when \(\alpha \geq \beta\)</td></tr>
+                    <tr><td>Time (Minimax)</td><td>\(O(b^m)\)</td></tr>
+                    <tr><td>Time (Alpha-Beta)</td><td>\(O(b^{m/2})\) best case</td></tr>
+                    <tr><td>Evaluation Function</td><td>\(\text{Eval}(S) = \sum_i w_i \cdot \text{feature}_i(S)\)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ── SECTION 9: SUMMARY ─────────────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>9. Lecture Summary</h2>
+
+            <div class="summary-grid">
+                <div class="summary-item"><div class="num">1</div><p>Adversarial environments require reasoning about opponent responses.</p></div>
+                <div class="summary-item"><div class="num">2</div><p>Game Trees grow exponentially. They represent all possible futures.</p></div>
+                <div class="summary-item"><div class="num">3</div><p>Minimax: assume optimal opponent. Maximize the worst case.</p></div>
+                <div class="summary-item"><div class="num">4</div><p>Alpha-Beta Pruning doubles effective depth by skipping irrelevant branches.</p></div>
+                <div class="summary-item"><div class="num">5</div><p>Evaluation Functions estimate state quality — the bridge to ML.</p></div>
+                <div class="summary-item"><div class="num">6</div><p>Agents: Sense → Think → Act. Our bot is a goal-based agent.</p></div>
+            </div>
+        </section>
+
+        <!-- ── COMING NEXT ─────────────────────────────────────────────────── -->
+        <section class="content-section" style="border-top:1px solid var(--border);padding-top:3rem;text-align:center;">
+            <h3 style="color:var(--text-muted);text-transform:uppercase;font-size:0.9rem;letter-spacing:0.1em;">Coming Next</h3>
+            <h2 style="border:none;padding:0;font-size:2.2rem;margin-bottom:0.5rem;">Tutorial 2: Bot Battle</h2>
+            <p style="color:#a1a1aa;max-width:500px;margin:0 auto 2rem auto;">You just learned the theory. Now you will build an unbeatable Tic-Tac-Toe AI — from scratch, in Python, with your own hands.</p>
+            <a href="tutorial_2.html" class="btn btn-primary" style="display:inline-flex;margin:0 auto;">
+                <i data-lucide="arrow-right"></i> Go to Tutorial 2
+            </a>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         JAVASCRIPT
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // ── Reading Progress Bar ──────────────────────────────────────────────
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+
+        // ══════════════════════════════════════════════════════════════════════
+        // SHARED CANVAS UTILITIES
+        // ══════════════════════════════════════════════════════════════════════
+        function setupCanvas(canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return { ctx, W: rect.width, H: rect.height };
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // GAME TREE DATA STRUCTURE
+        // Used by BOTH Minimax and Alpha-Beta visualizers
+        // ══════════════════════════════════════════════════════════════════════
+        //
+        //                 MAX (root)
+        //              /      |      \
+        //           A         B        C
+        //          MIN       MIN      MIN
+        //         / \       / \      / \
+        //        3   5     2   9    1   7    ← leaves (utility values)
+        //
+        // Additionally add a second level for a richer tree:
+        //                      MAX (root, id:0)
+        //                /        |         \
+        //            A (1)      B (2)      C (3)
+        //            MIN        MIN        MIN
+        //           / \        / \        / \
+        //         (4) (5)   (6) (7)   (8) (9)
+        //          3    5    2    9    1    7
+
+        const TREE_NODES = [
+            { id: 0, label: 'MAX', type: 'max', children: [1, 2, 3], value: null, depth: 0 },
+            { id: 1, label: 'A', type: 'min', children: [4, 5], value: null, depth: 1 },
+            { id: 2, label: 'B', type: 'min', children: [6, 7], value: null, depth: 1 },
+            { id: 3, label: 'C', type: 'min', children: [8, 9], value: null, depth: 1 },
+            { id: 4, label: '3', type: 'leaf', children: [], value: 3, depth: 2 },
+            { id: 5, label: '5', type: 'leaf', children: [], value: 5, depth: 2 },
+            { id: 6, label: '2', type: 'leaf', children: [], value: 2, depth: 2 },
+            { id: 7, label: '9', type: 'leaf', children: [], value: 9, depth: 2 },
+            { id: 8, label: '1', type: 'leaf', children: [], value: 1, depth: 2 },
+            { id: 9, label: '7', type: 'leaf', children: [], value: 7, depth: 2 },
+        ];
+
+        // Positions for drawing (computed once)
+        function computePositions(W, H) {
+            const yLevels = [60, 180, 300];
+            const positions = {};
+            // Root
+            positions[0] = { x: W / 2, y: yLevels[0] };
+            // Level 1 — spread evenly
+            const l1Spacing = W / 4;
+            positions[1] = { x: l1Spacing, y: yLevels[1] };
+            positions[2] = { x: 2 * l1Spacing, y: yLevels[1] };
+            positions[3] = { x: 3 * l1Spacing, y: yLevels[1] };
+            // Level 2 — leaves near their parents
+            const leafSpread = l1Spacing * 0.35;
+            positions[4] = { x: positions[1].x - leafSpread, y: yLevels[2] };
+            positions[5] = { x: positions[1].x + leafSpread, y: yLevels[2] };
+            positions[6] = { x: positions[2].x - leafSpread, y: yLevels[2] };
+            positions[7] = { x: positions[2].x + leafSpread, y: yLevels[2] };
+            positions[8] = { x: positions[3].x - leafSpread, y: yLevels[2] };
+            positions[9] = { x: positions[3].x + leafSpread, y: yLevels[2] };
+            return positions;
+        }
+
+        function drawTreeBase(ctx, W, H, positions, nodeStates, highlightId, pruned) {
+            ctx.clearRect(0, 0, W, H);
+
+            // Draw edges
+            for (const node of TREE_NODES) {
+                if (node.children.length === 0) continue;
+                const p = positions[node.id];
+                for (const cid of node.children) {
+                    const cp = positions[cid];
+                    const isPruned = pruned && pruned.has(cid);
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y + 20);
+                    ctx.lineTo(cp.x, cp.y - 20);
+                    ctx.strokeStyle = isPruned ? '#ef4444' : '#333';
+                    ctx.lineWidth = isPruned ? 2 : 1.5;
+                    if (isPruned) {
+                        ctx.setLineDash([5, 5]);
+                    }
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            }
+
+            // Draw nodes
+            for (const node of TREE_NODES) {
+                const p = positions[node.id];
+                const state = nodeStates ? nodeStates[node.id] : null;
+                const isPruned = pruned && pruned.has(node.id);
+                const isHighlighted = node.id === highlightId;
+
+                // Node circle
+                const radius = node.type === 'leaf' ? 22 : 26;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+
+                if (isPruned) {
+                    ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+                    ctx.strokeStyle = '#ef4444';
+                } else if (isHighlighted) {
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.3)';
+                    ctx.strokeStyle = '#3b82f6';
+                } else if (state && state.computed) {
+                    ctx.fillStyle = node.type === 'max' ? 'rgba(59,130,246,0.2)' : node.type === 'min' ? 'rgba(239,68,68,0.2)' : 'rgba(74,222,128,0.2)';
+                    ctx.strokeStyle = node.type === 'max' ? '#3b82f6' : node.type === 'min' ? '#ef4444' : '#4ade80';
+                } else {
+                    ctx.fillStyle = 'rgba(24, 24, 27, 0.8)';
+                    ctx.strokeStyle = '#555';
+                }
+
+                ctx.lineWidth = isHighlighted ? 3 : 1.5;
+                ctx.fill();
+                ctx.stroke();
+
+                // Node value text
+                ctx.font = 'bold 14px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                if (isPruned) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.font = 'bold 18px JetBrains Mono';
+                    ctx.fillText('✕', p.x, p.y);
+                } else if (state && state.computed) {
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText(state.value.toString(), p.x, p.y);
+                } else if (node.type === 'leaf') {
+                    ctx.fillStyle = '#4ade80';
+                    ctx.fillText(node.value.toString(), p.x, p.y);
+                } else {
+                    ctx.fillStyle = '#555';
+                    ctx.fillText('?', p.x, p.y);
+                }
+
+                // Type label above non-leaf nodes
+                if (node.type !== 'leaf') {
+                    ctx.font = '11px JetBrains Mono';
+                    ctx.fillStyle = node.type === 'max' ? '#3b82f6' : '#ef4444';
+                    ctx.fillText(node.type.toUpperCase(), p.x, p.y - radius - 10);
+                }
+
+                // Branch label for level-1 nodes
+                if (node.depth === 1) {
+                    ctx.font = '12px JetBrains Mono';
+                    ctx.fillStyle = '#a1a1aa';
+                    ctx.fillText(node.label, p.x, p.y + radius + 14);
+                }
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // INTERACTIVE 1: MINIMAX STEP-BY-STEP
+        // ══════════════════════════════════════════════════════════════════════
+        (function () {
+            let canvas, ctx, W, H, positions;
+            let nodeStates = {};
+            let step = 0;
+            let autoInterval = null;
+
+            // Minimax evaluation order (DFS post-order):
+            // Visit leaves first, then compute parent values
+            const evalOrder = [
+                { id: 4, action: 'evaluate leaf', desc: 'Evaluate leaf: value = 3' },
+                { id: 5, action: 'evaluate leaf', desc: 'Evaluate leaf: value = 5' },
+                { id: 1, action: 'compute min', desc: 'MIN node A: min(3, 5) = 3' },
+                { id: 6, action: 'evaluate leaf', desc: 'Evaluate leaf: value = 2' },
+                { id: 7, action: 'evaluate leaf', desc: 'Evaluate leaf: value = 9' },
+                { id: 2, action: 'compute min', desc: 'MIN node B: min(2, 9) = 2' },
+                { id: 8, action: 'evaluate leaf', desc: 'Evaluate leaf: value = 1' },
+                { id: 9, action: 'evaluate leaf', desc: 'Evaluate leaf: value = 7' },
+                { id: 3, action: 'compute min', desc: 'MIN node C: min(1, 7) = 1' },
+                { id: 0, action: 'compute max', desc: 'MAX root: max(3, 2, 1) = 3 → Choose A' },
+            ];
+
+            function init() {
+                canvas = document.getElementById('minimaxTreeCanvas');
+                const s = setupCanvas(canvas);
+                ctx = s.ctx; W = s.W; H = s.H;
+                positions = computePositions(W, H);
+                reset();
+            }
+
+            function reset() {
+                if (autoInterval) { clearInterval(autoInterval); autoInterval = null; }
+                document.getElementById('mmAutoBtn').textContent = '▶ Auto';
+                step = 0;
+                nodeStates = {};
+                // Leaves start with their known values
+                for (const node of TREE_NODES) {
+                    if (node.type === 'leaf') {
+                        nodeStates[node.id] = { computed: true, value: node.value };
+                    }
+                }
+                render(-1);
+                document.getElementById('mmPhase').textContent = 'Waiting';
+                document.getElementById('mmNode').textContent = '—';
+                document.getElementById('mmBestMove').textContent = '—';
+                document.getElementById('mmStatus').textContent = '';
+            }
+
+            function render(highlightId) {
+                drawTreeBase(ctx, W, H, positions, nodeStates, highlightId, null);
+            }
+
+            function doStep() {
+                if (step >= evalOrder.length) {
+                    document.getElementById('mmStatus').textContent = 'Done!';
+                    if (autoInterval) { clearInterval(autoInterval); autoInterval = null; document.getElementById('mmAutoBtn').textContent = '▶ Auto'; }
+                    return;
+                }
+
+                const e = evalOrder[step];
+                const node = TREE_NODES[e.id];
+
+                if (e.action === 'evaluate leaf') {
+                    // Leaf is already known, just highlight it
+                    nodeStates[e.id] = { computed: true, value: node.value };
+                } else if (e.action === 'compute min') {
+                    const childValues = node.children.map(cid => nodeStates[cid].value);
+                    nodeStates[e.id] = { computed: true, value: Math.min(...childValues) };
+                } else if (e.action === 'compute max') {
+                    const childValues = node.children.map(cid => nodeStates[cid].value);
+                    const maxVal = Math.max(...childValues);
+                    nodeStates[e.id] = { computed: true, value: maxVal };
+                }
+
+                render(e.id);
+
+                // Update info
+                document.getElementById('mmPhase').textContent = e.action;
+                document.getElementById('mmNode').textContent = e.desc;
+
+                if (step === evalOrder.length - 1) {
+                    document.getElementById('mmBestMove').textContent = 'A (value = 3)';
+                    document.getElementById('mmStatus').textContent = 'Complete!';
+                }
+
+                step++;
+            }
+
+            function toggleAuto() {
+                if (autoInterval) {
+                    clearInterval(autoInterval); autoInterval = null;
+                    document.getElementById('mmAutoBtn').textContent = '▶ Auto';
+                } else {
+                    document.getElementById('mmAutoBtn').textContent = '⏸ Pause';
+                    autoInterval = setInterval(doStep, 800);
+                }
+            }
+
+            document.getElementById('mmStepBtn').addEventListener('click', doStep);
+            document.getElementById('mmAutoBtn').addEventListener('click', toggleAuto);
+            document.getElementById('mmResetBtn').addEventListener('click', reset);
+
+            window.addEventListener('load', init);
+        })();
+
+        // ══════════════════════════════════════════════════════════════════════
+        // INTERACTIVE 2: ALPHA-BETA PRUNING STEP-BY-STEP
+        // ══════════════════════════════════════════════════════════════════════
+        (function () {
+            let canvas, ctx, W, H, positions;
+            let nodeStates = {};
+            let prunedNodes = new Set();
+            let step = 0;
+            let autoInterval = null;
+            let evaluated = 0;
+            let pruneCount = 0;
+
+            // Alpha-Beta evaluation order with α,β tracking:
+            // We process left-to-right. After evaluating A (value=3), α=3.
+            // When we see B's first child = 2, since 2 < α=3, MIN at B would pick ≤2.
+            // MAX already has 3, so prune the rest of B.
+            const abOrder = [
+                { id: 4, action: 'evaluate leaf', desc: 'Evaluate leaf: 3', alpha: '-∞', beta: '+∞' },
+                { id: 5, action: 'evaluate leaf', desc: 'Evaluate leaf: 5', alpha: '-∞', beta: '+∞' },
+                { id: 1, action: 'compute min', desc: 'MIN(A) = min(3,5) = 3', alpha: '-∞', beta: '+∞' },
+                { id: 0, action: 'update alpha', desc: 'MAX updates α = max(-∞, 3) = 3', alpha: '3', beta: '+∞' },
+                { id: 6, action: 'evaluate leaf', desc: 'Evaluate leaf: 2', alpha: '3', beta: '+∞' },
+                { id: 2, action: 'prune', desc: 'MIN(B) ≤ 2. But α=3. Prune! (α ≥ β cutoff)', alpha: '3', beta: '2' },
+                { id: 7, action: 'pruned', desc: 'Node 9 pruned — never evaluated', alpha: '3', beta: '2' },
+                { id: 8, action: 'evaluate leaf', desc: 'Evaluate leaf: 1', alpha: '3', beta: '+∞' },
+                { id: 3, action: 'prune', desc: 'MIN(C) ≤ 1. But α=3. Prune! (α ≥ β cutoff)', alpha: '3', beta: '1' },
+                { id: 9, action: 'pruned', desc: 'Node 7 pruned — never evaluated', alpha: '3', beta: '1' },
+                { id: 0, action: 'result', desc: 'MAX root = 3 → Choose A (same as full Minimax!)', alpha: '3', beta: '+∞' },
+            ];
+
+            function init() {
+                canvas = document.getElementById('abTreeCanvas');
+                const s = setupCanvas(canvas);
+                ctx = s.ctx; W = s.W; H = s.H;
+                positions = computePositions(W, H);
+                reset();
+            }
+
+            function reset() {
+                if (autoInterval) { clearInterval(autoInterval); autoInterval = null; }
+                document.getElementById('abAutoBtn').textContent = '▶ Auto';
+                step = 0;
+                evaluated = 0;
+                pruneCount = 0;
+                nodeStates = {};
+                prunedNodes = new Set();
+                for (const node of TREE_NODES) {
+                    if (node.type === 'leaf') {
+                        nodeStates[node.id] = { computed: true, value: node.value };
+                    }
+                }
+                render(-1);
+                document.getElementById('abAlpha').textContent = '-∞';
+                document.getElementById('abBeta').textContent = '+∞';
+                document.getElementById('abEvaluated').textContent = '0';
+                document.getElementById('abPruned').textContent = '0';
+                document.getElementById('abStatus').textContent = '';
+            }
+
+            function render(highlightId) {
+                drawTreeBase(ctx, W, H, positions, nodeStates, highlightId, prunedNodes);
+            }
+
+            function doStep() {
+                if (step >= abOrder.length) {
+                    document.getElementById('abStatus').textContent = 'Done! Same result, fewer nodes.';
+                    if (autoInterval) { clearInterval(autoInterval); autoInterval = null; document.getElementById('abAutoBtn').textContent = '▶ Auto'; }
+                    return;
+                }
+
+                const e = abOrder[step];
+                const node = TREE_NODES[e.id];
+
+                if (e.action === 'evaluate leaf') {
+                    nodeStates[e.id] = { computed: true, value: node.value };
+                    evaluated++;
+                } else if (e.action === 'compute min') {
+                    const childValues = node.children.map(cid => nodeStates[cid] ? nodeStates[cid].value : Infinity);
+                    nodeStates[e.id] = { computed: true, value: Math.min(...childValues) };
+                    evaluated++;
+                } else if (e.action === 'update alpha') {
+                    // Just an info step
+                } else if (e.action === 'prune') {
+                    // Mark the MIN node with partial value
+                    nodeStates[e.id] = { computed: true, value: e.id === 2 ? 2 : 1 };
+                    evaluated++;
+                } else if (e.action === 'pruned') {
+                    prunedNodes.add(e.id);
+                    pruneCount++;
+                } else if (e.action === 'result') {
+                    nodeStates[0] = { computed: true, value: 3 };
+                    evaluated++;
+                }
+
+                render(e.id);
+
+                document.getElementById('abAlpha').textContent = e.alpha;
+                document.getElementById('abBeta').textContent = e.beta;
+                document.getElementById('abEvaluated').textContent = evaluated;
+                document.getElementById('abPruned').textContent = pruneCount;
+                document.getElementById('abStatus').textContent = e.desc;
+
+                step++;
+            }
+
+            function toggleAuto() {
+                if (autoInterval) {
+                    clearInterval(autoInterval); autoInterval = null;
+                    document.getElementById('abAutoBtn').textContent = '▶ Auto';
+                } else {
+                    document.getElementById('abAutoBtn').textContent = '⏸ Pause';
+                    autoInterval = setInterval(doStep, 1000);
+                }
+            }
+
+            document.getElementById('abStepBtn').addEventListener('click', doStep);
+            document.getElementById('abAutoBtn').addEventListener('click', toggleAuto);
+            document.getElementById('abResetBtn').addEventListener('click', reset);
+
+            window.addEventListener('load', init);
+        })();
+    </script>
+</body>
+
+</html>
