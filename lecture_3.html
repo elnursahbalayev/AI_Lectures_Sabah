@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3 Lecture: Data Engineering for AI | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul, .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Note / callout boxes */
+        .note-box {
+            background: rgba(59,130,246,0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139,92,246,0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245,158,11,0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        /* Math display blocks */
+        .math-block {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Comparison layout */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24,24,27,0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        /* Programming comparison boxes */
+        .prog-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .prog-card {
+            background: rgba(24,24,27,0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .prog-card .prog-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .prog-card .prog-flow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+        }
+
+        /* Key equations table */
+        .eq-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .eq-table th {
+            background: rgba(59,130,246,0.15);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+        }
+
+        .eq-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #d4d4d8;
+        }
+
+        .eq-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Summary grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .summary-item {
+            background: rgba(24,24,27,0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .summary-item .num {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .summary-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0.3rem 0 0 0;
+        }
+
+        /* Data problem table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59,130,246,0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Pipeline flow diagram */
+        .pipeline-flow {
+            background: rgba(24,24,27,0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        /* Bayes terms grid */
+        .bayes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .bayes-card {
+            background: rgba(24,24,27,0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .bayes-card .term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .bayes-card .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .bayes-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 700px) {
+            .compare-grid, .prog-compare, .bayes-grid { grid-template-columns: 1fr; }
+            .article-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress" style="position:fixed;top:0;left:0;height:4px;background:var(--primary);z-index:9999;width:0%;transition:width 0.1s;"></div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Lectures</a></li>
+            <li><a href="tutorial_3.html">Tutorial 3</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+
+        <!-- ── HEADER ─────────────────────────────────────────────────────── -->
+        <header class="article-header">
+            <span class="badge">Week 03 Lecture</span>
+            <h1>Data Engineering<br>for AI</h1>
+            <p class="subtitle">Garbage in, garbage out — probability review, data preprocessing, and the unglamorous backbone of every successful AI system.</p>
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true" width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color:var(--text-muted);font-size:0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── SECTION 1: WHY DATA ENGINEERING MATTERS ──────────────────── -->
+        <section class="content-section text-content">
+            <h2>1. Why Data Engineering Matters</h2>
+
+            <p>In industry, data scientists spend approximately <strong>80% of their time</strong> on data preparation and only <strong>20% on actual modeling</strong>. This isn't a failure of process — it reflects a fundamental truth:</p>
+
+            <blockquote>"A simple model on clean data will almost always outperform a complex model on dirty data."</blockquote>
+
+            <h3>What Can Go Wrong?</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Problem</th><th>Example</th><th>Consequence</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Missing values</strong></td><td>Sensor offline, user skipped a field</td><td>Model crashes or learns noise</td></tr>
+                    <tr><td><strong>Inconsistent formats</strong></td><td>"Male", "male", "M", "1"</td><td>Model treats them as different categories</td></tr>
+                    <tr><td><strong>Outliers</strong></td><td>Salary of $1,000,000 among students</td><td>Skews the mean, distorts learning</td></tr>
+                    <tr><td><strong>Different scales</strong></td><td>Age (0-100) vs. Income (0-1M)</td><td>Gradient Descent oscillates wildly</td></tr>
+                    <tr><td><strong>Categorical data</strong></td><td>"Red", "Blue", "Green"</td><td>Algorithms need numbers, not strings</td></tr>
+                    <tr><td><strong>Duplicates</strong></td><td>Same record entered twice</td><td>Model overweights that example</td></tr>
+                </tbody>
+            </table>
+
+            <h3>The Data Pipeline</h3>
+            <div class="pipeline-flow">
+                <span style="color:#ef4444;">Raw Data</span>
+                → <span style="color:var(--primary);">Clean</span>
+                → <span style="color:var(--primary);">Transform</span>
+                → <span style="color:var(--primary);">Encode</span>
+                → <span style="color:var(--primary);">Scale</span>
+                → <span style="color:#4ade80;">Model-Ready Data</span><br>
+                <span style="color:#a1a1aa;font-size:0.8rem;">Missing values &nbsp;|&nbsp; Feature engineering &nbsp;|&nbsp; One-Hot Encoding &nbsp;|&nbsp; MinMax / StandardScaler</span>
+            </div>
+        </section>
+
+        <!-- ── SECTION 2: PROBABILITY REVIEW — BAYES' THEOREM ──────────── -->
+        <section class="content-section text-content">
+            <h2>2. Probability Review — Bayes' Theorem</h2>
+
+            <p>Before we dive into data preprocessing, we need to refresh a critical mathematical tool that underlies many ML algorithms: <strong>Bayes' Theorem</strong>.</p>
+
+            <h3>Conditional Probability</h3>
+            <div class="math-block">
+                \[P(A|B) = \frac{P(A \cap B)}{P(B)}\]
+            </div>
+            <p>The probability of event \(A\) given that event \(B\) has occurred.</p>
+
+            <h3>Bayes' Theorem</h3>
+            <div class="math-block">
+                \[P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}\]
+            </div>
+
+            <div class="bayes-grid">
+                <div class="bayes-card">
+                    <div class="term">\(P(A|B)\)</div>
+                    <div class="name">Posterior</div>
+                    <div class="desc">Updated belief after seeing data</div>
+                </div>
+                <div class="bayes-card">
+                    <div class="term">\(P(B|A)\)</div>
+                    <div class="name">Likelihood</div>
+                    <div class="desc">How probable is the data under this hypothesis?</div>
+                </div>
+                <div class="bayes-card">
+                    <div class="term">\(P(A)\)</div>
+                    <div class="name">Prior</div>
+                    <div class="desc">Initial belief before seeing data</div>
+                </div>
+                <div class="bayes-card">
+                    <div class="term">\(P(B)\)</div>
+                    <div class="name">Evidence</div>
+                    <div class="desc">Total probability of the observed data</div>
+                </div>
+            </div>
+
+            <h3>Worked Example: Medical Diagnosis</h3>
+            <p>A disease affects <strong>1%</strong> of the population. A test is <strong>95% accurate</strong> (true positive) with a <strong>5% false positive</strong> rate. If a patient tests positive, what is the probability they actually have the disease?</p>
+
+            <div class="note-box">
+                <strong>Given:</strong>
+                <ul style="margin: 0.5rem 0 0 1.2rem;">
+                    <li>\(P(\text{Disease}) = 0.01\) (Prior)</li>
+                    <li>\(P(\text{Positive} | \text{Disease}) = 0.95\) (Sensitivity)</li>
+                    <li>\(P(\text{Positive} | \text{No Disease}) = 0.05\) (False Positive Rate)</li>
+                </ul>
+            </div>
+
+            <p><strong>Step 1</strong> — Calculate \(P(\text{Positive})\) using the Law of Total Probability:</p>
+            <div class="math-block">
+                \[P(\text{Pos}) = P(\text{Pos}|\text{Dis}) \cdot P(\text{Dis}) + P(\text{Pos}|\text{No Dis}) \cdot P(\text{No Dis}) = 0.95 \times 0.01 + 0.05 \times 0.99 = 0.059\]
+            </div>
+
+            <p><strong>Step 2</strong> — Apply Bayes' Theorem:</p>
+            <div class="math-block">
+                \[P(\text{Disease} | \text{Positive}) = \frac{0.95 \times 0.01}{0.059} \approx 0.161\]
+            </div>
+
+            <div class="warning-box">
+                <strong>Result: Only 16.1% chance!</strong> Despite a positive test, there's only a 16.1% chance of actually having the disease. This counterintuitive result is the <strong>Base Rate Fallacy</strong> — when the disease is rare, even a good test produces many false positives.
+            </div>
+
+            <h3>Why Bayes Matters for ML</h3>
+            <ul>
+                <li><strong>Naive Bayes Classifier</strong> (Week 5): Uses Bayes' Theorem directly for classification.</li>
+                <li><strong>Prior knowledge</strong>: Bayesian thinking lets us incorporate domain knowledge into models.</li>
+                <li><strong>Probabilistic interpretation</strong>: Many ML models output probabilities, not just labels.</li>
+            </ul>
+        </section>
+
+        <!-- ── SECTION 3: TYPES OF DATA ────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>3. Types of Data</h2>
+
+            <p>Before preprocessing, we must understand what kind of data we're working with. Different types require different treatments.</p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Numerical — Continuous</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Any value in a range.<br><strong>Example:</strong> Temperature: 36.7°C<br><strong>Operations:</strong> Mean, std, all math</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Numerical — Discrete</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Countable integers.<br><strong>Example:</strong> Number of rooms: 3<br><strong>Operations:</strong> Count, mode</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--accent);">Categorical — Nominal</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">No natural order.<br><strong>Example:</strong> Color: Red, Blue, Green<br><strong>Encoding:</strong> One-Hot Encoding</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--accent);">Categorical — Ordinal</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Has natural order.<br><strong>Example:</strong> Education: HS &lt; BSc &lt; MSc<br><strong>Encoding:</strong> Label Encoding</p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>The Cardinal Rule:</strong> Never treat categorical data as numerical. If you encode "Red=1, Blue=2, Green=3", the model will learn that Green &gt; Blue &gt; Red, which is meaningless.
+            </div>
+        </section>
+
+        <!-- ── SECTION 4: HANDLING MISSING DATA ──────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>4. Handling Missing Data</h2>
+
+            <p>Missing data is inevitable. How you handle it can make or break your model.</p>
+
+            <h3>Types of Missingness</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Type</th><th>Meaning</th><th>Example</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>MCAR</strong></td><td>Missing Completely At Random</td><td>Sensor randomly malfunctions</td></tr>
+                    <tr><td><strong>MAR</strong></td><td>Missing At Random (depends on other data)</td><td>Older patients skip online surveys</td></tr>
+                    <tr><td><strong>MNAR</strong></td><td>Missing Not At Random (depends on missing value)</td><td>High-income people don't report salary</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Strategy 1: Drop Rows</h3>
+            <pre><code class="language-python">df.dropna()  # Drop any row with at least one NaN</code></pre>
+            <p><strong>Pro:</strong> Simple, no introduced bias. <strong>Con:</strong> Lose data — if 20% of rows have missing values, you lose 20% of your dataset.</p>
+
+            <h3>Strategy 2: Drop Columns</h3>
+            <pre><code class="language-python"># Drop columns where more than 50% of values are missing
+threshold = len(df) * 0.5
+df.dropna(axis=1, thresh=threshold)</code></pre>
+
+            <h3>Strategy 3: Imputation</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Method</th><th>Code</th><th>When to Use</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Mean</strong></td><td><code>df['col'].fillna(df['col'].mean())</code></td><td>Normal distribution</td></tr>
+                    <tr><td><strong>Median</strong></td><td><code>df['col'].fillna(df['col'].median())</code></td><td>Skewed data</td></tr>
+                    <tr><td><strong>Mode</strong></td><td><code>df['col'].fillna(df['col'].mode()[0])</code></td><td>Categorical data</td></tr>
+                    <tr><td><strong>Forward Fill</strong></td><td><code>df['col'].fillna(method='ffill')</code></td><td>Time-series data</td></tr>
+                    <tr><td><strong>Constant</strong></td><td><code>df['col'].fillna(0)</code></td><td>Semantic meaning</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Strategy 4: Indicator Variable</h3>
+            <pre><code class="language-python">df['col_was_missing'] = df['col'].isna().astype(int)
+df['col'].fillna(df['col'].median(), inplace=True)</code></pre>
+
+            <div class="insight-box">
+                <strong>Key Insight:</strong> Sometimes missingness itself is a feature! A missing salary field might indicate the user is uncomfortable sharing — that's information your model can use.
+            </div>
+        </section>
+
+        <!-- ── SECTION 5: FEATURE ENCODING ───────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>5. Feature Encoding</h2>
+
+            <p>Machine Learning algorithms speak numbers. Categorical features must be translated.</p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Label Encoding (Ordinal)</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">For data with a natural order, assign integers that preserve the ranking.</p>
+                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python">education = ['HS', 'BSc', 'MSc', 'PhD']
+# HS=0, BSc=1, MSc=2, PhD=3
+# 0 < 1 < 2 < 3 ✓ Correct!</code></pre>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--accent);">One-Hot Encoding (Nominal)</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">For data with <strong>no natural order</strong>, create a binary column for each category.</p>
+                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python">pd.get_dummies(df, columns=['color'])
+# color_Blue | color_Green | color_Red
+#     0      |      0      |     1
+#     1      |      0      |     0</code></pre>
+                </div>
+            </div>
+
+            <h3>The Dummy Variable Trap</h3>
+            <p>If you have \(k\) categories, you only need \(k-1\) binary columns. The last column is redundant (it's determined by the others).</p>
+
+            <pre><code class="language-python"># drop_first=True avoids the dummy variable trap
+pd.get_dummies(df, columns=['color'], drop_first=True)</code></pre>
+
+            <div class="note-box">
+                <strong>Why?</strong> If <code>color_Blue=0</code> and <code>color_Green=0</code>, the model knows it must be Red. The third column adds no information but can cause <strong>multicollinearity</strong> in linear models.
+            </div>
+        </section>
+
+        <!-- ── SECTION 6: FEATURE SCALING ────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>6. Feature Scaling</h2>
+
+            <h3>Why Scaling Matters</h3>
+            <p>Consider two features: <strong>Age</strong> (range: 18-65) and <strong>Salary</strong> (range: 20,000-200,000). Without scaling, Gradient Descent will oscillate wildly along the Salary axis and crawl along the Age axis. <strong>Scaling puts all features on equal footing.</strong></p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Min-Max Normalization</h4>
+                    <div class="math-block" style="margin:1rem 0;">
+                        \[x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}\]
+                    </div>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Scales to <strong>[0, 1]</strong>. Good for Neural Networks, KNN. Sensitive to outliers.</p>
+                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python">from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+df[cols] = scaler.fit_transform(df[cols])</code></pre>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--accent);">Standardization (Z-Score)</h4>
+                    <div class="math-block" style="margin:1rem 0;">
+                        \[x_{\text{std}} = \frac{x - \mu}{\sigma}\]
+                    </div>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Centers at <strong>0</strong>, unit variance. Handles outliers better. Good for SVM, PCA.</p>
+                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python">from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+df[cols] = scaler.fit_transform(df[cols])</code></pre>
+                </div>
+            </div>
+
+            <h3>When to Use Which?</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Scaler</th><th>Use When</th><th>Algorithms</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>MinMaxScaler</strong></td><td>Bounded values needed; no extreme outliers</td><td>Neural Networks, KNN, Image pixels</td></tr>
+                    <tr><td><strong>StandardScaler</strong></td><td>Outliers present; Gaussian assumption</td><td>Linear Regression, SVM, PCA</td></tr>
+                    <tr><td><strong>No scaling</strong></td><td>Tree-based algorithms</td><td>Decision Trees, Random Forest, XGBoost</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ── SECTION 7: THE COMPLETE PIPELINE ──────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>7. The Complete Preprocessing Pipeline</h2>
+
+            <p>Let's put it all together. Here's the standard preprocessing pipeline in scikit-learn:</p>
+
+            <pre><code class="language-python">import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+
+# 1. Load data
+df = pd.read_csv('data.csv')
+
+# 2. Separate features and target
+X = df.drop('target', axis=1)
+y = df['target']
+
+# 3. Identify column types
+numeric_features = X.select_dtypes(include=['int64', 'float64']).columns
+categorical_features = X.select_dtypes(include=['object']).columns
+
+# 4. Define preprocessing for each type
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+# 5. Combine into a ColumnTransformer
+preprocessor = ColumnTransformer(transformers=[
+    ('num', numeric_transformer, numeric_features),
+    ('cat', categorical_transformer, categorical_features)
+])
+
+# 6. Split BEFORE fitting the preprocessor
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# 7. Fit on training data, transform both
+X_train_processed = preprocessor.fit_transform(X_train)
+X_test_processed = preprocessor.transform(X_test)  # No .fit()!</code></pre>
+
+            <div class="warning-box">
+                <strong>Critical Rule — Data Leakage:</strong> Always fit the preprocessor on the <strong>training data only</strong>, then transform both train and test. Fitting on the full dataset causes <strong>data leakage</strong> — the model indirectly sees test data statistics during training, inflating performance metrics.
+            </div>
+        </section>
+
+        <!-- ── SECTION 8: KEY EQUATIONS ───────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>8. Key Equations — Quick Reference</h2>
+
+            <table class="eq-table">
+                <thead>
+                    <tr><th>Concept</th><th>Formula</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Conditional Probability</td><td>\(P(A|B) = \frac{P(A \cap B)}{P(B)}\)</td></tr>
+                    <tr><td>Bayes' Theorem</td><td>\(P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}\)</td></tr>
+                    <tr><td>Law of Total Probability</td><td>\(P(B) = \sum_i P(B|A_i) \cdot P(A_i)\)</td></tr>
+                    <tr><td>Min-Max Normalization</td><td>\(x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}\)</td></tr>
+                    <tr><td>Standardization (Z-Score)</td><td>\(x_{\text{std}} = \frac{x - \mu}{\sigma}\)</td></tr>
+                    <tr><td>Mean Imputation</td><td>\(x_{\text{missing}} \leftarrow \bar{x}\)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ── SECTION 9: SUMMARY ─────────────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>9. Lecture Summary</h2>
+
+            <div class="summary-grid">
+                <div class="summary-item"><div class="num">1</div><p>Data quality determines model quality — the 80/20 rule of ML.</p></div>
+                <div class="summary-item"><div class="num">2</div><p>Bayes' Theorem updates beliefs with evidence — foundation for classifiers.</p></div>
+                <div class="summary-item"><div class="num">3</div><p>Missing data: drop, impute, or flag depending on type and amount.</p></div>
+                <div class="summary-item"><div class="num">4</div><p>Encoding: One-Hot for nominal, Label for ordinal. Never impose false order.</p></div>
+                <div class="summary-item"><div class="num">5</div><p>Feature scaling ensures all features contribute equally to learning.</p></div>
+                <div class="summary-item"><div class="num">6</div><p>Scikit-learn Pipelines automate preprocessing and prevent data leakage.</p></div>
+            </div>
+        </section>
+
+        <!-- ── COMING NEXT ─────────────────────────────────────────────────── -->
+        <section class="content-section" style="border-top:1px solid var(--border);padding-top:3rem;text-align:center;">
+            <h3 style="color:var(--text-muted);text-transform:uppercase;font-size:0.9rem;letter-spacing:0.1em;">Coming Next</h3>
+            <h2 style="border:none;padding:0;font-size:2.2rem;margin-bottom:0.5rem;">Tutorial 3: Data Cleaning Lab</h2>
+            <p style="color:#a1a1aa;max-width:500px;margin:0 auto 2rem auto;">You just learned the theory. Now you will take a messy dataset and transform it into clean, model-ready input using Pandas and scikit-learn.</p>
+            <a href="tutorial_3.html" class="btn btn-primary" style="display:inline-flex;margin:0 auto;">
+                <i data-lucide="arrow-right"></i> Go to Tutorial 3
+            </a>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

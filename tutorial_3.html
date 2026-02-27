@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3 Tutorial: Data Cleaning Lab | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Article specific overrides */
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Tool/strategy comparison */
+        .tool-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .tool-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        /* Data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Step indicator */
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Pipeline flow */
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        /* Assignment card */
+        .assignment-card {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .assignment-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        @media (max-width: 700px) {
+            .tool-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="lecture_3.html">Lecture 3</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 03 Tutorial</span>
+            <h1>Data Cleaning Lab:<br>Turning Chaos into Features</h1>
+            <p class="subtitle">Take a messy dataset and transform it into clean, model-ready input using Pandas and scikit-learn.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1: Introduction -->
+        <section class="content-section text-content">
+            <h2>1. Introduction</h2>
+            <p>Last week, we built an AI that plays Tic-Tac-Toe perfectly. Today, we tackle the less glamorous but equally critical task: <strong>data engineering</strong>. We will clean a messy dataset of server monitoring logs — the kind of data you'll encounter in real industry projects.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="target"></i> Today's Goal</h4>
+                <ul>
+                    <li>Explore a dirty dataset and identify all its problems.</li>
+                    <li>Handle missing values using multiple strategies.</li>
+                    <li>Encode categorical features (One-Hot and Label Encoding).</li>
+                    <li>Scale numerical features for ML algorithms.</li>
+                    <li>Build a reusable scikit-learn preprocessing pipeline.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: Environment Setup -->
+        <section class="content-section text-content">
+            <h2>2. Environment Setup</h2>
+
+            <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
+
+# Verify versions
+print(f"Pandas:  {pd.__version__}")
+print(f"NumPy:   {np.__version__}")
+
+print("\nReady to clean some data!")</code></pre>
+        </section>
+
+        <!-- Section 3: Creating the Dirty Dataset -->
+        <section class="content-section text-content">
+            <h2>3. Creating Our Dirty Dataset</h2>
+            <p>In practice, you'd load a CSV. For this tutorial, we create a realistic dirty dataset programmatically — a server monitoring log with the kinds of problems you'll face in production.</p>
+
+            <pre><code class="language-python">np.random.seed(42)
+n = 200
+
+# Generate base data
+data = {
+    'server_id': [f'SRV-{i:03d}' for i in range(1, n+1)],
+    'cpu_usage': np.random.uniform(10, 95, n),
+    'memory_gb': np.random.uniform(2, 64, n),
+    'disk_io': np.random.uniform(50, 500, n),
+    'network_mbps': np.random.uniform(10, 1000, n),
+    'os_type': np.random.choice(
+        ['Linux', 'Windows', 'linux', 'LINUX', 'windows', 'Win'], n
+    ),
+    'region': np.random.choice(
+        ['US-East', 'US-West', 'EU-Central', 'Asia-Pacific', None], n
+    ),
+    'priority': np.random.choice(['Low', 'Medium', 'High', 'Critical'], n),
+    'uptime_hours': np.random.uniform(0, 8760, n),
+    'failed': np.random.choice([0, 1], n, p=[0.7, 0.3])  # Target
+}
+
+df = pd.DataFrame(data)
+
+# Introduce missing values (~10% in some columns)
+for col in ['cpu_usage', 'memory_gb', 'disk_io']:
+    mask = np.random.random(n) < 0.1
+    df.loc[mask, col] = np.nan
+
+# Introduce outliers
+df.loc[5, 'cpu_usage'] = 350.0    # Impossible: CPU > 100%
+df.loc[42, 'memory_gb'] = -16.0   # Impossible: negative memory
+df.loc[99, 'network_mbps'] = 50000  # Extreme outlier
+
+# Introduce duplicates
+df = pd.concat([df, df.iloc[10:15]], ignore_index=True)
+
+print(f"Dataset shape: {df.shape}")
+print(f"\nFirst 5 rows:")
+df.head()</code></pre>
+
+            <div class="warning-box">
+                <strong>What we just injected:</strong>
+                <ul style="margin: 0.5rem 0 0 1.2rem;">
+                    <li>~10% missing values in cpu_usage, memory_gb, disk_io</li>
+                    <li>Impossible values: CPU &gt; 100%, negative memory</li>
+                    <li>Extreme outlier: 50,000 Mbps network</li>
+                    <li>Duplicate rows (rows 10-14 appear twice)</li>
+                    <li>Inconsistent categories: "Linux", "linux", "LINUX" are the same!</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 4: Exploration -->
+        <section class="content-section text-content">
+            <h2>4. Step 1 — Exploration</h2>
+            <div class="step-indicator">STEP 1 OF 6 &bull; Know Your Data</div>
+
+            <p>Before cleaning, you must <strong>understand</strong> the mess. Never clean blindly.</p>
+
+            <h3>4.1 Basic Info</h3>
+            <pre><code class="language-python">print("=" * 50)
+print("DATASET OVERVIEW")
+print("=" * 50)
+
+print(f"\nShape: {df.shape[0]} rows x {df.shape[1]} columns")
+print(f"\nColumn types:")
+print(df.dtypes)
+print(f"\nBasic statistics:")
+df.describe()</code></pre>
+
+            <h3>4.2 Missing Values Report</h3>
+            <pre><code class="language-python">def missing_report(df):
+    """Generate a missing values report."""
+    missing = df.isnull().sum()
+    percent = (missing / len(df)) * 100
+    report = pd.DataFrame({
+        'Missing Count': missing,
+        'Percent (%)': percent.round(1)
+    })
+    report = report[report['Missing Count'] > 0]
+    return report.sort_values('Percent (%)', ascending=False)
+
+print("\nMissing Values Report:")
+print(missing_report(df))</code></pre>
+
+            <h3>4.3 Identify Problems</h3>
+            <pre><code class="language-python">print("\n--- Problem 1: Inconsistent categories ---")
+print(f"Unique os_type values: {df['os_type'].unique()}")
+# Notice: 'Linux', 'linux', 'LINUX' are the same thing!
+
+print("\n--- Problem 2: Outliers ---")
+print(f"CPU usage range: [{df['cpu_usage'].min():.1f}, {df['cpu_usage'].max():.1f}]")
+print(f"Memory range: [{df['memory_gb'].min():.1f}, {df['memory_gb'].max():.1f}]")
+print(f"Network range: [{df['network_mbps'].min():.1f}, {df['network_mbps'].max():.1f}]")
+
+print("\n--- Problem 3: Duplicates ---")
+print(f"Duplicate rows: {df.duplicated().sum()}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Discussion:</strong> Before moving on, list every problem you found. How many issues did you identify? A typical dirty dataset has 5-10 distinct problems. Finding them all before cleaning is critical — missed issues become hidden bugs in your model.
+            </div>
+        </section>
+
+        <!-- Section 5: Cleaning -->
+        <section class="content-section text-content">
+            <h2>5. Step 2 — Cleaning</h2>
+            <div class="step-indicator">STEP 2 OF 6 &bull; Fix the Problems</div>
+
+            <p>Now we fix the problems one by one, in order of severity.</p>
+
+            <h3>5.1 Remove Duplicates</h3>
+            <pre><code class="language-python">print(f"Before: {len(df)} rows")
+df = df.drop_duplicates()
+print(f"After:  {len(df)} rows")
+print(f"Removed {205 - len(df)} duplicate rows")</code></pre>
+
+            <h3>5.2 Standardize Categorical Values</h3>
+            <pre><code class="language-python"># Standardize os_type: all variations -> consistent format
+os_mapping = {
+    'Linux': 'Linux', 'linux': 'Linux', 'LINUX': 'Linux',
+    'Windows': 'Windows', 'windows': 'Windows', 'Win': 'Windows'
+}
+df['os_type'] = df['os_type'].map(os_mapping)
+
+print(f"OS types after cleaning: {df['os_type'].unique()}")
+# Now we only have: ['Linux', 'Windows']</code></pre>
+
+            <h3>5.3 Handle Outliers</h3>
+            <pre><code class="language-python"># CPU usage must be between 0 and 100
+print(f"\nCPU outliers (>100 or <0): "
+      f"{((df['cpu_usage'] > 100) | (df['cpu_usage'] < 0)).sum()}")
+df.loc[df['cpu_usage'] > 100, 'cpu_usage'] = np.nan
+df.loc[df['cpu_usage'] < 0, 'cpu_usage'] = np.nan
+
+# Memory must be positive
+print(f"Memory outliers (<0): {(df['memory_gb'] < 0).sum()}")
+df.loc[df['memory_gb'] < 0, 'memory_gb'] = np.nan
+
+# Cap network at reasonable max (10 Gbps = 10000 Mbps)
+print(f"Network outliers (>10000): {(df['network_mbps'] > 10000).sum()}")
+df.loc[df['network_mbps'] > 10000, 'network_mbps'] = np.nan
+
+print("\nOutliers replaced with NaN for imputation.")</code></pre>
+
+            <div class="note-box">
+                <strong>Why replace with NaN?</strong> Rather than deleting entire rows with outliers (losing other valid columns), we replace just the impossible value with NaN and let imputation fill it with a reasonable estimate.
+            </div>
+        </section>
+
+        <!-- Section 6: Missing Values -->
+        <section class="content-section text-content">
+            <h2>6. Step 3 — Handle Missing Values</h2>
+            <div class="step-indicator">STEP 3 OF 6 &bull; Imputation</div>
+
+            <pre><code class="language-python"># Check missing values after outlier handling
+print("Missing values after outlier cleanup:")
+print(missing_report(df))</code></pre>
+
+            <h3>6.1 Impute Numerical Columns</h3>
+            <pre><code class="language-python"># Strategy: median for numerical columns (robust to remaining outliers)
+numerical_cols = ['cpu_usage', 'memory_gb', 'disk_io',
+                  'network_mbps', 'uptime_hours']
+
+for col in numerical_cols:
+    if df[col].isnull().any():
+        median_val = df[col].median()
+        count = df[col].isnull().sum()
+        df[col].fillna(median_val, inplace=True)
+        print(f"Filled {count} missing values in '{col}' "
+              f"with median = {median_val:.2f}")</code></pre>
+
+            <h3>6.2 Impute Categorical Columns</h3>
+            <pre><code class="language-python"># Strategy: mode (most frequent) for categorical columns
+categorical_cols = ['region']
+
+for col in categorical_cols:
+    if df[col].isnull().any():
+        mode_val = df[col].mode()[0]
+        count = df[col].isnull().sum()
+        df[col].fillna(mode_val, inplace=True)
+        print(f"Filled {count} missing values in '{col}' "
+              f"with mode = '{mode_val}'")
+
+# Verify: no more missing values
+print(f"\nRemaining missing values: {df.isnull().sum().sum()}")</code></pre>
+
+            <div class="success-box">
+                <strong>Checkpoint:</strong> At this point, your dataset should have <strong>zero missing values</strong>, <strong>zero duplicates</strong>, <strong>consistent categories</strong>, and <strong>no impossible outliers</strong>. Run <code>df.info()</code> and <code>df.describe()</code> to verify.
+            </div>
+        </section>
+
+        <!-- Section 7: Feature Encoding -->
+        <section class="content-section text-content">
+            <h2>7. Step 4 — Feature Encoding</h2>
+            <div class="step-indicator">STEP 4 OF 6 &bull; Categories to Numbers</div>
+
+            <div class="tool-comparison">
+                <div class="tool-card">
+                    <h3 style="color: #3b82f6;"><i data-lucide="grid-3x3" style="color: #3b82f6"></i> One-Hot (Nominal)</h3>
+                    <p style="color: #d4d4d8;">For data with <strong>no natural order</strong>: os_type, region.</p>
+                    <p style="color: #a1a1aa; font-size: 0.85rem;">Creates binary columns. "Linux" → [1, 0], "Windows" → [0, 1]</p>
+                </div>
+                <div class="tool-card">
+                    <h3 style="color: #8b5cf6;"><i data-lucide="arrow-up-narrow-wide" style="color: #8b5cf6"></i> Label (Ordinal)</h3>
+                    <p style="color: #d4d4d8;">For data with <strong>natural order</strong>: priority.</p>
+                    <p style="color: #a1a1aa; font-size: 0.85rem;">Assigns integers: Low=0, Medium=1, High=2, Critical=3</p>
+                </div>
+            </div>
+
+            <h3>7.1 One-Hot Encoding for Nominal Data</h3>
+            <pre><code class="language-python"># os_type and region have NO natural order -> One-Hot Encoding
+print("Before encoding:")
+print(f"  os_type unique: {df['os_type'].unique()}")
+print(f"  region unique: {df['region'].unique()}")
+
+df_encoded = pd.get_dummies(df, columns=['os_type', 'region'], drop_first=True)
+
+print(f"\nAfter encoding — new columns:")
+new_cols = [c for c in df_encoded.columns if 'os_type' in c or 'region' in c]
+print(f"  {new_cols}")
+print(f"\nDataset shape: {df_encoded.shape}")</code></pre>
+
+            <h3>7.2 Label Encoding for Ordinal Data</h3>
+            <pre><code class="language-python"># priority has natural order: Low < Medium < High < Critical
+priority_map = {'Low': 0, 'Medium': 1, 'High': 2, 'Critical': 3}
+df_encoded['priority'] = df_encoded['priority'].map(priority_map)
+
+print(f"Priority encoding: {priority_map}")
+print(f"Priority values: {df_encoded['priority'].unique()}")</code></pre>
+        </section>
+
+        <!-- Section 8: Feature Scaling -->
+        <section class="content-section text-content">
+            <h2>8. Step 5 — Feature Scaling</h2>
+            <div class="step-indicator">STEP 5 OF 6 &bull; Normalize the Numbers</div>
+
+            <pre><code class="language-python">from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+# Identify numerical columns to scale
+scale_cols = ['cpu_usage', 'memory_gb', 'disk_io',
+              'network_mbps', 'uptime_hours']
+
+# Demonstrate both scalers
+print("=== Before Scaling ===")
+print(df_encoded[scale_cols].describe().round(2))
+
+# StandardScaler (Z-score)
+scaler_std = StandardScaler()
+df_standard = df_encoded.copy()
+df_standard[scale_cols] = scaler_std.fit_transform(df_standard[scale_cols])
+
+print("\n=== After StandardScaler ===")
+print(df_standard[scale_cols].describe().round(2))
+# Notice: mean ≈ 0, std ≈ 1
+
+# MinMaxScaler
+scaler_mm = MinMaxScaler()
+df_minmax = df_encoded.copy()
+df_minmax[scale_cols] = scaler_mm.fit_transform(df_minmax[scale_cols])
+
+print("\n=== After MinMaxScaler ===")
+print(df_minmax[scale_cols].describe().round(2))
+# Notice: min = 0, max = 1</code></pre>
+
+            <h3>Visualize the Impact</h3>
+            <pre><code class="language-python">fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+# Before scaling
+axes[0].hist(df_encoded['cpu_usage'], bins=20,
+             color='#3b82f6', alpha=0.7, edgecolor='black')
+axes[0].set_title('CPU Usage (Original)')
+axes[0].set_xlabel('Value')
+
+# After StandardScaler
+axes[1].hist(df_standard['cpu_usage'], bins=20,
+             color='#8b5cf6', alpha=0.7, edgecolor='black')
+axes[1].set_title('CPU Usage (StandardScaler)')
+axes[1].set_xlabel('Z-Score')
+
+# After MinMaxScaler
+axes[2].hist(df_minmax['cpu_usage'], bins=20,
+             color='#10b981', alpha=0.7, edgecolor='black')
+axes[2].set_title('CPU Usage (MinMaxScaler)')
+axes[2].set_xlabel('Scaled Value')
+
+plt.tight_layout()
+plt.savefig('scaling_comparison.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 9: Complete Pipeline -->
+        <section class="content-section text-content">
+            <h2>9. Step 6 — The Complete Pipeline</h2>
+            <div class="step-indicator">STEP 6 OF 6 &bull; Production-Ready</div>
+
+            <p>In practice, you should wrap everything into a <strong>Pipeline</strong> to avoid data leakage and ensure reproducibility.</p>
+
+            <pre><code class="language-python">from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
+                                   OrdinalEncoder)
+
+# Prepare features and target
+X = df.drop(columns=['server_id', 'failed'])
+y = df['failed']
+
+# Define column groups
+numeric_features = ['cpu_usage', 'memory_gb', 'disk_io',
+                    'network_mbps', 'uptime_hours']
+nominal_features = ['os_type', 'region']
+ordinal_features = ['priority']
+
+# Define transformers
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+nominal_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('onehot', OneHotEncoder(drop='first', handle_unknown='ignore'))
+])
+
+ordinal_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('ordinal', OrdinalEncoder(
+        categories=[['Low', 'Medium', 'High', 'Critical']]
+    ))
+])
+
+# Combine all transformers
+preprocessor = ColumnTransformer(transformers=[
+    ('num', numeric_transformer, numeric_features),
+    ('nom', nominal_transformer, nominal_features),
+    ('ord', ordinal_transformer, ordinal_features)
+])
+
+# Split FIRST, then preprocess
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Fit on train, transform both
+X_train_clean = preprocessor.fit_transform(X_train)
+X_test_clean = preprocessor.transform(X_test)
+
+print(f"Training set: {X_train_clean.shape}")
+print(f"Test set:     {X_test_clean.shape}")
+print(f"\nData is now clean and model-ready!")</code></pre>
+
+            <div class="warning-box">
+                <strong>Critical Rule — Data Leakage:</strong>
+                <ul style="margin: 0.5rem 0 0 1.2rem;">
+                    <li><code>fit_transform()</code> on <strong>training data</strong> — learns the parameters (mean, std, categories).</li>
+                    <li><code>transform()</code> on <strong>test data</strong> — applies the same parameters.</li>
+                    <li>Never <code>fit()</code> on test data! This prevents <strong>data leakage</strong>.</li>
+                </ul>
+            </div>
+
+            <div class="pipeline-flow">
+                <span style="color:var(--primary);">fit_transform(X_train)</span>
+                → Learns: \(\mu\), \(\sigma\), categories
+                → Transforms training data<br>
+                <span style="color:var(--accent);">transform(X_test)</span>
+                → Uses same \(\mu\), \(\sigma\), categories
+                → Transforms test data<br>
+                <span style="color:#a1a1aa;font-size:0.8rem;">The test set is treated as "unseen" data — just like production.</span>
+            </div>
+        </section>
+
+        <!-- Section 10: Experiments -->
+        <section class="content-section text-content">
+            <h2>10. Experiment Ideas</h2>
+
+            <div class="note-box">
+                <h4>Extend Your Pipeline</h4>
+                <ul>
+                    <li><strong>Experiment A:</strong> Replace <code>SimpleImputer(strategy='median')</code> with <code>strategy='mean'</code>. Compare the resulting distributions. When would one be better?</li>
+                    <li><strong>Experiment B:</strong> Add a new feature: <code>cpu_per_memory = cpu_usage / memory_gb</code>. This is called <strong>Feature Engineering</strong> — creating new informative features from existing ones.</li>
+                    <li><strong>Experiment C:</strong> Load a real dataset from Kaggle (e.g., the Titanic dataset) and apply the same pipeline. What additional cleaning steps are needed?</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 11: Assignment -->
+        <section class="content-section text-content">
+            <h2>11. Assignment for Next Week</h2>
+
+            <div class="assignment-card">
+                <h3><i data-lucide="clipboard-list"></i> Deliverables</h3>
+                <ul>
+                    <li><strong>Coding:</strong> Submit a Jupyter Notebook that takes a "dirty" CSV file (provided on the course page), cleans it, and outputs preprocessed NumPy arrays. Your notebook must include:
+                        <ol style="margin-top: 0.5rem;">
+                            <li>An exploration section with missing value report and data type summary.</li>
+                            <li>Handling of at least 3 types of data problems.</li>
+                            <li>Proper encoding (One-Hot for nominal, Label/Ordinal for ordinal).</li>
+                            <li>Feature scaling with justification of your scaler choice.</li>
+                            <li>A scikit-learn Pipeline wrapping all preprocessing steps.</li>
+                        </ol>
+                    </li>
+                    <li><strong>Report:</strong> Write a brief paragraph (3-5 sentences) explaining why you should never fit the scaler on the full dataset before splitting.</li>
+                    <li><strong>Bonus:</strong> Implement a custom function that takes any CSV and automatically detects column types, missing patterns, and suggests appropriate preprocessing strategies.</li>
+                </ul>
+            </div>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">See you at the Lecture!</p>
+                <a href="lecture_3.html" class="btn btn-primary" style="display:inline-flex;margin:1rem auto 0 auto;">
+                    <i data-lucide="arrow-left"></i> Back to Lecture 3
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>
