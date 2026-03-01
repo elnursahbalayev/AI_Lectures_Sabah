@@ -7,10 +7,13 @@
     <title>Week 3 Lecture: Data Engineering for AI | AI Lectures</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -47,7 +50,7 @@
             display: inline-flex;
             align-items: center;
             gap: 1rem;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             padding: 0.5rem 1.5rem;
             border-radius: 50px;
             border: 1px solid var(--border);
@@ -78,7 +81,8 @@
             line-height: 1.8;
         }
 
-        .text-content ul, .text-content ol {
+        .text-content ul,
+        .text-content ol {
             margin: 0 0 1.5rem 1.5rem;
             color: #d4d4d8;
             font-size: 1.05rem;
@@ -91,7 +95,7 @@
 
         /* Note / callout boxes */
         .note-box {
-            background: rgba(59,130,246,0.08);
+            background: rgba(59, 130, 246, 0.08);
             border-left: 4px solid var(--primary);
             padding: 1.5rem;
             border-radius: 0 8px 8px 0;
@@ -99,7 +103,7 @@
         }
 
         .insight-box {
-            background: rgba(139,92,246,0.08);
+            background: rgba(139, 92, 246, 0.08);
             border-left: 4px solid var(--accent);
             padding: 1.5rem;
             border-radius: 0 8px 8px 0;
@@ -107,7 +111,7 @@
         }
 
         .warning-box {
-            background: rgba(245,158,11,0.08);
+            background: rgba(245, 158, 11, 0.08);
             border-left: 4px solid #f59e0b;
             padding: 1.5rem;
             border-radius: 0 8px 8px 0;
@@ -125,7 +129,7 @@
 
         /* Math display blocks */
         .math-block {
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 1.5rem;
@@ -138,7 +142,7 @@
 
         code {
             font-family: 'JetBrains Mono', monospace;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             padding: 0.2rem 0.4rem;
             border-radius: 4px;
             font-size: 0.88em;
@@ -168,7 +172,7 @@
         }
 
         .compare-card {
-            background: rgba(24,24,27,0.6);
+            background: rgba(24, 24, 27, 0.6);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 1.5rem;
@@ -188,7 +192,7 @@
         }
 
         .prog-card {
-            background: rgba(24,24,27,0.8);
+            background: rgba(24, 24, 27, 0.8);
             border-radius: 10px;
             padding: 1.25rem;
             border: 1px solid var(--border);
@@ -218,7 +222,7 @@
         }
 
         .eq-table th {
-            background: rgba(59,130,246,0.15);
+            background: rgba(59, 130, 246, 0.15);
             padding: 0.75rem 1rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
@@ -227,11 +231,13 @@
 
         .eq-table td {
             padding: 0.75rem 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             color: #d4d4d8;
         }
 
-        .eq-table tr:hover td { background: rgba(255,255,255,0.03); }
+        .eq-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
 
         /* Summary grid */
         .summary-grid {
@@ -242,7 +248,7 @@
         }
 
         .summary-item {
-            background: rgba(24,24,27,0.6);
+            background: rgba(24, 24, 27, 0.6);
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 1.25rem;
@@ -272,7 +278,7 @@
         }
 
         .data-table th {
-            background: rgba(59,130,246,0.15);
+            background: rgba(59, 130, 246, 0.15);
             padding: 0.6rem 0.8rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
@@ -282,16 +288,18 @@
 
         .data-table td {
             padding: 0.6rem 0.8rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             color: #d4d4d8;
             font-size: 0.9rem;
         }
 
-        .data-table tr:hover td { background: rgba(255,255,255,0.03); }
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
 
         /* Pipeline flow diagram */
         .pipeline-flow {
-            background: rgba(24,24,27,0.8);
+            background: rgba(24, 24, 27, 0.8);
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 1.5rem;
@@ -311,7 +319,7 @@
         }
 
         .bayes-card {
-            background: rgba(24,24,27,0.8);
+            background: rgba(24, 24, 27, 0.8);
             border-radius: 10px;
             padding: 1.25rem;
             border: 1px solid var(--border);
@@ -337,14 +345,24 @@
         }
 
         @media (max-width: 700px) {
-            .compare-grid, .prog-compare, .bayes-grid { grid-template-columns: 1fr; }
-            .article-header h1 { font-size: 2rem; }
+
+            .compare-grid,
+            .prog-compare,
+            .bayes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div id="readingProgress" style="position:fixed;top:0;left:0;height:4px;background:var(--primary);z-index:9999;width:0%;transition:width 0.1s;"></div>
+    <div id="readingProgress"
+        style="position:fixed;top:0;left:0;height:4px;background:var(--primary);z-index:9999;width:0%;transition:width 0.1s;">
+    </div>
     <div class="background-animation"></div>
 
     <nav class="navbar glass">
@@ -362,9 +380,11 @@
         <header class="article-header">
             <span class="badge">Week 03 Lecture</span>
             <h1>Data Engineering<br>for AI</h1>
-            <p class="subtitle">Garbage in, garbage out — probability review, data preprocessing, and the unglamorous backbone of every successful AI system.</p>
+            <p class="subtitle">Garbage in, garbage out — probability review, data preprocessing, and the unglamorous
+                backbone of every successful AI system.</p>
             <div class="instructor-badge">
-                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true" width="32" height="32" alt="Instructor">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
                 <div>
                     <strong>Elnur Shahbalayev</strong>
                     <span style="color:var(--text-muted);font-size:0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
@@ -376,22 +396,53 @@
         <section class="content-section text-content">
             <h2>1. Why Data Engineering Matters</h2>
 
-            <p>In industry, data scientists spend approximately <strong>80% of their time</strong> on data preparation and only <strong>20% on actual modeling</strong>. This isn't a failure of process — it reflects a fundamental truth:</p>
+            <p>In industry, data scientists spend approximately <strong>80% of their time</strong> on data preparation
+                and only <strong>20% on actual modeling</strong>. This isn't a failure of process — it reflects a
+                fundamental truth:</p>
 
-            <blockquote>"A simple model on clean data will almost always outperform a complex model on dirty data."</blockquote>
+            <blockquote>"A simple model on clean data will almost always outperform a complex model on dirty data."
+            </blockquote>
 
             <h3>What Can Go Wrong?</h3>
             <table class="data-table">
                 <thead>
-                    <tr><th>Problem</th><th>Example</th><th>Consequence</th></tr>
+                    <tr>
+                        <th>Problem</th>
+                        <th>Example</th>
+                        <th>Consequence</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>Missing values</strong></td><td>Sensor offline, user skipped a field</td><td>Model crashes or learns noise</td></tr>
-                    <tr><td><strong>Inconsistent formats</strong></td><td>"Male", "male", "M", "1"</td><td>Model treats them as different categories</td></tr>
-                    <tr><td><strong>Outliers</strong></td><td>Salary of $1,000,000 among students</td><td>Skews the mean, distorts learning</td></tr>
-                    <tr><td><strong>Different scales</strong></td><td>Age (0-100) vs. Income (0-1M)</td><td>Gradient Descent oscillates wildly</td></tr>
-                    <tr><td><strong>Categorical data</strong></td><td>"Red", "Blue", "Green"</td><td>Algorithms need numbers, not strings</td></tr>
-                    <tr><td><strong>Duplicates</strong></td><td>Same record entered twice</td><td>Model overweights that example</td></tr>
+                    <tr>
+                        <td><strong>Missing values</strong></td>
+                        <td>Sensor offline, user skipped a field</td>
+                        <td>Model crashes or learns noise</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inconsistent formats</strong></td>
+                        <td>"Male", "male", "M", "1"</td>
+                        <td>Model treats them as different categories</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Outliers</strong></td>
+                        <td>Salary of $1,000,000 among students</td>
+                        <td>Skews the mean, distorts learning</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Different scales</strong></td>
+                        <td>Age (0-100) vs. Income (0-1M)</td>
+                        <td>Gradient Descent oscillates wildly</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Categorical data</strong></td>
+                        <td>"Red", "Blue", "Green"</td>
+                        <td>Algorithms need numbers, not strings</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Duplicates</strong></td>
+                        <td>Same record entered twice</td>
+                        <td>Model overweights that example</td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -403,7 +454,8 @@
                 → <span style="color:var(--primary);">Encode</span>
                 → <span style="color:var(--primary);">Scale</span>
                 → <span style="color:#4ade80;">Model-Ready Data</span><br>
-                <span style="color:#a1a1aa;font-size:0.8rem;">Missing values &nbsp;|&nbsp; Feature engineering &nbsp;|&nbsp; One-Hot Encoding &nbsp;|&nbsp; MinMax / StandardScaler</span>
+                <span style="color:#a1a1aa;font-size:0.8rem;">Missing values &nbsp;|&nbsp; Feature engineering
+                    &nbsp;|&nbsp; One-Hot Encoding &nbsp;|&nbsp; MinMax / StandardScaler</span>
             </div>
         </section>
 
@@ -411,7 +463,8 @@
         <section class="content-section text-content">
             <h2>2. Probability Review — Bayes' Theorem</h2>
 
-            <p>Before we dive into data preprocessing, we need to refresh a critical mathematical tool that underlies many ML algorithms: <strong>Bayes' Theorem</strong>.</p>
+            <p>Before we dive into data preprocessing, we need to refresh a critical mathematical tool that underlies
+                many ML algorithms: <strong>Bayes' Theorem</strong>.</p>
 
             <h3>Conditional Probability</h3>
             <div class="math-block">
@@ -448,7 +501,9 @@
             </div>
 
             <h3>Worked Example: Medical Diagnosis</h3>
-            <p>A disease affects <strong>1%</strong> of the population. A test is <strong>95% accurate</strong> (true positive) with a <strong>5% false positive</strong> rate. If a patient tests positive, what is the probability they actually have the disease?</p>
+            <p>A disease affects <strong>1%</strong> of the population. A test is <strong>95% accurate</strong> (true
+                positive) with a <strong>5% false positive</strong> rate. If a patient tests positive, what is the
+                probability they actually have the disease?</p>
 
             <div class="note-box">
                 <strong>Given:</strong>
@@ -461,7 +516,8 @@
 
             <p><strong>Step 1</strong> — Calculate \(P(\text{Positive})\) using the Law of Total Probability:</p>
             <div class="math-block">
-                \[P(\text{Pos}) = P(\text{Pos}|\text{Dis}) \cdot P(\text{Dis}) + P(\text{Pos}|\text{No Dis}) \cdot P(\text{No Dis}) = 0.95 \times 0.01 + 0.05 \times 0.99 = 0.059\]
+                \[P(\text{Pos}) = P(\text{Pos}|\text{Dis}) \cdot P(\text{Dis}) + P(\text{Pos}|\text{No Dis}) \cdot
+                P(\text{No Dis}) = 0.95 \times 0.01 + 0.05 \times 0.99 = 0.059\]
             </div>
 
             <p><strong>Step 2</strong> — Apply Bayes' Theorem:</p>
@@ -470,14 +526,19 @@
             </div>
 
             <div class="warning-box">
-                <strong>Result: Only 16.1% chance!</strong> Despite a positive test, there's only a 16.1% chance of actually having the disease. This counterintuitive result is the <strong>Base Rate Fallacy</strong> — when the disease is rare, even a good test produces many false positives.
+                <strong>Result: Only 16.1% chance!</strong> Despite a positive test, there's only a 16.1% chance of
+                actually having the disease. This counterintuitive result is the <strong>Base Rate Fallacy</strong> —
+                when the disease is rare, even a good test produces many false positives.
             </div>
 
             <h3>Why Bayes Matters for ML</h3>
             <ul>
-                <li><strong>Naive Bayes Classifier</strong> (Week 5): Uses Bayes' Theorem directly for classification.</li>
-                <li><strong>Prior knowledge</strong>: Bayesian thinking lets us incorporate domain knowledge into models.</li>
-                <li><strong>Probabilistic interpretation</strong>: Many ML models output probabilities, not just labels.</li>
+                <li><strong>Naive Bayes Classifier</strong> (Week 5): Uses Bayes' Theorem directly for classification.
+                </li>
+                <li><strong>Prior knowledge</strong>: Bayesian thinking lets us incorporate domain knowledge into
+                    models.</li>
+                <li><strong>Probabilistic interpretation</strong>: Many ML models output probabilities, not just labels.
+                </li>
             </ul>
         </section>
 
@@ -485,29 +546,35 @@
         <section class="content-section text-content">
             <h2>3. Types of Data</h2>
 
-            <p>Before preprocessing, we must understand what kind of data we're working with. Different types require different treatments.</p>
+            <p>Before preprocessing, we must understand what kind of data we're working with. Different types require
+                different treatments.</p>
 
             <div class="compare-grid">
                 <div class="compare-card">
                     <h4 style="color:var(--primary);">Numerical — Continuous</h4>
-                    <p style="color:#d4d4d8;font-size:0.9rem;">Any value in a range.<br><strong>Example:</strong> Temperature: 36.7°C<br><strong>Operations:</strong> Mean, std, all math</p>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Any value in a range.<br><strong>Example:</strong>
+                        Temperature: 36.7°C<br><strong>Operations:</strong> Mean, std, all math</p>
                 </div>
                 <div class="compare-card">
                     <h4 style="color:var(--primary);">Numerical — Discrete</h4>
-                    <p style="color:#d4d4d8;font-size:0.9rem;">Countable integers.<br><strong>Example:</strong> Number of rooms: 3<br><strong>Operations:</strong> Count, mode</p>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Countable integers.<br><strong>Example:</strong> Number
+                        of rooms: 3<br><strong>Operations:</strong> Count, mode</p>
                 </div>
                 <div class="compare-card">
                     <h4 style="color:var(--accent);">Categorical — Nominal</h4>
-                    <p style="color:#d4d4d8;font-size:0.9rem;">No natural order.<br><strong>Example:</strong> Color: Red, Blue, Green<br><strong>Encoding:</strong> One-Hot Encoding</p>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">No natural order.<br><strong>Example:</strong> Color:
+                        Red, Blue, Green<br><strong>Encoding:</strong> One-Hot Encoding</p>
                 </div>
                 <div class="compare-card">
                     <h4 style="color:var(--accent);">Categorical — Ordinal</h4>
-                    <p style="color:#d4d4d8;font-size:0.9rem;">Has natural order.<br><strong>Example:</strong> Education: HS &lt; BSc &lt; MSc<br><strong>Encoding:</strong> Label Encoding</p>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Has natural order.<br><strong>Example:</strong>
+                        Education: HS &lt; BSc &lt; MSc<br><strong>Encoding:</strong> Label Encoding</p>
                 </div>
             </div>
 
             <div class="warning-box">
-                <strong>The Cardinal Rule:</strong> Never treat categorical data as numerical. If you encode "Red=1, Blue=2, Green=3", the model will learn that Green &gt; Blue &gt; Red, which is meaningless.
+                <strong>The Cardinal Rule:</strong> Never treat categorical data as numerical. If you encode "Red=1,
+                Blue=2, Green=3", the model will learn that Green &gt; Blue &gt; Red, which is meaningless.
             </div>
         </section>
 
@@ -520,44 +587,100 @@
             <h3>Types of Missingness</h3>
             <table class="data-table">
                 <thead>
-                    <tr><th>Type</th><th>Meaning</th><th>Example</th></tr>
+                    <tr>
+                        <th>Type</th>
+                        <th>Meaning</th>
+                        <th>Example</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>MCAR</strong></td><td>Missing Completely At Random</td><td>Sensor randomly malfunctions</td></tr>
-                    <tr><td><strong>MAR</strong></td><td>Missing At Random (depends on other data)</td><td>Older patients skip online surveys</td></tr>
-                    <tr><td><strong>MNAR</strong></td><td>Missing Not At Random (depends on missing value)</td><td>High-income people don't report salary</td></tr>
+                    <tr>
+                        <td><strong>MCAR</strong></td>
+                        <td>Missing Completely At Random</td>
+                        <td>Sensor randomly malfunctions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MAR</strong></td>
+                        <td>Missing At Random (depends on other data)</td>
+                        <td>Older patients skip online surveys</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MNAR</strong></td>
+                        <td>Missing Not At Random (depends on missing value)</td>
+                        <td>High-income people don't report salary</td>
+                    </tr>
                 </tbody>
             </table>
 
             <h3>Strategy 1: Drop Rows</h3>
-            <pre><code class="language-python">df.dropna()  # Drop any row with at least one NaN</code></pre>
-            <p><strong>Pro:</strong> Simple, no introduced bias. <strong>Con:</strong> Lose data — if 20% of rows have missing values, you lose 20% of your dataset.</p>
+            <pre><code class="language-python"># dropna() removes every row that has at least one missing (NaN) value.
+# This is the simplest approach — but you lose entire rows of data!
+# Only use this when very few rows have missing values (e.g., < 5%).
+df.dropna()  # returns a new DataFrame with all incomplete rows removed</code></pre>
+            <p><strong>Pro:</strong> Simple, no introduced bias. <strong>Con:</strong> Lose data — if 20% of rows have
+                missing values, you lose 20% of your dataset.</p>
 
             <h3>Strategy 2: Drop Columns</h3>
-            <pre><code class="language-python"># Drop columns where more than 50% of values are missing
-threshold = len(df) * 0.5
-df.dropna(axis=1, thresh=threshold)</code></pre>
+            <pre><code class="language-python"># If a column is mostly empty, it's not useful — better to drop it entirely.
+# Here we calculate a threshold: at least 50% of rows must have a value.
+threshold = len(df) * 0.5          # e.g., if df has 1000 rows → threshold = 500
+
+# axis=1 means "drop columns" (axis=0 would drop rows)
+# thresh=threshold means "keep only columns with at least 'threshold' non-NaN values"
+df.dropna(axis=1, thresh=threshold)  # drops columns where > 50% of values are missing</code></pre>
 
             <h3>Strategy 3: Imputation</h3>
             <table class="data-table">
                 <thead>
-                    <tr><th>Method</th><th>Code</th><th>When to Use</th></tr>
+                    <tr>
+                        <th>Method</th>
+                        <th>Code</th>
+                        <th>When to Use</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>Mean</strong></td><td><code>df['col'].fillna(df['col'].mean())</code></td><td>Normal distribution</td></tr>
-                    <tr><td><strong>Median</strong></td><td><code>df['col'].fillna(df['col'].median())</code></td><td>Skewed data</td></tr>
-                    <tr><td><strong>Mode</strong></td><td><code>df['col'].fillna(df['col'].mode()[0])</code></td><td>Categorical data</td></tr>
-                    <tr><td><strong>Forward Fill</strong></td><td><code>df['col'].fillna(method='ffill')</code></td><td>Time-series data</td></tr>
-                    <tr><td><strong>Constant</strong></td><td><code>df['col'].fillna(0)</code></td><td>Semantic meaning</td></tr>
+                    <tr>
+                        <td><strong>Mean</strong></td>
+                        <td><code>df['col'].fillna(df['col'].mean())</code></td>
+                        <td>Normal distribution</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Median</strong></td>
+                        <td><code>df['col'].fillna(df['col'].median())</code></td>
+                        <td>Skewed data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mode</strong></td>
+                        <td><code>df['col'].fillna(df['col'].mode()[0])</code></td>
+                        <td>Categorical data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Forward Fill</strong></td>
+                        <td><code>df['col'].fillna(method='ffill')</code></td>
+                        <td>Time-series data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Constant</strong></td>
+                        <td><code>df['col'].fillna(0)</code></td>
+                        <td>Semantic meaning</td>
+                    </tr>
                 </tbody>
             </table>
 
             <h3>Strategy 4: Indicator Variable</h3>
-            <pre><code class="language-python">df['col_was_missing'] = df['col'].isna().astype(int)
-df['col'].fillna(df['col'].median(), inplace=True)</code></pre>
+            <pre><code class="language-python"># Sometimes the FACT that a value is missing is itself useful information.
+# Step 1: Create a new binary column that records WHERE the data was missing.
+#   - isna() returns True/False for each cell (True = missing)
+#   - astype(int) converts True→1, False→0
+df['col_was_missing'] = df['col'].isna().astype(int)  # 1 = was missing, 0 = was present
+
+# Step 2: Now fill in the missing values with the median (a safe default).
+#   - inplace=True modifies df directly instead of returning a copy.
+df['col'].fillna(df['col'].median(), inplace=True)  # replace NaN with the column's median</code></pre>
 
             <div class="insight-box">
-                <strong>Key Insight:</strong> Sometimes missingness itself is a feature! A missing salary field might indicate the user is uncomfortable sharing — that's information your model can use.
+                <strong>Key Insight:</strong> Sometimes missingness itself is a feature! A missing salary field might
+                indicate the user is uncomfortable sharing — that's information your model can use.
             </div>
         </section>
 
@@ -570,29 +693,52 @@ df['col'].fillna(df['col'].median(), inplace=True)</code></pre>
             <div class="compare-grid">
                 <div class="compare-card">
                     <h4 style="color:var(--primary);">Label Encoding (Ordinal)</h4>
-                    <p style="color:#d4d4d8;font-size:0.9rem;">For data with a natural order, assign integers that preserve the ranking.</p>
-                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python">education = ['HS', 'BSc', 'MSc', 'PhD']
-# HS=0, BSc=1, MSc=2, PhD=3
-# 0 < 1 < 2 < 3 ✓ Correct!</code></pre>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">For data with a natural order, assign integers that
+                        preserve the ranking.</p>
+                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python"># LABEL ENCODING — used for ORDINAL categories (categories with a natural order)
+# We assign integers that PRESERVE the ranking:
+education = ['HS', 'BSc', 'MSc', 'PhD']
+
+# Mapping: HS → 0, BSc → 1, MSc → 2, PhD → 3
+# The order matters: 0 < 1 < 2 < 3 matches HS < BSc < MSc < PhD ✓
+# This is correct because there IS a real ranking in education levels.</code></pre>
                 </div>
                 <div class="compare-card">
                     <h4 style="color:var(--accent);">One-Hot Encoding (Nominal)</h4>
-                    <p style="color:#d4d4d8;font-size:0.9rem;">For data with <strong>no natural order</strong>, create a binary column for each category.</p>
-                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python">pd.get_dummies(df, columns=['color'])
-# color_Blue | color_Green | color_Red
-#     0      |      0      |     1
-#     1      |      0      |     0</code></pre>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">For data with <strong>no natural order</strong>, create a
+                        binary column for each category.</p>
+                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python"># ONE-HOT ENCODING — used for NOMINAL categories (NO natural order)
+# pd.get_dummies() creates a separate binary (0/1) column for each category.
+# This avoids imposing a fake numerical order on unordered categories.
+pd.get_dummies(df, columns=['color'])
+
+# Result: each row gets a 1 in exactly one color column, 0 in the others.
+#   color_Blue | color_Green | color_Red
+#       0      |      0      |     1       ← this row was 'Red'
+#       1      |      0      |     0       ← this row was 'Blue'</code></pre>
                 </div>
             </div>
 
             <h3>The Dummy Variable Trap</h3>
-            <p>If you have \(k\) categories, you only need \(k-1\) binary columns. The last column is redundant (it's determined by the others).</p>
+            <p>If you have \(k\) categories, you only need \(k-1\) binary columns. The last column is redundant (it's
+                determined by the others).</p>
 
-            <pre><code class="language-python"># drop_first=True avoids the dummy variable trap
-pd.get_dummies(df, columns=['color'], drop_first=True)</code></pre>
+            <pre><code class="language-python"># drop_first=True removes ONE of the binary columns to avoid redundancy.
+# If color_Blue=0 AND color_Green=0, the model KNOWS it must be Red.
+# Keeping all 3 columns would cause "multicollinearity" (columns that are
+# perfectly predictable from each other), which breaks linear models.
+pd.get_dummies(df, columns=['color'], drop_first=True)
+
+# Result: only 2 columns instead of 3 — the "Red" column is dropped.
+#   color_Blue | color_Green
+#       0      |      0        ← must be Red (both are 0)
+#       1      |      0        ← Blue
+#       0      |      1        ← Green</code></pre>
 
             <div class="note-box">
-                <strong>Why?</strong> If <code>color_Blue=0</code> and <code>color_Green=0</code>, the model knows it must be Red. The third column adds no information but can cause <strong>multicollinearity</strong> in linear models.
+                <strong>Why?</strong> If <code>color_Blue=0</code> and <code>color_Green=0</code>, the model knows it
+                must be Red. The third column adds no information but can cause <strong>multicollinearity</strong> in
+                linear models.
             </div>
         </section>
 
@@ -601,7 +747,9 @@ pd.get_dummies(df, columns=['color'], drop_first=True)</code></pre>
             <h2>6. Feature Scaling</h2>
 
             <h3>Why Scaling Matters</h3>
-            <p>Consider two features: <strong>Age</strong> (range: 18-65) and <strong>Salary</strong> (range: 20,000-200,000). Without scaling, Gradient Descent will oscillate wildly along the Salary axis and crawl along the Age axis. <strong>Scaling puts all features on equal footing.</strong></p>
+            <p>Consider two features: <strong>Age</strong> (range: 18-65) and <strong>Salary</strong> (range:
+                20,000-200,000). Without scaling, Gradient Descent will oscillate wildly along the Salary axis and crawl
+                along the Age axis. <strong>Scaling puts all features on equal footing.</strong></p>
 
             <div class="compare-grid">
                 <div class="compare-card">
@@ -609,32 +757,62 @@ pd.get_dummies(df, columns=['color'], drop_first=True)</code></pre>
                     <div class="math-block" style="margin:1rem 0;">
                         \[x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}\]
                     </div>
-                    <p style="color:#d4d4d8;font-size:0.9rem;">Scales to <strong>[0, 1]</strong>. Good for Neural Networks, KNN. Sensitive to outliers.</p>
-                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python">from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
-df[cols] = scaler.fit_transform(df[cols])</code></pre>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Scales to <strong>[0, 1]</strong>. Good for Neural
+                        Networks, KNN. Sensitive to outliers.</p>
                 </div>
                 <div class="compare-card">
                     <h4 style="color:var(--accent);">Standardization (Z-Score)</h4>
                     <div class="math-block" style="margin:1rem 0;">
                         \[x_{\text{std}} = \frac{x - \mu}{\sigma}\]
                     </div>
-                    <p style="color:#d4d4d8;font-size:0.9rem;">Centers at <strong>0</strong>, unit variance. Handles outliers better. Good for SVM, PCA.</p>
-                    <pre style="margin:1rem 0 0 0;font-size:0.85rem;"><code class="language-python">from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-df[cols] = scaler.fit_transform(df[cols])</code></pre>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Centers at <strong>0</strong>, unit variance. Handles
+                        outliers better. Good for SVM, PCA.</p>
                 </div>
             </div>
+
+            <h3>Min-Max Normalization — Code</h3>
+            <pre><code class="language-python"># MinMaxScaler rescales every value to the range [0, 1].
+# Formula: x_norm = (x - x_min) / (x_max - x_min)
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()                    # create the scaler object
+df[cols] = scaler.fit_transform(df[cols])  # fit (learn min/max) + transform (rescale)
+# After this: minimum value → 0, maximum value → 1, everything else in between.</code></pre>
+
+            <h3>Standardization (Z-Score) — Code</h3>
+            <pre><code class="language-python"># StandardScaler centers data at 0 with standard deviation of 1.
+# Formula: x_std = (x - mean) / std_deviation
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()                  # create the scaler object
+df[cols] = scaler.fit_transform(df[cols])  # fit (learn mean/std) + transform (rescale)
+# After this: mean → 0, most values between -2 and +2. Handles outliers better.</code></pre>
 
             <h3>When to Use Which?</h3>
             <table class="data-table">
                 <thead>
-                    <tr><th>Scaler</th><th>Use When</th><th>Algorithms</th></tr>
+                    <tr>
+                        <th>Scaler</th>
+                        <th>Use When</th>
+                        <th>Algorithms</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>MinMaxScaler</strong></td><td>Bounded values needed; no extreme outliers</td><td>Neural Networks, KNN, Image pixels</td></tr>
-                    <tr><td><strong>StandardScaler</strong></td><td>Outliers present; Gaussian assumption</td><td>Linear Regression, SVM, PCA</td></tr>
-                    <tr><td><strong>No scaling</strong></td><td>Tree-based algorithms</td><td>Decision Trees, Random Forest, XGBoost</td></tr>
+                    <tr>
+                        <td><strong>MinMaxScaler</strong></td>
+                        <td>Bounded values needed; no extreme outliers</td>
+                        <td>Neural Networks, KNN, Image pixels</td>
+                    </tr>
+                    <tr>
+                        <td><strong>StandardScaler</strong></td>
+                        <td>Outliers present; Gaussian assumption</td>
+                        <td>Linear Regression, SVM, PCA</td>
+                    </tr>
+                    <tr>
+                        <td><strong>No scaling</strong></td>
+                        <td>Tree-based algorithms</td>
+                        <td>Decision Trees, Random Forest, XGBoost</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -645,53 +823,84 @@ df[cols] = scaler.fit_transform(df[cols])</code></pre>
 
             <p>Let's put it all together. Here's the standard preprocessing pipeline in scikit-learn:</p>
 
-            <pre><code class="language-python">import pandas as pd
+            <pre><code class="language-python"># ============================================================
+# COMPLETE PREPROCESSING PIPELINE WITH SCIKIT-LEARN
+# This code shows the standard, production-ready way to
+# preprocess data.  Pipelines chain multiple steps together
+# and prevent data leakage automatically.
+# ============================================================
+
+import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
 
-# 1. Load data
-df = pd.read_csv('data.csv')
+# These are the key scikit-learn tools for preprocessing:
+from sklearn.model_selection import train_test_split    # split data into train/test
+from sklearn.preprocessing import StandardScaler        # z-score normalization
+from sklearn.preprocessing import OneHotEncoder         # one-hot encode categories
+from sklearn.compose import ColumnTransformer           # apply different transforms to different columns
+from sklearn.pipeline import Pipeline                   # chain multiple steps together
+from sklearn.impute import SimpleImputer                # fill missing values
 
-# 2. Separate features and target
-X = df.drop('target', axis=1)
-y = df['target']
+# ---- STEP 1: Load the dataset ----
+df = pd.read_csv('data.csv')   # read a CSV file into a Pandas DataFrame
 
-# 3. Identify column types
+# ---- STEP 2: Separate features (X) from the target variable (y) ----
+# The target is what we want to predict (e.g., 'price', 'spam', 'diagnosis')
+# Features are everything else — the inputs to the model.
+X = df.drop('target', axis=1)  # all columns EXCEPT 'target'
+y = df['target']                # only the 'target' column
+
+# ---- STEP 3: Identify column types automatically ----
+# Numerical columns: int or float (e.g., age, salary, temperature)
+# Categorical columns: strings/objects (e.g., color, city, gender)
 numeric_features = X.select_dtypes(include=['int64', 'float64']).columns
 categorical_features = X.select_dtypes(include=['object']).columns
 
-# 4. Define preprocessing for each type
+# ---- STEP 4: Define preprocessing for NUMERICAL columns ----
+# Step 4a: Fill missing numbers with the MEDIAN (robust to outliers)
+# Step 4b: Then standardize (z-score) so all numbers are on the same scale
 numeric_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='median')),
-    ('scaler', StandardScaler())
+    ('imputer', SimpleImputer(strategy='median')),   # fill NaN → median value
+    ('scaler', StandardScaler())                      # rescale to mean=0, std=1
 ])
 
+# ---- STEP 5: Define preprocessing for CATEGORICAL columns ----
+# Step 5a: Fill missing categories with the MOST FREQUENT value (mode)
+# Step 5b: Then one-hot encode (convert strings → binary columns)
 categorical_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='most_frequent')),
-    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+    ('imputer', SimpleImputer(strategy='most_frequent')),  # fill NaN → most common category
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))      # convert categories → 0/1 columns
 ])
 
-# 5. Combine into a ColumnTransformer
+# ---- STEP 6: Combine both transformers into one preprocessor ----
+# ColumnTransformer applies the RIGHT transformation to the RIGHT columns.
+# 'num' pipeline → numeric columns,  'cat' pipeline → categorical columns.
 preprocessor = ColumnTransformer(transformers=[
-    ('num', numeric_transformer, numeric_features),
-    ('cat', categorical_transformer, categorical_features)
+    ('num', numeric_transformer, numeric_features),      # numbers → impute + scale
+    ('cat', categorical_transformer, categorical_features)  # categories → impute + one-hot
 ])
 
-# 6. Split BEFORE fitting the preprocessor
+# ---- STEP 7: Split into training and test sets BEFORE preprocessing ----
+# ⚠ THIS ORDER IS CRITICAL: split FIRST, preprocess SECOND.
+# test_size=0.2 means 80% training, 20% testing.
+# random_state=42 ensures reproducibility (same split every time).
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# 7. Fit on training data, transform both
+# ---- STEP 8: Fit the preprocessor on TRAINING data only, then transform ----
+# fit_transform() on training: learns stats (mean, std, categories) AND transforms
 X_train_processed = preprocessor.fit_transform(X_train)
-X_test_processed = preprocessor.transform(X_test)  # No .fit()!</code></pre>
+
+# transform() on test: uses the SAME stats learned from training — NO refitting!
+# This prevents DATA LEAKAGE (test data statistics leaking into training).
+X_test_processed = preprocessor.transform(X_test)  # ⚠ No .fit() here — intentional!</code></pre>
 
             <div class="warning-box">
-                <strong>Critical Rule — Data Leakage:</strong> Always fit the preprocessor on the <strong>training data only</strong>, then transform both train and test. Fitting on the full dataset causes <strong>data leakage</strong> — the model indirectly sees test data statistics during training, inflating performance metrics.
+                <strong>Critical Rule — Data Leakage:</strong> Always fit the preprocessor on the <strong>training data
+                    only</strong>, then transform both train and test. Fitting on the full dataset causes <strong>data
+                    leakage</strong> — the model indirectly sees test data statistics during training, inflating
+                performance metrics.
             </div>
         </section>
 
@@ -701,15 +910,36 @@ X_test_processed = preprocessor.transform(X_test)  # No .fit()!</code></pre>
 
             <table class="eq-table">
                 <thead>
-                    <tr><th>Concept</th><th>Formula</th></tr>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Formula</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Conditional Probability</td><td>\(P(A|B) = \frac{P(A \cap B)}{P(B)}\)</td></tr>
-                    <tr><td>Bayes' Theorem</td><td>\(P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}\)</td></tr>
-                    <tr><td>Law of Total Probability</td><td>\(P(B) = \sum_i P(B|A_i) \cdot P(A_i)\)</td></tr>
-                    <tr><td>Min-Max Normalization</td><td>\(x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}\)</td></tr>
-                    <tr><td>Standardization (Z-Score)</td><td>\(x_{\text{std}} = \frac{x - \mu}{\sigma}\)</td></tr>
-                    <tr><td>Mean Imputation</td><td>\(x_{\text{missing}} \leftarrow \bar{x}\)</td></tr>
+                    <tr>
+                        <td>Conditional Probability</td>
+                        <td>\(P(A|B) = \frac{P(A \cap B)}{P(B)}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Bayes' Theorem</td>
+                        <td>\(P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Law of Total Probability</td>
+                        <td>\(P(B) = \sum_i P(B|A_i) \cdot P(A_i)\)</td>
+                    </tr>
+                    <tr>
+                        <td>Min-Max Normalization</td>
+                        <td>\(x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Standardization (Z-Score)</td>
+                        <td>\(x_{\text{std}} = \frac{x - \mu}{\sigma}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Mean Imputation</td>
+                        <td>\(x_{\text{missing}} \leftarrow \bar{x}\)</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -719,20 +949,40 @@ X_test_processed = preprocessor.transform(X_test)  # No .fit()!</code></pre>
             <h2>9. Lecture Summary</h2>
 
             <div class="summary-grid">
-                <div class="summary-item"><div class="num">1</div><p>Data quality determines model quality — the 80/20 rule of ML.</p></div>
-                <div class="summary-item"><div class="num">2</div><p>Bayes' Theorem updates beliefs with evidence — foundation for classifiers.</p></div>
-                <div class="summary-item"><div class="num">3</div><p>Missing data: drop, impute, or flag depending on type and amount.</p></div>
-                <div class="summary-item"><div class="num">4</div><p>Encoding: One-Hot for nominal, Label for ordinal. Never impose false order.</p></div>
-                <div class="summary-item"><div class="num">5</div><p>Feature scaling ensures all features contribute equally to learning.</p></div>
-                <div class="summary-item"><div class="num">6</div><p>Scikit-learn Pipelines automate preprocessing and prevent data leakage.</p></div>
+                <div class="summary-item">
+                    <div class="num">1</div>
+                    <p>Data quality determines model quality — the 80/20 rule of ML.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">2</div>
+                    <p>Bayes' Theorem updates beliefs with evidence — foundation for classifiers.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">3</div>
+                    <p>Missing data: drop, impute, or flag depending on type and amount.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">4</div>
+                    <p>Encoding: One-Hot for nominal, Label for ordinal. Never impose false order.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">5</div>
+                    <p>Feature scaling ensures all features contribute equally to learning.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">6</div>
+                    <p>Scikit-learn Pipelines automate preprocessing and prevent data leakage.</p>
+                </div>
             </div>
         </section>
 
         <!-- ── COMING NEXT ─────────────────────────────────────────────────── -->
         <section class="content-section" style="border-top:1px solid var(--border);padding-top:3rem;text-align:center;">
-            <h3 style="color:var(--text-muted);text-transform:uppercase;font-size:0.9rem;letter-spacing:0.1em;">Coming Next</h3>
+            <h3 style="color:var(--text-muted);text-transform:uppercase;font-size:0.9rem;letter-spacing:0.1em;">Coming
+                Next</h3>
             <h2 style="border:none;padding:0;font-size:2.2rem;margin-bottom:0.5rem;">Tutorial 3: Data Cleaning Lab</h2>
-            <p style="color:#a1a1aa;max-width:500px;margin:0 auto 2rem auto;">You just learned the theory. Now you will take a messy dataset and transform it into clean, model-ready input using Pandas and scikit-learn.</p>
+            <p style="color:#a1a1aa;max-width:500px;margin:0 auto 2rem auto;">You just learned the theory. Now you will
+                take a messy dataset and transform it into clean, model-ready input using Pandas and scikit-learn.</p>
             <a href="tutorial_3.html" class="btn btn-primary" style="display:inline-flex;margin:0 auto;">
                 <i data-lucide="arrow-right"></i> Go to Tutorial 3
             </a>

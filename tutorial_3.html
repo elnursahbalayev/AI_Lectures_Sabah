@@ -279,14 +279,16 @@
         <header class="article-header">
             <span class="badge">Week 03 Tutorial</span>
             <h1>Data Cleaning Lab:<br>Turning Chaos into Features</h1>
-            <p class="subtitle">Take a messy dataset and transform it into clean, model-ready input using Pandas and scikit-learn.</p>
+            <p class="subtitle">Take a messy dataset and transform it into clean, model-ready input using Pandas and
+                scikit-learn.</p>
 
             <div class="instructor-badge">
                 <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
                     width="32" height="32" alt="Instructor">
                 <div>
                     <strong>Elnur Shahbalayev</strong>
-                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar
+                        Tech</span>
                 </div>
             </div>
         </header>
@@ -294,7 +296,9 @@
         <!-- Section 1: Introduction -->
         <section class="content-section text-content">
             <h2>1. Introduction</h2>
-            <p>Last week, we built an AI that plays Tic-Tac-Toe perfectly. Today, we tackle the less glamorous but equally critical task: <strong>data engineering</strong>. We will clean a messy dataset of server monitoring logs — the kind of data you'll encounter in real industry projects.</p>
+            <p>Last week, we built an AI that plays Tic-Tac-Toe perfectly. Today, we tackle the less glamorous but
+                equally critical task: <strong>data engineering</strong>. We will clean a messy dataset of server
+                monitoring logs — the kind of data you'll encounter in real industry projects.</p>
 
             <div class="note-box">
                 <h4><i data-lucide="target"></i> Today's Goal</h4>
@@ -312,13 +316,18 @@
         <section class="content-section text-content">
             <h2>2. Environment Setup</h2>
 
-            <pre><code class="language-python">import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import warnings
-warnings.filterwarnings('ignore')
+            <pre><code class="language-python"># ============================================================
+# ENVIRONMENT SETUP
+# Import the libraries we'll use throughout this tutorial.
+# ============================================================
 
-# Verify versions
+import pandas as pd            # pandas: the main library for data manipulation (tables/DataFrames)
+import numpy as np             # numpy: numerical operations (arrays, random numbers, math)
+import matplotlib.pyplot as plt  # matplotlib: plotting and visualization
+import warnings
+warnings.filterwarnings('ignore')  # suppress warning messages to keep output clean
+
+# Print library versions to make sure everything is installed correctly
 print(f"Pandas:  {pd.__version__}")
 print(f"NumPy:   {np.__version__}")
 
@@ -328,47 +337,71 @@ print("\nReady to clean some data!")</code></pre>
         <!-- Section 3: Creating the Dirty Dataset -->
         <section class="content-section text-content">
             <h2>3. Creating Our Dirty Dataset</h2>
-            <p>In practice, you'd load a CSV. For this tutorial, we create a realistic dirty dataset programmatically — a server monitoring log with the kinds of problems you'll face in production.</p>
+            <p>In practice, you'd load a CSV. For this tutorial, we create a realistic dirty dataset programmatically —
+                a server monitoring log with the kinds of problems you'll face in production.</p>
 
-            <pre><code class="language-python">np.random.seed(42)
-n = 200
+            <pre><code class="language-python"># ============================================================
+# CREATING A REALISTIC "DIRTY" DATASET
+# In real projects you'd load a CSV file. Here we generate
+# a server monitoring log with intentional problems so we
+# can practice cleaning them.
+# ============================================================
 
-# Generate base data
+np.random.seed(42)   # set random seed for reproducibility (same data every time)
+n = 200              # number of server records to generate
+
+# Generate the base data as a dictionary of column_name: values
 data = {
+    # Server ID: formatted strings like 'SRV-001', 'SRV-002', ...
     'server_id': [f'SRV-{i:03d}' for i in range(1, n+1)],
-    'cpu_usage': np.random.uniform(10, 95, n),
-    'memory_gb': np.random.uniform(2, 64, n),
-    'disk_io': np.random.uniform(50, 500, n),
-    'network_mbps': np.random.uniform(10, 1000, n),
+
+    # Numerical features: random values within realistic ranges
+    'cpu_usage': np.random.uniform(10, 95, n),       # CPU % (should be 0-100)
+    'memory_gb': np.random.uniform(2, 64, n),        # RAM in GB (should be positive)
+    'disk_io': np.random.uniform(50, 500, n),        # disk I/O operations
+    'network_mbps': np.random.uniform(10, 1000, n),  # network speed in Mbps
+
+    # Categorical feature with INTENTIONAL inconsistencies:
+    # 'Linux', 'linux', 'LINUX' are all the same OS but written differently!
     'os_type': np.random.choice(
         ['Linux', 'Windows', 'linux', 'LINUX', 'windows', 'Win'], n
     ),
+
+    # Region with None values mixed in (simulates missing data)
     'region': np.random.choice(
         ['US-East', 'US-West', 'EU-Central', 'Asia-Pacific', None], n
     ),
+
+    # Ordinal feature: has a natural order (Low < Medium < High < Critical)
     'priority': np.random.choice(['Low', 'Medium', 'High', 'Critical'], n),
-    'uptime_hours': np.random.uniform(0, 8760, n),
-    'failed': np.random.choice([0, 1], n, p=[0.7, 0.3])  # Target
+
+    'uptime_hours': np.random.uniform(0, 8760, n),   # hours running (max ~1 year)
+
+    # TARGET VARIABLE: did the server fail? (0 = no, 1 = yes)
+    # 70% chance of no failure, 30% chance of failure
+    'failed': np.random.choice([0, 1], n, p=[0.7, 0.3])
 }
 
-df = pd.DataFrame(data)
+df = pd.DataFrame(data)   # convert the dictionary into a pandas DataFrame
 
-# Introduce missing values (~10% in some columns)
+# ---- INJECT PROBLEM 1: Missing values (~10% in some columns) ----
+# For each column, randomly set ~10% of values to NaN (Not a Number)
 for col in ['cpu_usage', 'memory_gb', 'disk_io']:
-    mask = np.random.random(n) < 0.1
-    df.loc[mask, col] = np.nan
+    mask = np.random.random(n) < 0.1   # True for ~10% of rows
+    df.loc[mask, col] = np.nan          # replace those rows with NaN
 
-# Introduce outliers
-df.loc[5, 'cpu_usage'] = 350.0    # Impossible: CPU > 100%
-df.loc[42, 'memory_gb'] = -16.0   # Impossible: negative memory
-df.loc[99, 'network_mbps'] = 50000  # Extreme outlier
+# ---- INJECT PROBLEM 2: Impossible outlier values ----
+df.loc[5, 'cpu_usage'] = 350.0    # ❌ CPU can't be > 100%
+df.loc[42, 'memory_gb'] = -16.0   # ❌ Memory can't be negative
+df.loc[99, 'network_mbps'] = 50000  # ❌ 50 Gbps is an extreme outlier
 
-# Introduce duplicates
+# ---- INJECT PROBLEM 3: Duplicate rows ----
+# Copy rows 10-14 and append them to the end (simulates double-logging)
 df = pd.concat([df, df.iloc[10:15]], ignore_index=True)
 
-print(f"Dataset shape: {df.shape}")
+print(f"Dataset shape: {df.shape}")   # should be (205, 10) — 200 + 5 duplicates
 print(f"\nFirst 5 rows:")
-df.head()</code></pre>
+df.head()   # display the first 5 rows to get a quick look</code></pre>
 
             <div class="warning-box">
                 <strong>What we just injected:</strong>
@@ -390,46 +423,84 @@ df.head()</code></pre>
             <p>Before cleaning, you must <strong>understand</strong> the mess. Never clean blindly.</p>
 
             <h3>4.1 Basic Info</h3>
-            <pre><code class="language-python">print("=" * 50)
+            <pre><code class="language-python"># ============================================================
+# STEP 1: EXPLORE THE DATA
+# Before cleaning anything, understand what you're working with.
+# Key questions: How big? What types? What does it look like?
+# ============================================================
+
+print("=" * 50)
 print("DATASET OVERVIEW")
 print("=" * 50)
 
+# shape returns (rows, columns) — tells us the size of the dataset
 print(f"\nShape: {df.shape[0]} rows x {df.shape[1]} columns")
+
+# dtypes shows the data type of each column (float64, object, int64, etc.)
+# 'object' usually means text/strings — these are categorical features
 print(f"\nColumn types:")
 print(df.dtypes)
+
+# describe() shows statistics for numerical columns: count, mean, std, min, max, etc.
+# Look for suspicious values: negative numbers, impossibly large values, etc.
 print(f"\nBasic statistics:")
 df.describe()</code></pre>
 
             <h3>4.2 Missing Values Report</h3>
-            <pre><code class="language-python">def missing_report(df):
+            <pre><code class="language-python"># ============================================================
+# MISSING VALUES REPORT
+# This reusable function shows which columns have missing data
+# and what percentage is missing. Very useful for any project.
+# ============================================================
+def missing_report(df):
     """Generate a missing values report."""
+    # isnull() returns True/False for each cell, .sum() counts Trues per column
     missing = df.isnull().sum()
+
+    # Calculate what percentage of rows are missing for each column
     percent = (missing / len(df)) * 100
+
+    # Build a nice summary DataFrame
     report = pd.DataFrame({
         'Missing Count': missing,
-        'Percent (%)': percent.round(1)
+        'Percent (%)': percent.round(1)   # round to 1 decimal place
     })
+
+    # Only show columns that actually have missing values
     report = report[report['Missing Count'] > 0]
+
+    # Sort by worst (most missing) first
     return report.sort_values('Percent (%)', ascending=False)
 
 print("\nMissing Values Report:")
 print(missing_report(df))</code></pre>
 
             <h3>4.3 Identify Problems</h3>
-            <pre><code class="language-python">print("\n--- Problem 1: Inconsistent categories ---")
+            <pre><code class="language-python"># --- PROBLEM 1: Inconsistent categories ---
+# .unique() shows all distinct values in a column.
+# If you see 'Linux', 'linux', 'LINUX' — they should all be ONE category.
+print("\n--- Problem 1: Inconsistent categories ---")
 print(f"Unique os_type values: {df['os_type'].unique()}")
 # Notice: 'Linux', 'linux', 'LINUX' are the same thing!
 
+# --- PROBLEM 2: Outliers ---
+# Check the min and max of numerical columns for impossible values.
+# CPU > 100%? Negative memory? These are red flags.
 print("\n--- Problem 2: Outliers ---")
 print(f"CPU usage range: [{df['cpu_usage'].min():.1f}, {df['cpu_usage'].max():.1f}]")
 print(f"Memory range: [{df['memory_gb'].min():.1f}, {df['memory_gb'].max():.1f}]")
 print(f"Network range: [{df['network_mbps'].min():.1f}, {df['network_mbps'].max():.1f}]")
 
+# --- PROBLEM 3: Duplicates ---
+# .duplicated() returns True for rows that are exact copies of earlier rows.
+# .sum() counts how many duplicates exist.
 print("\n--- Problem 3: Duplicates ---")
 print(f"Duplicate rows: {df.duplicated().sum()}")</code></pre>
 
             <div class="insight-box">
-                <strong>Discussion:</strong> Before moving on, list every problem you found. How many issues did you identify? A typical dirty dataset has 5-10 distinct problems. Finding them all before cleaning is critical — missed issues become hidden bugs in your model.
+                <strong>Discussion:</strong> Before moving on, list every problem you found. How many issues did you
+                identify? A typical dirty dataset has 5-10 distinct problems. Finding them all before cleaning is
+                critical — missed issues become hidden bugs in your model.
             </div>
         </section>
 
@@ -441,41 +512,67 @@ print(f"Duplicate rows: {df.duplicated().sum()}")</code></pre>
             <p>Now we fix the problems one by one, in order of severity.</p>
 
             <h3>5.1 Remove Duplicates</h3>
-            <pre><code class="language-python">print(f"Before: {len(df)} rows")
-df = df.drop_duplicates()
+            <pre><code class="language-python"># ============================================================
+# REMOVE DUPLICATES
+# drop_duplicates() removes rows that are exact copies of
+# another row. Keeps the first occurrence, drops the rest.
+# ============================================================
+print(f"Before: {len(df)} rows")
+
+df = df.drop_duplicates()   # remove all exact duplicate rows
+
 print(f"After:  {len(df)} rows")
-print(f"Removed {205 - len(df)} duplicate rows")</code></pre>
+print(f"Removed {205 - len(df)} duplicate rows")
+# We injected 5 duplicates earlier, so 5 rows should be removed.</code></pre>
 
             <h3>5.2 Standardize Categorical Values</h3>
-            <pre><code class="language-python"># Standardize os_type: all variations -> consistent format
+            <pre><code class="language-python"># ============================================================
+# STANDARDIZE CATEGORICAL VALUES
+# 'Linux', 'linux', 'LINUX' are all the same OS — but the
+# computer treats them as different categories! We must map
+# all variations to a single consistent format.
+# ============================================================
+
+# Create a dictionary that maps every variant to the correct name
 os_mapping = {
-    'Linux': 'Linux', 'linux': 'Linux', 'LINUX': 'Linux',
-    'Windows': 'Windows', 'windows': 'Windows', 'Win': 'Windows'
+    'Linux': 'Linux', 'linux': 'Linux', 'LINUX': 'Linux',      # all → 'Linux'
+    'Windows': 'Windows', 'windows': 'Windows', 'Win': 'Windows'  # all → 'Windows'
 }
+
+# .map() replaces each value using the dictionary as a lookup table
 df['os_type'] = df['os_type'].map(os_mapping)
 
 print(f"OS types after cleaning: {df['os_type'].unique()}")
-# Now we only have: ['Linux', 'Windows']</code></pre>
+# Now we only have: ['Linux', 'Windows'] — clean and consistent!</code></pre>
 
             <h3>5.3 Handle Outliers</h3>
-            <pre><code class="language-python"># CPU usage must be between 0 and 100
+            <pre><code class="language-python"># ============================================================
+# HANDLE OUTLIERS
+# Replace impossible values with NaN. We DON'T delete the
+# entire row — the other columns in that row are still valid.
+# Later, imputation will fill these NaNs with reasonable estimates.
+# ============================================================
+
+# CPU usage MUST be between 0% and 100% — anything else is a sensor error
 print(f"\nCPU outliers (>100 or <0): "
       f"{((df['cpu_usage'] > 100) | (df['cpu_usage'] < 0)).sum()}")
-df.loc[df['cpu_usage'] > 100, 'cpu_usage'] = np.nan
-df.loc[df['cpu_usage'] < 0, 'cpu_usage'] = np.nan
+df.loc[df['cpu_usage'] > 100, 'cpu_usage'] = np.nan   # replace impossible highs
+df.loc[df['cpu_usage'] < 0, 'cpu_usage'] = np.nan     # replace impossible negatives
 
-# Memory must be positive
+# Memory MUST be positive — negative RAM makes no sense
 print(f"Memory outliers (<0): {(df['memory_gb'] < 0).sum()}")
-df.loc[df['memory_gb'] < 0, 'memory_gb'] = np.nan
+df.loc[df['memory_gb'] < 0, 'memory_gb'] = np.nan     # replace negatives with NaN
 
-# Cap network at reasonable max (10 Gbps = 10000 Mbps)
+# Network speed above 10 Gbps (10,000 Mbps) is extremely unlikely — treat as error
 print(f"Network outliers (>10000): {(df['network_mbps'] > 10000).sum()}")
-df.loc[df['network_mbps'] > 10000, 'network_mbps'] = np.nan
+df.loc[df['network_mbps'] > 10000, 'network_mbps'] = np.nan  # replace extreme outliers
 
 print("\nOutliers replaced with NaN for imputation.")</code></pre>
 
             <div class="note-box">
-                <strong>Why replace with NaN?</strong> Rather than deleting entire rows with outliers (losing other valid columns), we replace just the impossible value with NaN and let imputation fill it with a reasonable estimate.
+                <strong>Why replace with NaN?</strong> Rather than deleting entire rows with outliers (losing other
+                valid columns), we replace just the impossible value with NaN and let imputation fill it with a
+                reasonable estimate.
             </div>
         </section>
 
@@ -484,40 +581,64 @@ print("\nOutliers replaced with NaN for imputation.")</code></pre>
             <h2>6. Step 3 — Handle Missing Values</h2>
             <div class="step-indicator">STEP 3 OF 6 &bull; Imputation</div>
 
-            <pre><code class="language-python"># Check missing values after outlier handling
+            <pre><code class="language-python"># After replacing outliers with NaN, we now have MORE missing values
+# than before. Let's see the updated report before we fill them in.
 print("Missing values after outlier cleanup:")
-print(missing_report(df))</code></pre>
+print(missing_report(df))   # reuse the function we defined in Section 4</code></pre>
 
             <h3>6.1 Impute Numerical Columns</h3>
-            <pre><code class="language-python"># Strategy: median for numerical columns (robust to remaining outliers)
+            <pre><code class="language-python"># ============================================================
+# IMPUTE NUMERICAL COLUMNS
+# Strategy: fill missing values with the MEDIAN of that column.
+# Why median instead of mean? Because median is ROBUST to
+# outliers — a few extreme values won't skew it.
+# ============================================================
 numerical_cols = ['cpu_usage', 'memory_gb', 'disk_io',
                   'network_mbps', 'uptime_hours']
 
 for col in numerical_cols:
+    # Only process columns that actually have missing values
     if df[col].isnull().any():
-        median_val = df[col].median()
-        count = df[col].isnull().sum()
+        median_val = df[col].median()       # calculate the median (middle value)
+        count = df[col].isnull().sum()       # count how many NaNs we're filling
+
+        # fillna() replaces all NaN values with the median
+        # inplace=True modifies df directly (no need to reassign)
         df[col].fillna(median_val, inplace=True)
+
         print(f"Filled {count} missing values in '{col}' "
               f"with median = {median_val:.2f}")</code></pre>
 
             <h3>6.2 Impute Categorical Columns</h3>
-            <pre><code class="language-python"># Strategy: mode (most frequent) for categorical columns
-categorical_cols = ['region']
+            <pre><code class="language-python"># ============================================================
+# IMPUTE CATEGORICAL COLUMNS
+# Strategy: fill missing values with the MODE (most frequent value).
+# You can't take the mean of categories like 'US-East' — mode
+# is the only sensible option for text/categorical data.
+# ============================================================
+categorical_cols = ['region']   # 'region' has None values from our data generation
 
 for col in categorical_cols:
     if df[col].isnull().any():
+        # mode() returns the most common value(s) as a Series; [0] takes the first
         mode_val = df[col].mode()[0]
         count = df[col].isnull().sum()
+
+        # Replace all NaN values with the most frequent category
         df[col].fillna(mode_val, inplace=True)
+
         print(f"Filled {count} missing values in '{col}' "
               f"with mode = '{mode_val}'")
 
-# Verify: no more missing values
-print(f"\nRemaining missing values: {df.isnull().sum().sum()}")</code></pre>
+# Final verification: all missing values should now be fixed
+# .isnull().sum().sum() double-sums: first per column, then total
+print(f"\nRemaining missing values: {df.isnull().sum().sum()}")  # should be 0!</code></pre>
 
             <div class="success-box">
-                <strong>Checkpoint:</strong> At this point, your dataset should have <strong>zero missing values</strong>, <strong>zero duplicates</strong>, <strong>consistent categories</strong>, and <strong>no impossible outliers</strong>. Run <code>df.info()</code> and <code>df.describe()</code> to verify.
+                <strong>Checkpoint:</strong> At this point, your dataset should have <strong>zero missing
+                    values</strong>, <strong>zero duplicates</strong>, <strong>consistent categories</strong>, and
+                <strong>no impossible outliers</strong>. Run <code>df.info()</code> and <code>df.describe()</code> to
+                verify.
             </div>
         </section>
 
@@ -528,37 +649,63 @@ print(f"\nRemaining missing values: {df.isnull().sum().sum()}")</code></pre>
 
             <div class="tool-comparison">
                 <div class="tool-card">
-                    <h3 style="color: #3b82f6;"><i data-lucide="grid-3x3" style="color: #3b82f6"></i> One-Hot (Nominal)</h3>
+                    <h3 style="color: #3b82f6;"><i data-lucide="grid-3x3" style="color: #3b82f6"></i> One-Hot (Nominal)
+                    </h3>
                     <p style="color: #d4d4d8;">For data with <strong>no natural order</strong>: os_type, region.</p>
-                    <p style="color: #a1a1aa; font-size: 0.85rem;">Creates binary columns. "Linux" → [1, 0], "Windows" → [0, 1]</p>
+                    <p style="color: #a1a1aa; font-size: 0.85rem;">Creates binary columns. "Linux" → [1, 0], "Windows" →
+                        [0, 1]</p>
                 </div>
                 <div class="tool-card">
-                    <h3 style="color: #8b5cf6;"><i data-lucide="arrow-up-narrow-wide" style="color: #8b5cf6"></i> Label (Ordinal)</h3>
+                    <h3 style="color: #8b5cf6;"><i data-lucide="arrow-up-narrow-wide" style="color: #8b5cf6"></i> Label
+                        (Ordinal)</h3>
                     <p style="color: #d4d4d8;">For data with <strong>natural order</strong>: priority.</p>
-                    <p style="color: #a1a1aa; font-size: 0.85rem;">Assigns integers: Low=0, Medium=1, High=2, Critical=3</p>
+                    <p style="color: #a1a1aa; font-size: 0.85rem;">Assigns integers: Low=0, Medium=1, High=2, Critical=3
+                    </p>
                 </div>
             </div>
 
             <h3>7.1 One-Hot Encoding for Nominal Data</h3>
-            <pre><code class="language-python"># os_type and region have NO natural order -> One-Hot Encoding
-print("Before encoding:")
-print(f"  os_type unique: {df['os_type'].unique()}")
-print(f"  region unique: {df['region'].unique()}")
+            <pre><code class="language-python"># ============================================================
+# ONE-HOT ENCODING FOR NOMINAL (UNORDERED) DATA
+# os_type and region have NO natural ranking — 'Linux' is not
+# "greater than" 'Windows'. So we use One-Hot Encoding:
+# each category becomes its own binary (0/1) column.
+# drop_first=True avoids the dummy variable trap (redundant column).
+# ============================================================
 
+# First, let's see what categories exist before encoding
+print("Before encoding:")
+print(f"  os_type unique: {df['os_type'].unique()}")   # ['Linux', 'Windows']
+print(f"  region unique: {df['region'].unique()}")     # ['US-East', 'US-West', ...]
+
+# pd.get_dummies() creates binary columns for each category.
+# columns= specifies which columns to encode.
+# drop_first=True drops one category per feature (prevents multicollinearity).
 df_encoded = pd.get_dummies(df, columns=['os_type', 'region'], drop_first=True)
 
+# Show the new column names that were created
 print(f"\nAfter encoding — new columns:")
 new_cols = [c for c in df_encoded.columns if 'os_type' in c or 'region' in c]
 print(f"  {new_cols}")
-print(f"\nDataset shape: {df_encoded.shape}")</code></pre>
+# e.g., ['os_type_Windows', 'region_EU-Central', 'region_US-East', 'region_US-West']
+
+print(f"\nDataset shape: {df_encoded.shape}")  # more columns now due to one-hot</code></pre>
 
             <h3>7.2 Label Encoding for Ordinal Data</h3>
-            <pre><code class="language-python"># priority has natural order: Low < Medium < High < Critical
+            <pre><code class="language-python"># ============================================================
+# LABEL ENCODING FOR ORDINAL (ORDERED) DATA
+# 'priority' HAS a natural ranking: Low < Medium < High < Critical.
+# So we assign integers that preserve this order.
+# Unlike One-Hot, the numerical values here MEAN something:
+# 0 < 1 < 2 < 3 reflects the real importance ranking.
+# ============================================================
 priority_map = {'Low': 0, 'Medium': 1, 'High': 2, 'Critical': 3}
+
+# .map() replaces each string with its corresponding integer
 df_encoded['priority'] = df_encoded['priority'].map(priority_map)
 
 print(f"Priority encoding: {priority_map}")
-print(f"Priority values: {df_encoded['priority'].unique()}")</code></pre>
+print(f"Priority values: {df_encoded['priority'].unique()}")  # [0, 1, 2, 3]</code></pre>
         </section>
 
         <!-- Section 8: Feature Scaling -->
@@ -566,58 +713,79 @@ print(f"Priority values: {df_encoded['priority'].unique()}")</code></pre>
             <h2>8. Step 5 — Feature Scaling</h2>
             <div class="step-indicator">STEP 5 OF 6 &bull; Normalize the Numbers</div>
 
-            <pre><code class="language-python">from sklearn.preprocessing import StandardScaler, MinMaxScaler
+            <pre><code class="language-python"># ============================================================
+# FEATURE SCALING — COMPARING TWO APPROACHES
+# We'll try BOTH scalers on the same data so you can see
+# the difference. In practice, you choose one.
+# ============================================================
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-# Identify numerical columns to scale
+# These are the numerical columns we want to scale
 scale_cols = ['cpu_usage', 'memory_gb', 'disk_io',
               'network_mbps', 'uptime_hours']
 
-# Demonstrate both scalers
+# Show the original data statistics for comparison
 print("=== Before Scaling ===")
 print(df_encoded[scale_cols].describe().round(2))
+# Notice: each column has VERY different ranges (cpu: 10-95, network: 10-1000)
 
-# StandardScaler (Z-score)
+# ---- APPROACH 1: StandardScaler (Z-Score) ----
+# Centers data at mean=0, scales to std=1
+# Formula: z = (x - mean) / std
 scaler_std = StandardScaler()
-df_standard = df_encoded.copy()
-df_standard[scale_cols] = scaler_std.fit_transform(df_standard[scale_cols])
+df_standard = df_encoded.copy()                                       # make a copy (don't modify original)
+df_standard[scale_cols] = scaler_std.fit_transform(df_standard[scale_cols])  # fit + transform
 
 print("\n=== After StandardScaler ===")
 print(df_standard[scale_cols].describe().round(2))
-# Notice: mean ≈ 0, std ≈ 1
+# Notice: mean ≈ 0, std ≈ 1 for ALL columns now
 
-# MinMaxScaler
+# ---- APPROACH 2: MinMaxScaler ----
+# Scales all values to the range [0, 1]
+# Formula: x_scaled = (x - min) / (max - min)
 scaler_mm = MinMaxScaler()
-df_minmax = df_encoded.copy()
-df_minmax[scale_cols] = scaler_mm.fit_transform(df_minmax[scale_cols])
+df_minmax = df_encoded.copy()                                       # make a copy
+df_minmax[scale_cols] = scaler_mm.fit_transform(df_minmax[scale_cols])  # fit + transform
 
 print("\n=== After MinMaxScaler ===")
 print(df_minmax[scale_cols].describe().round(2))
-# Notice: min = 0, max = 1</code></pre>
+# Notice: min = 0, max = 1 for ALL columns now</code></pre>
 
             <h3>Visualize the Impact</h3>
-            <pre><code class="language-python">fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+            <pre><code class="language-python"># ============================================================
+# VISUALIZE THE IMPACT OF SCALING
+# We plot histograms of the SAME column (cpu_usage) before
+# and after each scaler to see how the distribution changes.
+# The SHAPE stays the same — only the X-axis values change.
+# ============================================================
 
-# Before scaling
+# Create a figure with 3 side-by-side subplots
+fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+# PLOT 1: Original data (no scaling)
+# x-axis: actual CPU percentages (10-95)
 axes[0].hist(df_encoded['cpu_usage'], bins=20,
              color='#3b82f6', alpha=0.7, edgecolor='black')
 axes[0].set_title('CPU Usage (Original)')
-axes[0].set_xlabel('Value')
+axes[0].set_xlabel('Value')      # raw values like 10, 50, 90
 
-# After StandardScaler
+# PLOT 2: After StandardScaler
+# x-axis: z-scores (roughly -2 to +2)
 axes[1].hist(df_standard['cpu_usage'], bins=20,
              color='#8b5cf6', alpha=0.7, edgecolor='black')
 axes[1].set_title('CPU Usage (StandardScaler)')
-axes[1].set_xlabel('Z-Score')
+axes[1].set_xlabel('Z-Score')    # centered at 0, in standard deviation units
 
-# After MinMaxScaler
+# PLOT 3: After MinMaxScaler
+# x-axis: scaled values from 0 to 1
 axes[2].hist(df_minmax['cpu_usage'], bins=20,
              color='#10b981', alpha=0.7, edgecolor='black')
 axes[2].set_title('CPU Usage (MinMaxScaler)')
-axes[2].set_xlabel('Scaled Value')
+axes[2].set_xlabel('Scaled Value')  # compressed to 0–1 range
 
-plt.tight_layout()
-plt.savefig('scaling_comparison.png', dpi=100, bbox_inches='tight')
-plt.show()</code></pre>
+plt.tight_layout()   # prevent labels from overlapping
+plt.savefig('scaling_comparison.png', dpi=100, bbox_inches='tight')  # save as image
+plt.show()           # display the plot</code></pre>
         </section>
 
         <!-- Section 9: Complete Pipeline -->
@@ -625,67 +793,98 @@ plt.show()</code></pre>
             <h2>9. Step 6 — The Complete Pipeline</h2>
             <div class="step-indicator">STEP 6 OF 6 &bull; Production-Ready</div>
 
-            <p>In practice, you should wrap everything into a <strong>Pipeline</strong> to avoid data leakage and ensure reproducibility.</p>
+            <p>In practice, you should wrap everything into a <strong>Pipeline</strong> to avoid data leakage and ensure
+                reproducibility.</p>
 
-            <pre><code class="language-python">from sklearn.model_selection import train_test_split
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
-                                   OrdinalEncoder)
+            <pre><code class="language-python"># ============================================================
+# THE COMPLETE SKLEARN PIPELINE
+# This wraps ALL preprocessing into a single, reusable object.
+# Benefits:
+#   1. Prevents data leakage (fit on train, transform on test)
+#   2. Reproducible (same pipeline can be saved and reloaded)
+#   3. Clean code (one object replaces dozens of manual steps)
+# ============================================================
 
-# Prepare features and target
-X = df.drop(columns=['server_id', 'failed'])
-y = df['failed']
+# Import all the tools we need
+from sklearn.model_selection import train_test_split   # split data into train/test
+from sklearn.compose import ColumnTransformer           # different transforms per column
+from sklearn.pipeline import Pipeline                   # chain steps together
+from sklearn.impute import SimpleImputer                # fill missing values
+from sklearn.preprocessing import (StandardScaler,      # z-score scaling
+                                   OneHotEncoder,       # nominal encoding
+                                   OrdinalEncoder)      # ordinal encoding
 
-# Define column groups
+# ---- Separate features (X) from target (y) ----
+# Drop server_id (just an identifier, not a feature) and 'failed' (the target)
+X = df.drop(columns=['server_id', 'failed'])  # features: everything except ID and target
+y = df['failed']                               # target: what we want to predict
+
+# ---- Define which columns get which treatment ----
 numeric_features = ['cpu_usage', 'memory_gb', 'disk_io',
-                    'network_mbps', 'uptime_hours']
-nominal_features = ['os_type', 'region']
-ordinal_features = ['priority']
+                    'network_mbps', 'uptime_hours']     # continuous numbers
+nominal_features = ['os_type', 'region']                # unordered categories
+ordinal_features = ['priority']                         # ordered categories
 
-# Define transformers
+# ---- Pipeline for NUMERICAL columns ----
+# Step 1: Fill missing values with median (robust to outliers)
+# Step 2: Standardize to mean=0, std=1
 numeric_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='median')),
-    ('scaler', StandardScaler())
+    ('imputer', SimpleImputer(strategy='median')),   # NaN → median
+    ('scaler', StandardScaler())                      # rescale to z-scores
 ])
 
+# ---- Pipeline for NOMINAL (unordered) columns ----
+# Step 1: Fill missing categories with the most frequent value
+# Step 2: One-hot encode (create binary columns)
 nominal_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('imputer', SimpleImputer(strategy='most_frequent')),  # NaN → mode
     ('onehot', OneHotEncoder(drop='first', handle_unknown='ignore'))
+    # drop='first' avoids dummy variable trap
+    # handle_unknown='ignore' handles categories in test that weren't in train
 ])
 
+# ---- Pipeline for ORDINAL (ordered) columns ----
+# Step 1: Fill missing with most frequent
+# Step 2: Encode as ordered integers (Low=0, Medium=1, High=2, Critical=3)
 ordinal_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('imputer', SimpleImputer(strategy='most_frequent')),   # NaN → mode
     ('ordinal', OrdinalEncoder(
-        categories=[['Low', 'Medium', 'High', 'Critical']]
+        categories=[['Low', 'Medium', 'High', 'Critical']]  # explicit order!
     ))
 ])
 
-# Combine all transformers
+# ---- Combine ALL transformers into one preprocessor ----
+# ColumnTransformer routes each column to the right pipeline.
 preprocessor = ColumnTransformer(transformers=[
-    ('num', numeric_transformer, numeric_features),
-    ('nom', nominal_transformer, nominal_features),
-    ('ord', ordinal_transformer, ordinal_features)
+    ('num', numeric_transformer, numeric_features),      # numbers → impute + scale
+    ('nom', nominal_transformer, nominal_features),      # unordered → impute + one-hot
+    ('ord', ordinal_transformer, ordinal_features)       # ordered → impute + ordinal encode
 ])
 
-# Split FIRST, then preprocess
+# ---- Split into train/test FIRST ----
+# ⚠ CRITICAL: always split BEFORE preprocessing to prevent data leakage!
+# test_size=0.2 means 80% for training, 20% for testing
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    X, y, test_size=0.2, random_state=42   # random_state for reproducibility
 )
 
-# Fit on train, transform both
+# ---- Fit on training data, transform both ----
+# fit_transform(): learn statistics from training data AND transform it
 X_train_clean = preprocessor.fit_transform(X_train)
-X_test_clean = preprocessor.transform(X_test)
+
+# transform(): apply the SAME statistics to test data (NO refitting!)
+# This ensures the test set is treated as truly "unseen" data.
+X_test_clean = preprocessor.transform(X_test)   # ⚠ No .fit() here!
 
 print(f"Training set: {X_train_clean.shape}")
 print(f"Test set:     {X_test_clean.shape}")
-print(f"\nData is now clean and model-ready!")</code></pre>
+print(f"\nData is now clean and model-ready! ✅")</code></pre>
 
             <div class="warning-box">
                 <strong>Critical Rule — Data Leakage:</strong>
                 <ul style="margin: 0.5rem 0 0 1.2rem;">
-                    <li><code>fit_transform()</code> on <strong>training data</strong> — learns the parameters (mean, std, categories).</li>
+                    <li><code>fit_transform()</code> on <strong>training data</strong> — learns the parameters (mean,
+                        std, categories).</li>
                     <li><code>transform()</code> on <strong>test data</strong> — applies the same parameters.</li>
                     <li>Never <code>fit()</code> on test data! This prevents <strong>data leakage</strong>.</li>
                 </ul>
@@ -698,7 +897,8 @@ print(f"\nData is now clean and model-ready!")</code></pre>
                 <span style="color:var(--accent);">transform(X_test)</span>
                 → Uses same \(\mu\), \(\sigma\), categories
                 → Transforms test data<br>
-                <span style="color:#a1a1aa;font-size:0.8rem;">The test set is treated as "unseen" data — just like production.</span>
+                <span style="color:#a1a1aa;font-size:0.8rem;">The test set is treated as "unseen" data — just like
+                    production.</span>
             </div>
         </section>
 
@@ -709,9 +909,15 @@ print(f"\nData is now clean and model-ready!")</code></pre>
             <div class="note-box">
                 <h4>Extend Your Pipeline</h4>
                 <ul>
-                    <li><strong>Experiment A:</strong> Replace <code>SimpleImputer(strategy='median')</code> with <code>strategy='mean'</code>. Compare the resulting distributions. When would one be better?</li>
-                    <li><strong>Experiment B:</strong> Add a new feature: <code>cpu_per_memory = cpu_usage / memory_gb</code>. This is called <strong>Feature Engineering</strong> — creating new informative features from existing ones.</li>
-                    <li><strong>Experiment C:</strong> Load a real dataset from Kaggle (e.g., the Titanic dataset) and apply the same pipeline. What additional cleaning steps are needed?</li>
+                    <li><strong>Experiment A:</strong> Replace <code>SimpleImputer(strategy='median')</code> with
+                        <code>strategy='mean'</code>. Compare the resulting distributions. When would one be better?
+                    </li>
+                    <li><strong>Experiment B:</strong> Add a new feature:
+                        <code>cpu_per_memory = cpu_usage / memory_gb</code>. This is called <strong>Feature
+                            Engineering</strong> — creating new informative features from existing ones.
+                    </li>
+                    <li><strong>Experiment C:</strong> Load a real dataset from Kaggle (e.g., the Titanic dataset) and
+                        apply the same pipeline. What additional cleaning steps are needed?</li>
                 </ul>
             </div>
         </section>
@@ -723,7 +929,8 @@ print(f"\nData is now clean and model-ready!")</code></pre>
             <div class="assignment-card">
                 <h3><i data-lucide="clipboard-list"></i> Deliverables</h3>
                 <ul>
-                    <li><strong>Coding:</strong> Submit a Jupyter Notebook that takes a "dirty" CSV file (provided on the course page), cleans it, and outputs preprocessed NumPy arrays. Your notebook must include:
+                    <li><strong>Coding:</strong> Submit a Jupyter Notebook that takes a "dirty" CSV file (provided on
+                        the course page), cleans it, and outputs preprocessed NumPy arrays. Your notebook must include:
                         <ol style="margin-top: 0.5rem;">
                             <li>An exploration section with missing value report and data type summary.</li>
                             <li>Handling of at least 3 types of data problems.</li>
@@ -732,8 +939,10 @@ print(f"\nData is now clean and model-ready!")</code></pre>
                             <li>A scikit-learn Pipeline wrapping all preprocessing steps.</li>
                         </ol>
                     </li>
-                    <li><strong>Report:</strong> Write a brief paragraph (3-5 sentences) explaining why you should never fit the scaler on the full dataset before splitting.</li>
-                    <li><strong>Bonus:</strong> Implement a custom function that takes any CSV and automatically detects column types, missing patterns, and suggests appropriate preprocessing strategies.</li>
+                    <li><strong>Report:</strong> Write a brief paragraph (3-5 sentences) explaining why you should never
+                        fit the scaler on the full dataset before splitting.</li>
+                    <li><strong>Bonus:</strong> Implement a custom function that takes any CSV and automatically detects
+                        column types, missing patterns, and suggests appropriate preprocessing strategies.</li>
                 </ul>
             </div>
 

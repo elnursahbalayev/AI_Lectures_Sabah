@@ -512,25 +512,50 @@
             </div>
 
             <h3>The Algorithm in Code</h3>
-            <pre><code class="language-python">def minimax(state, is_maximizing):
-    # Base case: game is over
-    if is_terminal(state):
-        return utility(state)
+            <pre><code class="language-python"># ============================================================
+# MINIMAX ALGORITHM
+# This function recursively evaluates every possible future
+# game state and returns the best achievable score.
+#
+# Parameters:
+#   state          - the current game state (e.g., board config)
+#   is_maximizing  - True if it's MAX's turn (us),
+#                    False if it's MIN's turn (opponent)
+#
+# Returns:
+#   The optimal utility value (integer score) for this state.
+# ============================================================
+def minimax(state, is_maximizing):
 
+    # ------- BASE CASE -------
+    # If the game is over (win / loss / draw), return the
+    # actual score.  No more moves to explore.
+    if is_terminal(state):
+        return utility(state)   # e.g. +1 (win), -1 (loss), 0 (draw)
+
+    # ------- MAX's TURN (our turn) -------
+    # We want to MAXIMIZE the score.
+    # Start with the worst possible value (-infinity) and
+    # try every legal move looking for something better.
     if is_maximizing:
-        best = -infinity
-        for action in get_actions(state):
-            child = result(state, action)
-            value = minimax(child, False)  # Opponent's turn
-            best = max(best, value)
-        return best
+        best = -infinity                    # worst case for MAX
+        for action in get_actions(state):   # loop over every legal move
+            child = result(state, action)   # apply the move → new state
+            value = minimax(child, False)   # recurse: now it's MIN's turn
+            best = max(best, value)         # keep the highest score found
+        return best                         # return the best score MAX can get
+
+    # ------- MIN's TURN (opponent's turn) -------
+    # The opponent wants to MINIMIZE our score.
+    # Start with the best possible value (+infinity) and
+    # try every legal move looking for something lower.
     else:
-        best = +infinity
-        for action in get_actions(state):
-            child = result(state, action)
-            value = minimax(child, True)   # Our turn
-            best = min(best, value)
-        return best</code></pre>
+        best = +infinity                    # worst case for MIN
+        for action in get_actions(state):   # loop over every legal move
+            child = result(state, action)   # apply the move → new state
+            value = minimax(child, True)    # recurse: now it's MAX's turn
+            best = min(best, value)         # keep the lowest score found
+        return best                         # return the best score MIN can get</code></pre>
 
             <h3>Complexity Analysis</h3>
             <div class="compare-grid">
@@ -594,27 +619,69 @@
             </div>
 
             <h3>The Pruned Algorithm</h3>
-            <pre><code class="language-python">def alpha_beta(state, alpha, beta, is_maximizing):
+            <pre><code class="language-python"># ============================================================
+# ALPHA-BETA PRUNING
+# An optimized version of Minimax that skips ("prunes")
+# branches that CANNOT affect the final decision.
+# It produces the EXACT SAME result as plain Minimax but
+# is much faster because it evaluates fewer nodes.
+#
+# Parameters:
+#   state          - current game state
+#   alpha (α)      - best score MAX can guarantee so far
+#                    (starts at -infinity)
+#   beta  (β)      - best score MIN can guarantee so far
+#                    (starts at +infinity)
+#   is_maximizing  - True if MAX's turn, False if MIN's turn
+#
+# KEY RULE: If α >= β, we PRUNE (stop exploring) the
+# current branch because one player already has a
+# better option elsewhere in the tree.
+# ============================================================
+def alpha_beta(state, alpha, beta, is_maximizing):
+
+    # Base case: game is over → return the actual score
     if is_terminal(state):
         return utility(state)
 
+    # ------- MAX's TURN -------
     if is_maximizing:
-        value = -infinity
-        for action in get_actions(state):
-            child = result(state, action)
+        value = -infinity                   # start with the worst for MAX
+        for action in get_actions(state):   # try each legal move
+            child = result(state, action)   # get the resulting state
+
+            # Recurse into opponent's turn, passing α and β down
             value = max(value, alpha_beta(child, alpha, beta, False))
+
+            # Update α: MAX now knows it can guarantee at least 'value'
             alpha = max(alpha, value)
+
+            # ✂ PRUNE CHECK (β cutoff):
+            # If α >= β, MIN already has a better path elsewhere,
+            # so MIN would NEVER let us reach this branch.
+            # No point exploring remaining children → break out.
             if alpha >= beta:
-                break  # β cutoff — MIN has a better path
+                break  # β cutoff — prune remaining siblings
         return value
+
+    # ------- MIN's TURN -------
     else:
-        value = +infinity
-        for action in get_actions(state):
-            child = result(state, action)
+        value = +infinity                   # start with the worst for MIN
+        for action in get_actions(state):   # try each legal move
+            child = result(state, action)   # get the resulting state
+
+            # Recurse into MAX's turn, passing α and β down
             value = min(value, alpha_beta(child, alpha, beta, True))
+
+            # Update β: MIN now knows it can guarantee at most 'value'
             beta = min(beta, value)
+
+            # ✂ PRUNE CHECK (α cutoff):
+            # If α >= β, MAX already has a better path elsewhere,
+            # so MAX would NEVER choose this branch.
+            # No point exploring remaining children → break out.
             if alpha >= beta:
-                break  # α cutoff — MAX has a better path
+                break  # α cutoff — prune remaining siblings
         return value</code></pre>
 
             <h3>How Much Does It Save?</h3>
@@ -667,25 +734,54 @@
             </div>
 
             <h3>Depth-Limited Minimax</h3>
-            <pre><code class="language-python">def minimax_depth_limited(state, depth, is_maximizing):
+            <pre><code class="language-python"># ============================================================
+# DEPTH-LIMITED MINIMAX
+# In complex games (like Chess), the game tree is far too
+# large to search all the way to terminal states.
+# Solution: search only up to a fixed DEPTH, then use a
+# heuristic evaluation function to ESTIMATE the value of
+# the state we stopped at.
+#
+# Parameters:
+#   state          - current game state
+#   depth          - how many more levels we are allowed to
+#                    search (decreases by 1 each level)
+#   is_maximizing  - True if MAX's turn, False if MIN's turn
+#
+# Returns:
+#   The estimated utility value for this state.
+# ============================================================
+def minimax_depth_limited(state, depth, is_maximizing):
+
+    # Base case 1: game is actually over → use real utility
     if is_terminal(state):
         return utility(state)
-    if depth == 0:
-        return evaluate(state)  # Heuristic estimate
 
+    # Base case 2: we've reached our search depth limit
+    # Instead of exploring further, use a HEURISTIC function
+    # to estimate how good this state is (e.g., piece count
+    # in chess, mobility score, etc.)
+    if depth == 0:
+        return evaluate(state)  # heuristic estimate, NOT exact
+
+    # ------- MAX's TURN -------
     if is_maximizing:
-        best = -infinity
-        for action in get_actions(state):
-            child = result(state, action)
+        best = -infinity                    # worst case for MAX
+        for action in get_actions(state):   # try every legal move
+            child = result(state, action)   # apply the move
+            # Recurse with depth - 1 (one level closer to limit)
             value = minimax_depth_limited(child, depth - 1, False)
-            best = max(best, value)
+            best = max(best, value)         # keep the highest score
         return best
+
+    # ------- MIN's TURN -------
     else:
-        best = +infinity
-        for action in get_actions(state):
-            child = result(state, action)
+        best = +infinity                    # worst case for MIN
+        for action in get_actions(state):   # try every legal move
+            child = result(state, action)   # apply the move
+            # Recurse with depth - 1 (one level closer to limit)
             value = minimax_depth_limited(child, depth - 1, True)
-            best = min(best, value)
+            best = min(best, value)         # keep the lowest score
         return best</code></pre>
         </section>
 
