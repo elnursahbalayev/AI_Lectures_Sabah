@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4 Lecture: Regression Analysis | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Note / callout boxes */
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        /* Math display blocks */
+        .math-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Comparison layout */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        /* Programming comparison boxes */
+        .prog-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .prog-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .prog-card .prog-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .prog-card .prog-flow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+        }
+
+        /* Key equations table */
+        .eq-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .eq-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+        }
+
+        .eq-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+        }
+
+        .eq-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Summary grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .summary-item {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .summary-item .num {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .summary-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0.3rem 0 0 0;
+        }
+
+        /* Data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Pipeline flow diagram */
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        /* Parameter grid */
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .param-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .param-card .term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .param-card .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .param-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 700px) {
+
+            .compare-grid,
+            .prog-compare,
+            .param-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position:fixed;top:0;left:0;height:4px;background:var(--primary);z-index:9999;width:0%;transition:width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Lectures</a></li>
+            <li><a href="tutorial_4.html">Tutorial 4</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+
+        <!-- ── HEADER ─────────────────────────────────────────────────────── -->
+        <header class="article-header">
+            <span class="badge">Week 04 Lecture</span>
+            <h1>Regression<br>Analysis</h1>
+            <p class="subtitle">Drawing the line — literally. Learn how machines find the optimal line through data
+                to make predictions using weights, biases, and gradient descent.</p>
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color:var(--text-muted);font-size:0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── SECTION 1: WHAT IS REGRESSION? ─────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>1. What is Regression?</h2>
+
+            <p>In Machine Learning, we make two broad types of predictions. Today we focus on
+                <strong>Regression</strong> — predicting a continuous numerical value.
+            </p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Output</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Regression</strong></td>
+                        <td>A continuous number</td>
+                        <td>Predict house price: $342,500</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Classification</strong></td>
+                        <td>A discrete label</td>
+                        <td>Predict spam or not: "Spam"</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>The Paradigm Shift</h3>
+            <div class="prog-compare">
+                <div class="prog-card">
+                    <div class="prog-label">Traditional Programming</div>
+                    <div class="prog-flow">
+                        <span style="color:#ef4444;">Rules</span> + <span style="color:var(--primary);">Data</span> →
+                        <span style="color:#4ade80;">Answer</span>
+                    </div>
+                </div>
+                <div class="prog-card">
+                    <div class="prog-label">Machine Learning</div>
+                    <div class="prog-flow">
+                        <span style="color:var(--primary);">Data</span> + <span style="color:#4ade80;">Answers</span> →
+                        <span style="color:#ef4444;">Rules (Model)</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Where is Regression Used?</h3>
+            <ul>
+                <li><strong>Housing prices</strong> — predict price from square footage, bedrooms, location.</li>
+                <li><strong>CPU temperature</strong> — predict temperature from load, fan speed, ambient temp.</li>
+                <li><strong>Stock prices</strong> — predict next day's close from historical data.</li>
+                <li><strong>Medical dosage</strong> — predict optimal drug dosage from patient weight, age.</li>
+                <li><strong>Energy consumption</strong> — predict power usage from weather, time of day.</li>
+            </ul>
+        </section>
+
+        <!-- ── SECTION 2: SIMPLE LINEAR REGRESSION ────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>2. Simple Linear Regression</h2>
+
+            <p>The simplest regression model fits a straight line through data:</p>
+
+            <div class="math-block">
+                \[\hat{y} = wx + b\]
+            </div>
+
+            <div class="param-grid">
+                <div class="param-card">
+                    <div class="term">\(\hat{y}\)</div>
+                    <div class="name">Prediction</div>
+                    <div class="desc">The model's predicted output value</div>
+                </div>
+                <div class="param-card">
+                    <div class="term">\(x\)</div>
+                    <div class="name">Input Feature</div>
+                    <div class="desc">The data point's feature value</div>
+                </div>
+                <div class="param-card">
+                    <div class="term">\(w\)</div>
+                    <div class="name">Weight (slope)</div>
+                    <div class="desc">Controls how much \(x\) influences the prediction</div>
+                </div>
+                <div class="param-card">
+                    <div class="term">\(b\)</div>
+                    <div class="name">Bias (intercept)</div>
+                    <div class="desc">The baseline prediction when \(x = 0\)</div>
+                </div>
+            </div>
+
+            <h3>Weights and Biases — The Core Parameters</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Role</th>
+                        <th>Analogy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Weight</strong> (\(w\))</td>
+                        <td>Controls the slope — how much \(x\) influences \(\hat{y}\)</td>
+                        <td>The "knob" that adjusts sensitivity</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bias</strong> (\(b\))</td>
+                        <td>Shifts the line up/down — the baseline prediction</td>
+                        <td>The starting point before any input</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>The weight determines how much "weight" or importance each feature has. The bias represents the
+                model's default assumption when all inputs are zero.</blockquote>
+
+            <div class="note-box">
+                <strong>Goal of Training:</strong> Find the optimal values of \(w\) and \(b\) that make the predictions
+                \(\hat{y}\) as close as possible to the real values \(y\). But how do we define "close"? That's where
+                the Loss Function comes in.
+            </div>
+        </section>
+
+        <!-- ── SECTION 3: LOSS FUNCTION — MSE ─────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>3. The Loss Function — MSE</h2>
+
+            <p>A loss function measures <strong>how wrong</strong> the model is. It takes the model's predictions and
+                the
+                true values, and outputs a single number: the <strong>error</strong>. Lower loss = better predictions.
+                Training = minimizing the loss.</p>
+
+            <h3>Mean Squared Error (MSE)</h3>
+            <div class="math-block">
+                \[\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2\]
+            </div>
+
+            <p>Where \(n\) = number of data points, \(y_i\) = actual value, \(\hat{y}_i\) = predicted value.</p>
+
+            <h3>Why Squared?</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Reason</th>
+                        <th>Explanation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Positive errors</strong></td>
+                        <td>Squaring ensures negative and positive errors don't cancel out</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Penalizes big mistakes</strong></td>
+                        <td>An error of 10 costs 100 (10²), not just 10 — big mistakes are punished harder</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Differentiable</strong></td>
+                        <td>The squared function is smooth, so we can compute gradients for optimization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Convex</strong></td>
+                        <td>MSE creates a bowl-shaped surface — Gradient Descent is guaranteed to find the minimum</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Worked Example</h3>
+            <pre><code class="language-python"># Suppose our model predicts these values for 3 data points:
+predictions = [3.0, 5.5, 7.2]
+actuals     = [3.5, 5.0, 7.0]
+
+# Compute error for each data point:
+# Point 1: (3.5 - 3.0)² = 0.25
+# Point 2: (5.0 - 5.5)² = 0.25
+# Point 3: (7.0 - 7.2)² = 0.04
+
+# MSE = average of squared errors = (0.25 + 0.25 + 0.04) / 3 = 0.18
+mse = sum((a - p)**2 for a, p in zip(actuals, predictions)) / len(actuals)
+print(f"MSE = {mse:.2f}")  # → 0.18</code></pre>
+
+            <div class="insight-box">
+                <strong>Key Insight:</strong> An MSE of 0.18 is good for this example, but MSE values are
+                <strong>scale-dependent</strong>. An MSE of 0.18 on prices in millions is excellent; on prices in cents,
+                it's terrible. That's why we also use RMSE (same units as the target).
+            </div>
+        </section>
+
+        <!-- ── SECTION 4: GRADIENT DESCENT FOR REGRESSION ─────────────────── -->
+        <section class="content-section text-content">
+            <h2>4. Gradient Descent for Regression</h2>
+
+            <p>Remember Gradient Descent from <strong>Week 1</strong>? We used it to find the minimum of a function.
+                Now, the function we're minimizing is the <strong>Loss Function (MSE)</strong>, and the parameters
+                we're optimizing are \(w\) and \(b\).</p>
+
+            <h3>The Gradients</h3>
+            <p>For MSE with a simple linear model \(\hat{y} = wx + b\):</p>
+            <div class="math-block">
+                \[\frac{\partial \text{MSE}}{\partial w} = -\frac{2}{n} \sum_{i=1}^{n} x_i (y_i - \hat{y}_i)\]
+            </div>
+            <div class="math-block">
+                \[\frac{\partial \text{MSE}}{\partial b} = -\frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)\]
+            </div>
+
+            <h3>The Update Rule</h3>
+            <p>At each step, move \(w\) and \(b\) in the direction that reduces the loss:</p>
+            <div class="math-block">
+                \[w \leftarrow w - \alpha \cdot \frac{\partial \text{MSE}}{\partial w}\]
+            </div>
+            <div class="math-block">
+                \[b \leftarrow b - \alpha \cdot \frac{\partial \text{MSE}}{\partial b}\]
+            </div>
+            <p>Where \(\alpha\) is the <strong>learning rate</strong> (from Week 1).</p>
+
+            <h3>The Training Loop</h3>
+            <pre><code class="language-python"># ============================================================
+# GRADIENT DESCENT FOR LINEAR REGRESSION — FROM SCRATCH
+# This is the core training loop that iteratively adjusts
+# w and b to minimize MSE. Same concept as Week 1, but now
+# applied to a real ML model.
+# ============================================================
+import numpy as np
+
+def train_linear_regression(X, y, lr=0.01, epochs=1000):
+    """Train a simple linear model y = w*x + b using gradient descent."""
+    w = 0.0  # initialize weight to zero
+    b = 0.0  # initialize bias to zero
+    n = len(X)
+
+    for epoch in range(epochs):
+        # FORWARD PASS: compute predictions with current w and b
+        y_pred = w * X + b
+
+        # COMPUTE GRADIENTS: partial derivatives of MSE w.r.t. w and b
+        dw = (-2/n) * np.sum(X * (y - y_pred))   # gradient for weight
+        db = (-2/n) * np.sum(y - y_pred)          # gradient for bias
+
+        # UPDATE PARAMETERS: step in the direction that reduces loss
+        w -= lr * dw   # adjust weight
+        b -= lr * db   # adjust bias
+
+        # LOG PROGRESS: print MSE every 200 epochs
+        if epoch % 200 == 0:
+            mse = np.mean((y - y_pred) ** 2)
+            print(f"Epoch {epoch}: MSE = {mse:.4f}, w = {w:.4f}, b = {b:.4f}")
+
+    return w, b</code></pre>
+
+            <h3>The Normal Equation — An Alternative</h3>
+            <p>For linear regression, there's a <strong>closed-form solution</strong> — no iteration needed:</p>
+            <div class="math-block">
+                \[\mathbf{w} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y}\]
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:var(--primary);">Gradient Descent</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;"><strong>Pro:</strong> Works for any model; scales to huge
+                        datasets.<br><strong>Con:</strong> Requires tuning learning rate; iterative.</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:var(--accent);">Normal Equation</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;"><strong>Pro:</strong> Exact answer in one step; no
+                        hyperparameters.<br><strong>Con:</strong> Slow for large datasets (\(O(n^3)\) matrix inversion);
+                        only works for linear models.</p>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <strong>In practice:</strong> Scikit-learn uses optimized variants of both approaches internally. You
+                don't need to choose — but you <strong>must</strong> understand both.
+            </div>
+        </section>
+
+        <!-- ── SECTION 5: MULTIPLE LINEAR REGRESSION ──────────────────────── -->
+        <section class="content-section text-content">
+            <h2>5. Multiple Linear Regression</h2>
+
+            <p>Real-world predictions depend on <strong>multiple features</strong>, not just one:</p>
+
+            <div class="math-block">
+                \[\hat{y} = w_1 x_1 + w_2 x_2 + \ldots + w_p x_p + b\]
+            </div>
+
+            <p>In vector notation:</p>
+            <div class="math-block">
+                \[\hat{y} = \mathbf{w}^T \mathbf{x} + b\]
+            </div>
+
+            <h3>Example: House Price Prediction</h3>
+            <div class="math-block">
+                \[\hat{\text{price}} = w_1 \cdot \text{sqft} + w_2 \cdot \text{bedrooms} + w_3 \cdot \text{age} + b\]
+            </div>
+            <p>Each weight tells us <strong>how much</strong> that feature contributes:</p>
+            <ul>
+                <li>\(w_1 = 150\) means each extra square foot adds $150 to the predicted price.</li>
+                <li>\(w_3 = -2000\) means each year of age <strong>reduces</strong> the predicted price by $2,000.</li>
+            </ul>
+
+            <h3>Feature Importance</h3>
+            <p>One advantage of linear regression: the <strong>weights are interpretable</strong>. Larger absolute
+                weights mean more important features (after scaling!).</p>
+
+            <div class="warning-box">
+                <strong>Critical:</strong> You must <strong>scale your features</strong> (Week 3) before interpreting
+                weights! If Square Footage is in range [500, 5000] and Bedrooms is in [1, 6], the raw weights are not
+                comparable.
+            </div>
+        </section>
+
+        <!-- ── SECTION 6: POLYNOMIAL REGRESSION ───────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>6. Polynomial Regression</h2>
+
+            <p>Not all relationships are linear. If data follows a curve, we need polynomial features:</p>
+            <div class="math-block">
+                \[\hat{y} = w_1 x + w_2 x^2 + w_3 x^3 + b\]
+            </div>
+
+            <p>This is still "linear" regression — it's linear in the <strong>parameters</strong> (\(w_1, w_2, w_3\)),
+                even though it's polynomial in the <strong>features</strong>.</p>
+
+            <h3>The Trick: Feature Engineering</h3>
+            <pre><code class="language-python"># Instead of changing the algorithm, we change the INPUT.
+# Transform: x → [x, x², x³] — add polynomial features as new columns.
+from sklearn.preprocessing import PolynomialFeatures
+
+poly = PolynomialFeatures(degree=3)      # create transformer for degree-3 polynomials
+X_poly = poly.fit_transform(X)           # adds x², x³ as new columns
+# Now apply standard LinearRegression to X_poly — the algorithm stays the same!</code></pre>
+
+            <h3>The Danger: Overfitting</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Degree</th>
+                        <th>Behavior</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Too low</strong> (degree=1)</td>
+                        <td>Too simple, misses the pattern</td>
+                        <td style="color:#ef4444;">Underfitting</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Just right</strong> (degree=2-3)</td>
+                        <td>Captures the trend, generalizes well</td>
+                        <td style="color:#4ade80;">Good fit</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Too high</strong> (degree=15)</td>
+                        <td>Memorizes training data, fails on new data</td>
+                        <td style="color:#ef4444;">Overfitting</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="insight-box">
+                <strong>Bias-Variance Tradeoff:</strong> Simple models have high bias (miss patterns) but low variance
+                (stable). Complex models have low bias but high variance (unstable). You'll encounter this tradeoff
+                throughout the entire course.
+            </div>
+        </section>
+
+        <!-- ── SECTION 7: EVALUATING REGRESSION MODELS ────────────────────── -->
+        <section class="content-section text-content">
+            <h2>7. Evaluating Regression Models</h2>
+
+            <h3>Metrics Overview</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Formula</th>
+                        <th>Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>MSE</strong></td>
+                        <td>\(\frac{1}{n}\sum(y_i - \hat{y}_i)^2\)</td>
+                        <td>Average squared error. Penalizes outliers.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RMSE</strong></td>
+                        <td>\(\sqrt{\text{MSE}}\)</td>
+                        <td>Same units as \(y\). More interpretable.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MAE</strong></td>
+                        <td>\(\frac{1}{n}\sum|y_i - \hat{y}_i|\)</td>
+                        <td>Average absolute error. Robust to outliers.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R² Score</strong></td>
+                        <td>\(1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i - \bar{y})^2}\)</td>
+                        <td>Variance explained. 1.0 = perfect.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>R² Score — The "Report Card"</h3>
+            <p>R² (Coefficient of Determination) tells you how much better your model is than simply predicting the
+                mean:</p>
+            <div class="math-block">
+                \[R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}} = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i -
+                \bar{y})^2}\]
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>R² Value</th>
+                        <th>Meaning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1.0</strong></td>
+                        <td>Perfect predictions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>0.8 — 0.99</strong></td>
+                        <td>Strong model</td>
+                    </tr>
+                    <tr>
+                        <td><strong>0.5 — 0.8</strong></td>
+                        <td>Moderate model</td>
+                    </tr>
+                    <tr>
+                        <td><strong>
+                                < 0.5</strong>
+                        </td>
+                        <td>Weak model — consider more features or a different algorithm</td>
+                    </tr>
+                    <tr>
+                        <td><strong>
+                                < 0</strong>
+                        </td>
+                        <td>Worse than predicting the mean — your model is broken</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Train vs. Test Performance</h3>
+            <pre><code class="language-python"># ALWAYS evaluate on held-out TEST data — not training data.
+# Training metrics can be misleading due to overfitting.
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Split data: 80% training, 20% testing
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train on training data
+model.fit(X_train, y_train)
+
+# Evaluate on TEST data (the model has never seen these)
+y_pred = model.predict(X_test)
+print(f"R² Score: {r2_score(y_test, y_pred):.4f}")
+print(f"RMSE: {np.sqrt(mean_squared_error(y_test, y_pred)):.4f}")</code></pre>
+
+            <div class="warning-box">
+                <strong>Golden Rule:</strong> If your training R² is 0.99 but your test R² is 0.30, you have
+                <strong>overfitting</strong>. The model memorized the training data instead of learning the pattern.
+            </div>
+        </section>
+
+        <!-- ── SECTION 8: PRACTICAL IMPLEMENTATION ────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>8. Practical Implementation with Scikit-learn</h2>
+
+            <h3>Complete Pipeline: Preprocess + Train + Evaluate</h3>
+            <pre><code class="language-python"># ============================================================
+# COMPLETE REGRESSION PIPELINE WITH SCIKIT-LEARN
+# This is the production-ready way to build a regression model.
+# The Pipeline chains preprocessing and model fitting together.
+# ============================================================
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+# ---- STEP 1: Create dataset ----
+np.random.seed(42)
+n = 200
+data = {
+    'sqft': np.random.uniform(500, 3500, n),
+    'bedrooms': np.random.randint(1, 6, n),
+    'age': np.random.uniform(0, 50, n),
+    'distance_to_center': np.random.uniform(1, 30, n),
+}
+df = pd.DataFrame(data)
+df['price'] = (
+    150 * df['sqft']
+    + 20000 * df['bedrooms']
+    - 2000 * df['age']
+    - 5000 * df['distance_to_center']
+    + 50000
+    + np.random.normal(0, 25000, n)   # noise
+)
+
+# ---- STEP 2: Separate features (X) and target (y) ----
+X = df.drop('price', axis=1)
+y = df['price']
+
+# ---- STEP 3: Train/test split BEFORE any preprocessing ----
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# ---- STEP 4: Build Pipeline (Scale → Fit) ----
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),       # standardize features first
+    ('model', LinearRegression())       # then fit linear regression
+])
+
+# ---- STEP 5: Train the pipeline ----
+pipeline.fit(X_train, y_train)
+
+# ---- STEP 6: Predict and evaluate on TEST data ----
+y_pred = pipeline.predict(X_test)
+
+print(f"R² Score: {r2_score(y_test, y_pred):.4f}")
+print(f"RMSE:     ${np.sqrt(mean_squared_error(y_test, y_pred)):,.0f}")
+print(f"MAE:      ${mean_absolute_error(y_test, y_pred):,.0f}")
+
+# ---- STEP 7: Interpret feature importance ----
+weights = pipeline.named_steps['model'].coef_
+for feat, w in sorted(zip(X.columns, weights), key=lambda x: abs(x[1]), reverse=True):
+    print(f"  {feat}: {w:+,.0f}")</code></pre>
+        </section>
+
+        <!-- ── SECTION 9: KEY EQUATIONS ───────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>9. Key Equations — Quick Reference</h2>
+
+            <table class="eq-table">
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Formula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Simple Linear Model</td>
+                        <td>\(\hat{y} = wx + b\)</td>
+                    </tr>
+                    <tr>
+                        <td>Multiple Linear Model</td>
+                        <td>\(\hat{y} = \mathbf{w}^T \mathbf{x} + b\)</td>
+                    </tr>
+                    <tr>
+                        <td>Mean Squared Error (MSE)</td>
+                        <td>\(\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2\)</td>
+                    </tr>
+                    <tr>
+                        <td>Gradient (w.r.t. \(w\))</td>
+                        <td>\(-\frac{2}{n}\sum x_i(y_i - \hat{y}_i)\)</td>
+                    </tr>
+                    <tr>
+                        <td>Gradient (w.r.t. \(b\))</td>
+                        <td>\(-\frac{2}{n}\sum(y_i - \hat{y}_i)\)</td>
+                    </tr>
+                    <tr>
+                        <td>Weight Update Rule</td>
+                        <td>\(w \leftarrow w - \alpha \cdot \frac{\partial \text{MSE}}{\partial w}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Normal Equation</td>
+                        <td>\(\mathbf{w} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}\)</td>
+                    </tr>
+                    <tr>
+                        <td>R² Score</td>
+                        <td>\(1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i - \bar{y})^2}\)</td>
+                    </tr>
+                    <tr>
+                        <td>RMSE</td>
+                        <td>\(\sqrt{\frac{1}{n}\sum(y_i - \hat{y}_i)^2}\)</td>
+                    </tr>
+                    <tr>
+                        <td>MAE</td>
+                        <td>\(\frac{1}{n}\sum|y_i - \hat{y}_i|\)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ── SECTION 10: SUMMARY ────────────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>10. Lecture Summary</h2>
+
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="num">1</div>
+                    <p>Linear Regression learns \(\hat{y} = wx + b\) — the foundation of supervised learning.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">2</div>
+                    <p>Weights & biases are learnable parameters — \(w\) controls sensitivity, \(b\) sets the baseline.
+                    </p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">3</div>
+                    <p>MSE measures error by squaring differences — differentiable, convex, penalizes big mistakes.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">4</div>
+                    <p>Gradient Descent iteratively adjusts \(w\) and \(b\) to minimize MSE using the learning rate.
+                    </p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">5</div>
+                    <p>Multiple regression extends to many features — weights become interpretable after scaling.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">6</div>
+                    <p>R² Score is the gold standard metric — 1.0 = perfect, always evaluate on test data.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── COMING NEXT ─────────────────────────────────────────────────── -->
+        <section class="content-section" style="border-top:1px solid var(--border);padding-top:3rem;text-align:center;">
+            <h3 style="color:var(--text-muted);text-transform:uppercase;font-size:0.9rem;letter-spacing:0.1em;">Coming
+                Next</h3>
+            <h2 style="border:none;padding:0;font-size:2.2rem;margin-bottom:0.5rem;">Tutorial 4: Predicting Housing
+                Prices</h2>
+            <p style="color:#a1a1aa;max-width:500px;margin:0 auto 2rem auto;">You just learned the theory. Now you will
+                build a regression model from scratch, compare it against Scikit-learn, and experiment with polynomial
+                features.</p>
+            <a href="tutorial_4.html" class="btn btn-primary" style="display:inline-flex;margin:0 auto;">
+                <i data-lucide="arrow-right"></i> Go to Tutorial 4
+            </a>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

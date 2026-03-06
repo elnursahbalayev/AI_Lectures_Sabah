@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4 Tutorial: Predicting Housing Prices | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Article specific overrides */
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Tool/strategy comparison */
+        .tool-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .tool-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        /* Data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Step indicator */
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Pipeline flow */
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        /* Assignment card */
+        .assignment-card {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .assignment-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        @media (max-width: 700px) {
+            .tool-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="lecture_4.html">Lecture 4</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 04 Tutorial</span>
+            <h1>Predicting Housing Prices:<br>Your First ML Model</h1>
+            <p class="subtitle">Build a Linear Regression model from scratch, compare it against Scikit-learn, and
+                experiment with polynomial features.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar
+                        Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1: Introduction -->
+        <section class="content-section text-content">
+            <h2>1. Introduction</h2>
+            <p>Last week, we cleaned messy data. Today, we use clean data to <strong>make predictions</strong>. We will
+                build a model that predicts <strong>housing prices</strong> based on features like square footage,
+                number
+                of bedrooms, and distance to the city center.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="target"></i> Today's Goal</h4>
+                <ul>
+                    <li>Implement Linear Regression from scratch using NumPy.</li>
+                    <li>Compare your implementation to Scikit-learn's <code>LinearRegression</code>.</li>
+                    <li>Visualize the regression line and residuals.</li>
+                    <li>Experiment with Polynomial Regression and observe overfitting.</li>
+                    <li>Build a complete Pipeline (preprocess + train + evaluate).</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: Environment Setup -->
+        <section class="content-section text-content">
+            <h2>2. Environment Setup</h2>
+
+            <pre><code class="language-python"># ============================================================
+# ENVIRONMENT SETUP
+# Import all libraries we'll need for this tutorial.
+# ============================================================
+
+import pandas as pd              # data manipulation
+import numpy as np               # numerical operations
+import matplotlib.pyplot as plt  # plotting
+
+# Scikit-learn: the industry-standard ML library
+from sklearn.linear_model import LinearRegression         # the model itself
+from sklearn.preprocessing import StandardScaler          # feature scaling (z-score)
+from sklearn.preprocessing import PolynomialFeatures      # polynomial feature engineering
+from sklearn.model_selection import train_test_split      # split data into train/test
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score  # evaluation
+from sklearn.pipeline import Pipeline                     # chain steps together
+
+import warnings
+warnings.filterwarnings('ignore')  # suppress warnings for cleaner output
+
+# Verify our setup
+print(f"Pandas:  {pd.__version__}")
+print(f"NumPy:   {np.__version__}")
+print("\nReady to build our first ML model!")</code></pre>
+        </section>
+
+        <!-- Section 3: Creating Our Dataset -->
+        <section class="content-section text-content">
+            <h2>3. Creating Our Dataset</h2>
+            <p>We'll generate a realistic housing dataset with known relationships so we can verify our model learns
+                them correctly.</p>
+
+            <pre><code class="language-python"># ============================================================
+# CREATE A REALISTIC HOUSING DATASET
+# We generate data with a KNOWN formula so we can verify that
+# our model correctly learns the underlying relationship.
+# ============================================================
+
+np.random.seed(42)   # reproducibility: same data every time
+n = 300              # number of houses
+
+# Generate features (input variables)
+data = {
+    'sqft': np.random.uniform(500, 4000, n),             # square footage
+    'bedrooms': np.random.randint(1, 6, n),               # number of bedrooms (1-5)
+    'age': np.random.uniform(0, 50, n),                   # age of house in years
+    'distance_km': np.random.uniform(1, 30, n),           # km to city center
+    'garage': np.random.choice([0, 1], n, p=[0.3, 0.7])   # has garage? (binary)
+}
+df = pd.DataFrame(data)
+
+# Generate target variable (price) using a KNOWN formula + noise
+# TRUE RELATIONSHIP the model should learn:
+#   price = 150*sqft + 25000*bedrooms - 2000*age - 3000*distance + 40000*garage + 50000
+df['price'] = (
+    150 * df['sqft'] +           # each sqft adds $150
+    25000 * df['bedrooms'] -     # each bedroom adds $25,000
+    2000 * df['age'] -           # each year of age subtracts $2,000
+    3000 * df['distance_km'] +   # each km to center subtracts $3,000
+    40000 * df['garage'] +       # having a garage adds $40,000
+    50000 +                      # base price
+    np.random.normal(0, 30000, n)  # random noise (simulates real-world variation)
+)
+
+print(f"Dataset shape: {df.shape}")   # (300, 6)
+print(f"\nFirst 5 rows:")
+df.head()</code></pre>
+
+            <div class="insight-box">
+                <strong>Why synthetic data?</strong> By using a known formula, we can check if the model correctly
+                recovers the true weights (150 for sqft, 25000 for bedrooms, etc.). In real projects, you won't know the
+                true formula — that's what the model is supposed to discover!
+            </div>
+        </section>
+
+        <!-- Section 4: Exploration -->
+        <section class="content-section text-content">
+            <h2>4. Step 1 — Exploration</h2>
+            <div class="step-indicator">STEP 1 OF 6 &bull; Know Your Data</div>
+
+            <h3>4.1 Basic Info</h3>
+            <pre><code class="language-python"># ============================================================
+# STEP 1: EXPLORE THE DATA
+# Before building any model, understand the data.
+# Key questions: What's the range? Any correlations?
+# ============================================================
+
+print("=" * 50)
+print("DATASET OVERVIEW")
+print("=" * 50)
+
+print(f"\nShape: {df.shape[0]} rows x {df.shape[1]} columns")
+print(f"\nColumn types:")
+print(df.dtypes)
+
+# describe() reveals ranges, means, and standard deviations
+print(f"\nBasic statistics:")
+df.describe().round(1)</code></pre>
+
+            <h3>4.2 Visualize Feature Relationships</h3>
+            <pre><code class="language-python"># ============================================================
+# SCATTER PLOTS: Feature vs. Price
+# Looking for linear relationships. Stronger relationships
+# (tighter clouds of points) mean that feature is more useful.
+# ============================================================
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+features = ['sqft', 'bedrooms', 'age', 'distance_km']
+colors = ['#3b82f6', '#8b5cf6', '#ef4444', '#f59e0b']
+
+for ax, feat, color in zip(axes.flatten(), features, colors):
+    ax.scatter(df[feat], df['price'], alpha=0.4, s=15, color=color)
+    ax.set_xlabel(feat)
+    ax.set_ylabel('Price ($)')
+    ax.set_title(f'Price vs {feat}')
+
+plt.tight_layout()
+plt.savefig('feature_relationships.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <div class="note-box">
+                <strong>Discussion:</strong> Which features show the strongest linear relationship with price? Which
+                look noisy? The scatter plot for <code>sqft</code> should show a clear upward trend (positive
+                correlation), while <code>age</code> should show a downward trend (negative correlation).
+            </div>
+        </section>
+
+        <!-- Section 5: Simple Linear Regression from Scratch -->
+        <section class="content-section text-content">
+            <h2>5. Step 2 — Linear Regression from Scratch</h2>
+            <div class="step-indicator">STEP 2 OF 6 &bull; Build It Yourself</div>
+
+            <p>Let's first implement regression with <strong>one feature</strong> (sqft) to understand the mechanics.
+            </p>
+
+            <h3>5.1 Prepare Data</h3>
+            <pre><code class="language-python"># ============================================================
+# PREPARE DATA FOR SIMPLE (ONE-FEATURE) REGRESSION
+# We use only 'sqft' as the input to keep things simple.
+# ============================================================
+
+X_simple = df['sqft'].values   # extract sqft as a 1D numpy array
+y = df['price'].values          # extract prices
+
+# Split: 80% train, 20% test (same split we'll use throughout)
+X_train_s, X_test_s, y_train, y_test = train_test_split(
+    X_simple, y, test_size=0.2, random_state=42
+)
+
+print(f"Training: {len(X_train_s)} samples")
+print(f"Test:     {len(X_test_s)} samples")</code></pre>
+
+            <h3>5.2 Gradient Descent Implementation</h3>
+            <pre><code class="language-python"># ============================================================
+# LINEAR REGRESSION FROM SCRATCH — GRADIENT DESCENT
+# This implements the training loop we learned in the lecture:
+#   1. Make predictions (forward pass)
+#   2. Compute gradients (how to improve)
+#   3. Update parameters (take a step)
+# ============================================================
+
+def linear_regression_gd(X, y, lr=0.0000001, epochs=1000):
+    """Train linear regression using Gradient Descent.
+
+    Args:
+        X: input features (1D array)
+        y: target values
+        lr: learning rate (step size) — tiny because X values are large (500-4000)
+        epochs: number of training iterations
+
+    Returns:
+        w: learned weight
+        b: learned bias
+        history: list of MSE values at each epoch (for plotting)
+    """
+    w = 0.0       # initialize weight to zero
+    b = 0.0       # initialize bias to zero
+    n = len(X)   # number of training samples
+    history = [] # track MSE over time to visualize convergence
+
+    for epoch in range(epochs):
+        # ---- FORWARD PASS: make predictions ----
+        y_pred = w * X + b            # predicted prices
+
+        # ---- COMPUTE LOSS: how wrong are we? ----
+        mse = np.mean((y - y_pred) ** 2)
+        history.append(mse)
+
+        # ---- COMPUTE GRADIENTS: which direction to move? ----
+        dw = (-2/n) * np.sum(X * (y - y_pred))   # gradient for weight
+        db = (-2/n) * np.sum(y - y_pred)          # gradient for bias
+
+        # ---- UPDATE PARAMETERS: take a step down the loss surface ----
+        w -= lr * dw   # adjust weight
+        b -= lr * db   # adjust bias
+
+        # Log progress every 200 epochs
+        if epoch % 200 == 0:
+            print(f"Epoch {epoch:4d} | MSE: {mse:>15,.0f} | w: {w:.4f} | b: {b:.2f}")
+
+    return w, b, history
+
+# ---- TRAIN our from-scratch model ----
+w, b, history = linear_regression_gd(X_train_s, y_train, lr=0.0000001, epochs=1000)
+
+print(f"\nFinal: w = {w:.4f}, b = {b:.2f}")
+print(f"Interpretation: each sqft adds ~${w:.0f} to predicted price")</code></pre>
+
+            <h3>5.3 Visualize Training Progress</h3>
+            <pre><code class="language-python"># ============================================================
+# VISUALIZE TRAINING
+# Left: loss curve (MSE over epochs) — should decrease
+# Right: regression line on test data
+# ============================================================
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# PLOT 1: Loss curve — shows how MSE decreases during training
+axes[0].plot(history, color='#3b82f6', linewidth=2)
+axes[0].set_xlabel('Epoch')
+axes[0].set_ylabel('MSE')
+axes[0].set_title('Training Loss Curve')
+axes[0].set_yscale('log')   # log scale makes the descent more visible
+
+# PLOT 2: Regression line overlaid on test data
+axes[1].scatter(X_test_s, y_test, alpha=0.5, s=20, color='#6b7280', label='Test data')
+x_line = np.linspace(X_test_s.min(), X_test_s.max(), 100)
+y_line = w * x_line + b
+axes[1].plot(x_line, y_line, color='#ef4444', linewidth=2, label='Our model')
+axes[1].set_xlabel('Square Footage')
+axes[1].set_ylabel('Price ($)')
+axes[1].set_title('Regression Line (from scratch)')
+axes[1].legend()
+
+plt.tight_layout()
+plt.savefig('regression_from_scratch.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 6: Compare with Scikit-learn -->
+        <section class="content-section text-content">
+            <h2>6. Step 3 — Compare with Scikit-learn</h2>
+            <div class="step-indicator">STEP 3 OF 6 &bull; Validate Your Code</div>
+
+            <h3>6.1 Fit Scikit-learn Model</h3>
+            <pre><code class="language-python"># ============================================================
+# SCIKIT-LEARN LINEAR REGRESSION — ONE LINE
+# Let's compare our from-scratch model to the industry standard.
+# sklearn uses the Normal Equation (exact solution) by default.
+# ============================================================
+
+sk_model = LinearRegression()                         # create model object
+sk_model.fit(X_train_s.reshape(-1, 1), y_train)  # fit (train) on training data
+# Note: reshape(-1, 1) converts 1D array to 2D column vector (sklearn requirement)
+
+# Compare the learned parameters
+print(f"Scikit-learn w = {sk_model.coef_[0]:.4f}")
+print(f"Scikit-learn b = {sk_model.intercept_:.2f}")
+print(f"\nOur model    w = {w:.4f}")
+print(f"Our model    b = {b:.2f}")</code></pre>
+
+            <h3>6.2 Evaluate Both Models</h3>
+            <pre><code class="language-python"># ============================================================
+# HEAD-TO-HEAD COMPARISON OF BOTH MODELS
+# Evaluate on the SAME test set using R², RMSE, and MAE.
+# ============================================================
+
+# Our model predictions
+y_pred_ours = w * X_test_s + b
+
+# Scikit-learn predictions
+y_pred_sk = sk_model.predict(X_test_s.reshape(-1, 1))
+
+# Print comparison table
+print("=" * 50)
+print("MODEL COMPARISON")
+print("=" * 50)
+print(f"\n{'Metric':<10} {'Our Model':>15} {'Scikit-learn':>15}")
+print("-" * 42)
+print(f"{'R²':<10} {r2_score(y_test, y_pred_ours):>15.4f} "
+      f"{r2_score(y_test, y_pred_sk):>15.4f}")
+print(f"{'RMSE':<10} ${np.sqrt(mean_squared_error(y_test, y_pred_ours)):>14,.0f} "
+      f"${np.sqrt(mean_squared_error(y_test, y_pred_sk)):>14,.0f}")
+print(f"{'MAE':<10} ${mean_absolute_error(y_test, y_pred_ours):>14,.0f} "
+      f"${mean_absolute_error(y_test, y_pred_sk):>14,.0f}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Discussion:</strong> Scikit-learn likely has slightly better metrics because it uses the Normal
+                Equation (exact optimal solution), while our gradient descent only ran for 1000 epochs. Try increasing
+                epochs to 10000 — the gap should shrink!
+            </div>
+        </section>
+
+        <!-- Section 7: Multiple Linear Regression -->
+        <section class="content-section text-content">
+            <h2>7. Step 4 — Multiple Linear Regression</h2>
+            <div class="step-indicator">STEP 4 OF 6 &bull; Use All Features</div>
+
+            <p>Now let's use <strong>all features</strong> to make better predictions. More features → more information
+                → better model.</p>
+
+            <pre><code class="language-python"># ============================================================
+# MULTIPLE LINEAR REGRESSION WITH PIPELINE
+# Use ALL features (sqft, bedrooms, age, distance, garage).
+# Pipeline ensures: scale first → then train the model.
+# ============================================================
+
+# Prepare all features and target
+X = df.drop('price', axis=1)   # all columns EXCEPT price
+y = df['price']                 # only price
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Build Pipeline: StandardScaler → LinearRegression
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),   # step 1: standardize features (mean=0, std=1)
+    ('model', LinearRegression())   # step 2: fit linear regression
+])
+
+# Train the pipeline
+pipeline.fit(X_train, y_train)
+
+# Predict on test data
+y_pred = pipeline.predict(X_test)
+
+# Evaluation metrics
+print("=" * 50)
+print("MULTIPLE LINEAR REGRESSION RESULTS")
+print("=" * 50)
+print(f"\nR² Score:  {r2_score(y_test, y_pred):.4f}")
+print(f"RMSE:      ${np.sqrt(mean_squared_error(y_test, y_pred)):,.0f}")
+print(f"MAE:       ${mean_absolute_error(y_test, y_pred):,.0f}")
+
+# Feature importance — which feature matters most?
+print(f"\n--- Feature Importance (scaled weights) ---")
+weights = pipeline.named_steps['model'].coef_
+for feat, w in sorted(zip(X.columns, weights),
+                       key=lambda x: abs(x[1]), reverse=True):
+    direction = "↑" if w > 0 else "↓"
+    print(f"  {feat:<15} {direction} {w:+10,.0f}")</code></pre>
+
+            <div class="success-box">
+                <strong>Key Observation:</strong> The R² score should be significantly higher (~0.9+) than our simple
+                one-feature model (~0.5). More relevant features = better predictions. The learned weights should be
+                close to our true formula values (150, 25000, -2000, -3000, 40000).
+            </div>
+        </section>
+
+        <!-- Section 8: Polynomial Regression -->
+        <section class="content-section text-content">
+            <h2>8. Step 5 — Polynomial Regression</h2>
+            <div class="step-indicator">STEP 5 OF 6 &bull; Beyond Straight Lines</div>
+
+            <p>Let's see what happens when we add polynomial features. This demonstrates the
+                <strong>Bias-Variance Tradeoff</strong> — too simple underfits, too complex overfits.
+            </p>
+
+            <pre><code class="language-python"># ============================================================
+# POLYNOMIAL REGRESSION — OVERFITTING DEMO
+# We try different polynomial degrees and compare how the
+# model performs on TRAIN vs TEST data.
+# ============================================================
+
+# Use just sqft for clear visualization
+X_sqft = df[['sqft']]
+y = df['price']
+
+X_train_p, X_test_p, y_train_p, y_test_p = train_test_split(
+    X_sqft, y, test_size=0.2, random_state=42
+)
+
+# Try polynomial degrees: 1 (linear), 2, 3, 10
+degrees = [1, 2, 3, 10]
+results = {}
+
+fig, axes = plt.subplots(1, 4, figsize=(20, 4))
+
+for ax, deg in zip(axes, degrees):
+    # Build pipeline: polynomial features → scale → regression
+    poly_pipeline = Pipeline([
+        ('poly', PolynomialFeatures(degree=deg, include_bias=False)),
+        ('scaler', StandardScaler()),
+        ('model', LinearRegression())
+    ])
+
+    poly_pipeline.fit(X_train_p, y_train_p)
+
+    # Compute R² on BOTH train and test
+    train_r2 = r2_score(y_train_p, poly_pipeline.predict(X_train_p))
+    test_r2 = r2_score(y_test_p, poly_pipeline.predict(X_test_p))
+    results[deg] = {'train_r2': train_r2, 'test_r2': test_r2}
+
+    # Plot the fitted curve
+    ax.scatter(X_test_p, y_test_p, alpha=0.3, s=15, color='#6b7280')
+    x_range = np.linspace(X_sqft.min(), X_sqft.max(), 200)
+    y_range = poly_pipeline.predict(x_range)
+    ax.plot(x_range, y_range, color='#ef4444', linewidth=2)
+    ax.set_title(f'Degree {deg}\nTrain R²={train_r2:.3f} | Test R²={test_r2:.3f}')
+    ax.set_xlabel('sqft')
+
+plt.tight_layout()
+plt.savefig('polynomial_comparison.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+# Summary table
+print("\n--- Polynomial Degree Comparison ---")
+print(f"{'Degree':<8} {'Train R²':>10} {'Test R²':>10} {'Status':>12}")
+print("-" * 42)
+for deg, scores in results.items():
+    gap = scores['train_r2'] - scores['test_r2']
+    if gap > 0.1:
+        status = "⚠ Overfitting"
+    elif scores['test_r2'] < 0.3:
+        status = "⚠ Underfitting"
+    else:
+        status = "✓ Good"
+    print(f"{deg:<8} {scores['train_r2']:>10.4f} "
+          f"{scores['test_r2']:>10.4f} {status:>12}")</code></pre>
+
+            <div class="warning-box">
+                <strong>Watch for the gap!</strong> When Train R² is much higher than Test R², the model is
+                <strong>overfitting</strong>. At degree 10, the model fits the training data almost perfectly but fails
+                on new data. This is the <strong>Bias-Variance Tradeoff</strong> in action.
+            </div>
+        </section>
+
+        <!-- Section 9: Residual Analysis -->
+        <section class="content-section text-content">
+            <h2>9. Step 6 — Residual Analysis</h2>
+            <div class="step-indicator">STEP 6 OF 6 &bull; Diagnose Your Model</div>
+
+            <p>A good model should have <strong>random</strong> residuals — no patterns. If you see patterns in the
+                residuals, your model is missing something.</p>
+
+            <pre><code class="language-python"># ============================================================
+# RESIDUAL ANALYSIS
+# Residual = Actual - Predicted = what the model got WRONG.
+# Good model → residuals look like random noise (no patterns).
+# Bad model → residuals show systematic patterns.
+# ============================================================
+
+# Use our best model (multiple regression pipeline from Step 4)
+X_all = df.drop('price', axis=1)
+y_all = df['price']
+X_train_a, X_test_a, y_train_a, y_test_a = train_test_split(
+    X_all, y_all, test_size=0.2, random_state=42
+)
+
+pipeline.fit(X_train_a, y_train_a)
+y_pred_a = pipeline.predict(X_test_a)
+
+# Calculate residuals: what the model got wrong
+residuals = y_test_a - y_pred_a
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# PLOT 1: Residual vs Predicted — should show NO pattern
+axes[0].scatter(y_pred_a, residuals, alpha=0.5, s=20, color='#3b82f6')
+axes[0].axhline(y=0, color='#ef4444', linestyle='--', linewidth=2)
+axes[0].set_xlabel('Predicted Price ($)')
+axes[0].set_ylabel('Residual ($)')
+axes[0].set_title('Residual Plot')
+
+# PLOT 2: Histogram of residuals — should be roughly bell-shaped
+axes[1].hist(residuals, bins=25, color='#8b5cf6', alpha=0.7, edgecolor='black')
+axes[1].axvline(x=0, color='#ef4444', linestyle='--', linewidth=2)
+axes[1].set_xlabel('Residual ($)')
+axes[1].set_ylabel('Frequency')
+axes[1].set_title('Residual Distribution')
+
+plt.tight_layout()
+plt.savefig('residual_analysis.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+# Print residual diagnostics
+print(f"Mean residual: ${np.mean(residuals):,.0f} (should be ≈ 0)")
+print(f"Std residual:  ${np.std(residuals):,.0f}")</code></pre>
+
+            <div class="note-box">
+                <strong>What to look for:</strong>
+                <ul>
+                    <li>Residual plot should show a <strong>random cloud</strong> around zero — no funnels, curves, or
+                        trends.</li>
+                    <li>Histogram should be roughly <strong>bell-shaped</strong> (normal distribution), centered at
+                        zero.</li>
+                    <li>If you see a <strong>funnel shape</strong>, your model has heteroscedasticity — variance changes
+                        with predictions.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 10: Experiments -->
+        <section class="content-section text-content">
+            <h2>10. Experiment Ideas</h2>
+
+            <div class="note-box">
+                <h4>Extend Your Analysis</h4>
+                <ul>
+                    <li><strong>Experiment A:</strong> Remove one feature at a time and observe how R² changes. Which
+                        feature matters most?</li>
+                    <li><strong>Experiment B:</strong> Increase the noise level (change <code>30000</code> to
+                        <code>100000</code> in the data generation). How does this affect model performance?
+                    </li>
+                    <li><strong>Experiment C:</strong> Try using <code>MinMaxScaler</code> instead of
+                        <code>StandardScaler</code>. Does it change the R² score? Why or why not?
+                    </li>
+                    <li><strong>Experiment D:</strong> Find a real housing dataset on Kaggle (e.g., "California
+                        Housing")
+                        and apply the same pipeline.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 11: Assignment -->
+        <section class="content-section text-content">
+            <h2>11. Assignment for Next Week</h2>
+
+            <div class="assignment-card">
+                <h3><i data-lucide="clipboard-list"></i> Deliverables</h3>
+                <ul>
+                    <li><strong>Coding:</strong> Submit a Jupyter Notebook that:
+                        <ol style="margin-top: 0.5rem;">
+                            <li>Loads a dataset (provided or from Kaggle).</li>
+                            <li>Explores the data with scatter plots and correlation analysis.</li>
+                            <li>Implements simple Linear Regression from scratch using Gradient Descent.</li>
+                            <li>Trains a Scikit-learn <code>LinearRegression</code> and compares results.</li>
+                            <li>Evaluates using R², RMSE, and MAE on a held-out test set.</li>
+                            <li>Experiments with at least two polynomial degrees and documents overfitting.</li>
+                        </ol>
+                    </li>
+                    <li><strong>Report:</strong> Write a brief paragraph (3-5 sentences) explaining the Bias-Variance
+                        Tradeoff using your polynomial regression results.</li>
+                    <li><strong>Bonus:</strong> Implement regularization (Ridge or Lasso regression) and compare it
+                        against plain LinearRegression. Which performs better and why?</li>
+                </ul>
+            </div>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">See you at the Lecture!</p>
+                <a href="lecture_4.html" class="btn btn-primary" style="display:inline-flex;margin:1rem auto 0 auto;">
+                    <i data-lucide="arrow-left"></i> Back to Lecture 4
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>
