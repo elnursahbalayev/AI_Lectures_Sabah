@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 5 Lecture: Classification Algorithms | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Note / callout boxes */
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        /* Math display blocks */
+        .math-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Comparison layout */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        /* Programming comparison boxes */
+        .prog-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .prog-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .prog-card .prog-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .prog-card .prog-flow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+        }
+
+        /* Key equations table */
+        .eq-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .eq-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+        }
+
+        .eq-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+        }
+
+        .eq-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Summary grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .summary-item {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .summary-item .num {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .summary-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0.3rem 0 0 0;
+        }
+
+        /* Data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Pipeline flow diagram */
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        /* Parameter grid */
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .param-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .param-card .term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .param-card .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .param-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Sigmoid diagram */
+        .sigmoid-properties {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .sigmoid-prop {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .sigmoid-prop .val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .sigmoid-prop .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Confusion matrix display */
+        .cm-grid {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr;
+            grid-template-rows: auto 1fr 1fr;
+            gap: 0;
+            margin: 1.5rem auto;
+            max-width: 400px;
+        }
+
+        .cm-cell {
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+
+        .cm-header {
+            background: rgba(59, 130, 246, 0.15);
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+
+        .cm-tp {
+            background: rgba(74, 222, 128, 0.12);
+            color: #4ade80;
+        }
+
+        .cm-tn {
+            background: rgba(74, 222, 128, 0.08);
+            color: #4ade80;
+        }
+
+        .cm-fp {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .cm-fn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        @media (max-width: 700px) {
+
+            .compare-grid,
+            .prog-compare,
+            .param-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sigmoid-properties {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position:fixed;top:0;left:0;height:4px;background:var(--primary);z-index:9999;width:0%;transition:width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Lectures</a></li>
+            <li><a href="tutorial_5.html">Tutorial 5</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+
+        <!-- ── HEADER ─────────────────────────────────────────────────────── -->
+        <header class="article-header">
+            <span class="badge">Week 05 Lecture</span>
+            <h1>Classification<br>Algorithms</h1>
+            <p class="subtitle">Drawing the boundary — this time for real. Learn how machines separate categories
+                using the Sigmoid function, Logistic Regression, and Support Vector Machines.</p>
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color:var(--text-muted);font-size:0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ── SECTION 1: FROM REGRESSION TO CLASSIFICATION ────────────────── -->
+        <section class="content-section text-content">
+            <h2>1. From Regression to Classification</h2>
+
+            <p>In Week 4, we predicted continuous values like $342,500. Today we switch to predicting
+                <strong>discrete labels</strong> — Spam or Not Spam, Pass or Fail, Cat or Dog.
+            </p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Output</th>
+                        <th>Example</th>
+                        <th>Week</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Regression</strong></td>
+                        <td>Continuous number</td>
+                        <td>House price: $342,500</td>
+                        <td>Week 4</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Classification</strong></td>
+                        <td>Discrete label</td>
+                        <td>Spam or Not Spam</td>
+                        <td><strong>This Week</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Why Can't We Use Linear Regression?</h3>
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:#ef4444;">Problem 1: Unbounded Output</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Linear regression gives \(\hat{y} = wx + b\), which can
+                        output <strong>any</strong> value: -5, 0.5, 1.7, 100. But we need outputs between 0 and 1
+                        (probabilities).</p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:#ef4444;">Problem 2: Threshold Sensitivity</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">If we threshold at 0.5, outliers in the data can shift
+                        the entire line and completely change all predictions. The model is too fragile.</p>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <strong>Solution:</strong> We need a function that squashes any input into the range [0, 1]. That
+                function is the <strong>Sigmoid</strong> — and it's the key ingredient in Logistic Regression.
+            </div>
+        </section>
+
+        <!-- ── SECTION 2: LOGISTIC REGRESSION ──────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>2. Logistic Regression — The Sigmoid</h2>
+
+            <p>The sigmoid (or logistic) function maps any real number to a value between 0 and 1:</p>
+
+            <div class="math-block">
+                \[\sigma(z) = \frac{1}{1 + e^{-z}}\]
+            </div>
+
+            <p>Where \(z = wx + b\) — the same linear combination as regression!</p>
+
+            <div class="sigmoid-properties">
+                <div class="sigmoid-prop">
+                    <div class="val">\(\sigma(0) = 0.5\)</div>
+                    <div class="label">The "undecided" point</div>
+                </div>
+                <div class="sigmoid-prop">
+                    <div class="val">\(\sigma(z) \to 1\)</div>
+                    <div class="label">As \(z \to +\infty\) (confident positive)</div>
+                </div>
+                <div class="sigmoid-prop">
+                    <div class="val">\(\sigma(z) \to 0\)</div>
+                    <div class="label">As \(z \to -\infty\) (confident negative)</div>
+                </div>
+            </div>
+
+            <h3>The Two-Step Model</h3>
+            <div class="pipeline-flow">
+                <span style="color:var(--primary);">Step 1</span>: Compute linear combination
+                <code>z = wx + b</code><br>
+                <span style="color:#f59e0b;">↓</span><br>
+                <span style="color:var(--accent);">Step 2</span>: Squash through sigmoid
+                <code>ŷ = σ(z) = 1/(1+e⁻ᶻ)</code><br>
+                <span style="color:#f59e0b;">↓</span><br>
+                <span style="color:#4ade80;">Output</span>: Probability \(\hat{y} \in [0, 1]\)
+            </div>
+
+            <p>Now \(\hat{y}\) is between 0 and 1, and we interpret it as \(P(\text{class} = 1 | x)\) — the
+                <strong>probability</strong> that the input belongs to class 1.
+            </p>
+
+            <h3>Making Predictions</h3>
+            <p>We apply a threshold (typically 0.5):</p>
+            <div class="math-block">
+                \[\text{prediction} = \begin{cases} 1 & \text{if } \hat{y} \geq 0.5 \\ 0 & \text{if } \hat{y} < 0.5
+                    \end{cases}\] </div>
+
+                    <blockquote>Logistic Regression doesn't output a class — it outputs a <em>probability</em>. The
+                        threshold
+                        converts probability to a class label. Changing the threshold changes the entire behavior of the
+                        model.
+                    </blockquote>
+        </section>
+
+        <!-- ── SECTION 3: THE DECISION BOUNDARY ────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>3. The Decision Boundary</h2>
+
+            <p>The decision boundary is the line (or surface) where the model switches from predicting class 0 to
+                class 1:</p>
+
+            <div class="math-block">
+                \[\hat{y} = 0.5 \quad \Leftrightarrow \quad \sigma(z) = 0.5 \quad \Leftrightarrow \quad z = 0 \quad
+                \Leftrightarrow \quad wx + b = 0\]
+            </div>
+
+            <p>So the decision boundary is the line \(wx + b = 0\). With two features (\(x_1, x_2\)), it becomes:</p>
+            <div class="math-block">
+                \[w_1 x_1 + w_2 x_2 + b = 0\]
+            </div>
+
+            <h3>Linear vs. Non-Linear Boundaries</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Boundary Type</th>
+                        <th>Shape</th>
+                        <th>When to Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Linear</strong></td>
+                        <td>Straight line / flat plane</td>
+                        <td>Classes are linearly separable</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Non-Linear</strong></td>
+                        <td>Curves, circles, arbitrary shapes</td>
+                        <td>Classes overlap or have complex boundaries</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="insight-box">
+                <strong>Key Insight:</strong> Logistic Regression draws a <strong>linear</strong> boundary. For
+                non-linear boundaries, we'll need SVMs with kernels or polynomial features — covered later in this
+                lecture.
+            </div>
+        </section>
+
+        <!-- ── SECTION 4: BINARY CROSS-ENTROPY LOSS ────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>4. The Loss Function — Binary Cross-Entropy</h2>
+
+            <p>MSE worked for regression but creates a <strong>non-convex</strong> loss surface for classification.
+                We need a loss function designed for probabilities.</p>
+
+            <h3>Binary Cross-Entropy (Log Loss)</h3>
+            <div class="math-block">
+                \[\mathcal{L} = -\frac{1}{n} \sum_{i=1}^{n} \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 -
+                \hat{y}_i) \right]\]
+            </div>
+
+            <h3>Why This Works</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>True Label</th>
+                        <th>Loss Becomes</th>
+                        <th>Effect</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>\(y = 1\)</strong></td>
+                        <td>\(-\log(\hat{y})\)</td>
+                        <td>High \(\hat{y}\) → low loss. Low \(\hat{y}\) → <strong>very</strong> high loss.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>\(y = 0\)</strong></td>
+                        <td>\(-\log(1 - \hat{y})\)</td>
+                        <td>Low \(\hat{y}\) → low loss. High \(\hat{y}\) → <strong>very</strong> high loss.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>Exponential Penalty:</strong> The log function makes the penalty <strong>exponentially
+                    harsh</strong> for confident wrong predictions. If you say "99% spam" and it's actually ham, the
+                loss is enormous. This forces the model to be calibrated.
+            </div>
+
+            <h3>Worked Example</h3>
+            <pre><code class="language-python"># Compute Binary Cross-Entropy for individual predictions.
+# The logarithm penalizes confident wrong predictions harshly.
+import numpy as np
+
+# True labels and predicted probabilities for 5 samples
+y_true = [1, 0, 1, 1, 0]
+y_pred = [0.9, 0.1, 0.8, 0.6, 0.3]
+
+# Compute BCE for each sample individually
+for y, p in zip(y_true, y_pred):
+    # When y=1: loss = -log(p).  When y=0: loss = -log(1-p).
+    loss = -(y * np.log(p) + (1 - y) * np.log(1 - p))
+    print(f"y={y}, ŷ={p:.1f} → loss = {loss:.4f}")
+
+# Total BCE loss (average over all samples)
+bce = -np.mean([y * np.log(p) + (1-y) * np.log(1-p)
+                 for y, p in zip(y_true, y_pred)])
+print(f"\nBCE Loss = {bce:.4f}")</code></pre>
+        </section>
+
+        <!-- ── SECTION 5: GRADIENT DESCENT FOR CLASSIFICATION ──────────────── -->
+        <section class="content-section text-content">
+            <h2>5. Gradient Descent for Classification</h2>
+
+            <p>The gradients for logistic regression look almost identical to linear regression from
+                <strong>Week 4</strong>:
+            </p>
+
+            <div class="math-block">
+                \[\frac{\partial \mathcal{L}}{\partial w} = \frac{1}{n} \sum_{i=1}^{n} (\hat{y}_i - y_i) x_i\]
+            </div>
+            <div class="math-block">
+                \[\frac{\partial \mathcal{L}}{\partial b} = \frac{1}{n} \sum_{i=1}^{n} (\hat{y}_i - y_i)\]
+            </div>
+
+            <p>The only difference: \(\hat{y}_i = \sigma(wx_i + b)\) instead of \(\hat{y}_i = wx_i + b\).</p>
+
+            <h3>The Training Loop</h3>
+            <pre><code class="language-python"># ============================================================
+# LOGISTIC REGRESSION FROM SCRATCH — GRADIENT DESCENT
+# Almost identical to Week 4's linear regression training loop,
+# but with the sigmoid function applied to predictions.
+# ============================================================
+import numpy as np
+
+def sigmoid(z):
+    """Squash any real value into the range [0, 1]."""
+    return 1 / (1 + np.exp(-z))
+
+def train_logistic_regression(X, y, lr=0.01, epochs=1000):
+    """Train logistic regression using gradient descent.
+
+    Args:
+        X: input features (2D array, shape: n_samples x n_features)
+        y: binary labels (0 or 1)
+        lr: learning rate
+        epochs: number of training iterations
+
+    Returns:
+        w: learned weight vector
+        b: learned bias
+    """
+    w = np.zeros(X.shape[1])  # initialize weights to zero
+    b = 0.0                    # initialize bias to zero
+    n = len(X)
+
+    for epoch in range(epochs):
+        # FORWARD PASS: compute probabilities via sigmoid
+        z = X @ w + b            # linear combination
+        y_pred = sigmoid(z)      # squash to [0, 1]
+
+        # COMPUTE GRADIENTS: how to improve w and b
+        dw = (1/n) * X.T @ (y_pred - y)   # gradient for weights
+        db = (1/n) * np.sum(y_pred - y)    # gradient for bias
+
+        # UPDATE PARAMETERS: step in the direction that reduces loss
+        w -= lr * dw
+        b -= lr * db
+
+        # LOG PROGRESS every 200 epochs
+        if epoch % 200 == 0:
+            # BCE loss (add 1e-8 to prevent log(0))
+            loss = -np.mean(y * np.log(y_pred + 1e-8)
+                          + (1-y) * np.log(1 - y_pred + 1e-8))
+            print(f"Epoch {epoch}: Loss = {loss:.4f}")
+
+    return w, b</code></pre>
+
+            <div class="note-box">
+                <strong>Note the <code>1e-8</code>:</strong> We add a tiny number inside <code>log()</code> to prevent
+                <code>log(0)</code> which gives \(-\infty\). This is a standard numerical stability trick used in every
+                production ML system.
+            </div>
+        </section>
+
+        <!-- ── SECTION 6: SUPPORT VECTOR MACHINES ──────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>6. Support Vector Machines (SVM)</h2>
+
+            <p>While Logistic Regression finds <strong>any</strong> separating boundary, SVM finds the
+                <strong>best</strong> one — the boundary with the <strong>maximum margin</strong>.
+            </p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4 style="color:#ef4444;">Small Margin</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Boundary is close to data points from both classes.
+                        Small perturbations can flip predictions. <strong>Likely to overfit.</strong></p>
+                </div>
+                <div class="compare-card">
+                    <h4 style="color:#4ade80;">Large Margin (SVM Goal)</h4>
+                    <p style="color:#d4d4d8;font-size:0.9rem;">Maximum breathing room between classes. More tolerant to
+                        noise. <strong>Better generalization.</strong></p>
+                </div>
+            </div>
+
+            <h3>The SVM Optimization Problem</h3>
+            <div class="math-block">
+                \[\min_{w, b} \frac{1}{2} \|w\|^2 \quad \text{subject to} \quad y_i(w \cdot x_i + b) \geq 1 \quad
+                \forall i\]
+            </div>
+            <p>Find the weights with the smallest norm (widest margin) while correctly classifying all training points.
+                The closest points to the boundary are called <strong>support vectors</strong>.</p>
+
+            <h3>The Kernel Trick</h3>
+            <p>What if data isn't linearly separable? SVM uses <strong>kernels</strong> to map data to a
+                higher-dimensional space where it becomes separable:</p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Kernel</th>
+                        <th>Effect</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Linear</strong></td>
+                        <td>No transformation</td>
+                        <td>Data is already linearly separable</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RBF (Gaussian)</strong></td>
+                        <td>Maps to infinite-dimensional space</td>
+                        <td>Most problems — default choice</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Polynomial</strong></td>
+                        <td>Adds polynomial feature combinations</td>
+                        <td>Moderate non-linearity</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code class="language-python"># SVM with different kernels — Scikit-learn makes it one line.
+from sklearn.svm import SVC
+
+# Linear SVM: draws a straight boundary (like logistic regression)
+svm_linear = SVC(kernel='linear')
+
+# RBF SVM: can draw curved boundaries (most powerful general-purpose kernel)
+svm_rbf = SVC(kernel='rbf', C=1.0, gamma='scale')
+
+# Polynomial SVM: captures polynomial relationships between features
+svm_poly = SVC(kernel='poly', degree=3)</code></pre>
+
+            <h3>Hyperparameter C — Regularization</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>C Value</th>
+                        <th>Effect</th>
+                        <th>Analogy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Small C</strong> (0.01)</td>
+                        <td>Large margin, more misclassifications allowed</td>
+                        <td style="color:#4ade80;">Generalizes better</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Large C</strong> (100)</td>
+                        <td>Small margin, fewer misclassifications</td>
+                        <td style="color:#ef4444;">May overfit</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>C is the "strictness" knob: Low C says "it's okay to misclassify some points for a wider
+                margin." High C says "classify everything correctly, even if the margin is razor-thin."</blockquote>
+        </section>
+
+        <!-- ── SECTION 7: MULTI-CLASS CLASSIFICATION ───────────────────────── -->
+        <section class="content-section text-content">
+            <h2>7. Multi-Class Classification</h2>
+
+            <p>Both Logistic Regression and SVM are inherently <strong>binary</strong> classifiers. For multiple
+                classes (Cat / Dog / Bird), we use strategies:</p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Strategy</th>
+                        <th>How It Works</th>
+                        <th># Classifiers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>One-vs-Rest (OvR)</strong></td>
+                        <td>Train one classifier per class: "Is it class \(k\) or not?"</td>
+                        <td>\(K\) classifiers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>One-vs-One (OvO)</strong></td>
+                        <td>Train one classifier per pair of classes</td>
+                        <td>\(K(K-1)/2\) classifiers</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Softmax — Multi-Class Logistic Regression</h3>
+            <p>For multi-class problems, the sigmoid is replaced by the <strong>Softmax</strong> function:</p>
+            <div class="math-block">
+                \[P(y = k | x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}\]
+            </div>
+            <p>Softmax outputs a probability distribution over all \(K\) classes — they sum to 1.</p>
+
+            <div class="note-box">
+                <strong>In Scikit-learn:</strong> Multi-class is handled automatically. Both
+                <code>LogisticRegression</code> and <code>SVC</code> detect when there are more than 2 classes and
+                apply the appropriate strategy internally.
+            </div>
+        </section>
+
+        <!-- ── SECTION 8: EVALUATION METRICS ───────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>8. Evaluation Metrics</h2>
+
+            <h3>Accuracy — Necessary But Not Sufficient</h3>
+            <div class="math-block">
+                \[\text{Accuracy} = \frac{\text{Correct Predictions}}{\text{Total Predictions}}\]
+            </div>
+
+            <div class="warning-box">
+                <strong>The Accuracy Paradox:</strong> If 95% of emails are "Not Spam," a model that
+                <strong>always</strong> predicts "Not Spam" gets 95% accuracy — while catching zero spam. Accuracy alone
+                is
+                dangerous on imbalanced datasets.
+            </div>
+
+            <h3>Precision, Recall, and F1-Score</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Formula</th>
+                        <th>Question It Answers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Precision</strong></td>
+                        <td>\(\frac{TP}{TP + FP}\)</td>
+                        <td>Of predicted positives, how many are correct?</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recall</strong></td>
+                        <td>\(\frac{TP}{TP + FN}\)</td>
+                        <td>Of actual positives, how many did we catch?</td>
+                    </tr>
+                    <tr>
+                        <td><strong>F1-Score</strong></td>
+                        <td>\(2 \cdot \frac{P \cdot R}{P + R}\)</td>
+                        <td>Harmonic mean — balanced metric</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Precision vs. Recall Tradeoff</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Prioritize</th>
+                        <th>Why</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Spam filter</strong></td>
+                        <td style="color:var(--primary);"><strong>Precision</strong></td>
+                        <td>Don't mark real email as spam</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cancer detection</strong></td>
+                        <td style="color:#ef4444;"><strong>Recall</strong></td>
+                        <td>Don't miss a patient who has cancer</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fraud detection</strong></td>
+                        <td style="color:#f59e0b;"><strong>F1</strong></td>
+                        <td>Balance catching fraud vs. false alarms</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>You can't maximize both: Increasing precision usually hurts recall, and vice versa.
+                The decision threshold controls this tradeoff.</blockquote>
+        </section>
+
+        <!-- ── SECTION 9: CONFUSION MATRIX ─────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>9. The Confusion Matrix</h2>
+
+            <p>The confusion matrix shows all four possible outcomes of a binary classifier:</p>
+
+            <div class="cm-grid">
+                <div class="cm-cell cm-header"></div>
+                <div class="cm-cell cm-header">Predicted: Positive</div>
+                <div class="cm-cell cm-header">Predicted: Negative</div>
+
+                <div class="cm-cell cm-header">Actual: Positive</div>
+                <div class="cm-cell cm-tp"><strong>TP</strong><br><small>True Positive</small></div>
+                <div class="cm-cell cm-fn"><strong>FN</strong><br><small>False Negative<br>(Missed!)</small></div>
+
+                <div class="cm-cell cm-header">Actual: Negative</div>
+                <div class="cm-cell cm-fp"><strong>FP</strong><br><small>False Positive<br>(False Alarm!)</small></div>
+                <div class="cm-cell cm-tn"><strong>TN</strong><br><small>True Negative</small></div>
+            </div>
+
+            <pre><code class="language-python"># Generate and read a confusion matrix with Scikit-learn.
+# The matrix shows exactly WHERE the model makes mistakes.
+from sklearn.metrics import confusion_matrix, classification_report
+
+y_true = [1, 0, 1, 1, 0, 1, 0, 0, 1, 0]
+y_pred = [1, 0, 1, 0, 0, 1, 1, 0, 1, 0]
+
+cm = confusion_matrix(y_true, y_pred)
+print(cm)
+# [[3, 1],    ← Row 0: Actual Negatives (3 TN, 1 FP)
+#  [1, 5]]    ← Row 1: Actual Positives (1 FN, 5 TP)
+
+# classification_report gives precision, recall, F1 in one call
+print(classification_report(y_true, y_pred))</code></pre>
+
+            <div class="insight-box">
+                <strong>Reading Tip:</strong> The <strong>diagonal</strong> of the confusion matrix (TL to BR) shows
+                correct predictions. Everything off the diagonal is an error. A perfect model has zeros
+                everywhere except the diagonal.
+            </div>
+        </section>
+
+        <!-- ── SECTION 10: PRACTICAL IMPLEMENTATION ────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>10. Practical Implementation with Scikit-learn</h2>
+
+            <h3>Logistic Regression Pipeline</h3>
+            <pre><code class="language-python"># ============================================================
+# COMPLETE CLASSIFICATION PIPELINE WITH SCIKIT-LEARN
+# Scale → Logistic Regression → Evaluate
+# ============================================================
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score, classification_report
+
+# ---- STEP 1: Generate dataset ----
+np.random.seed(42)
+n = 300
+hours = np.random.uniform(0, 10, n)
+attendance = np.random.uniform(50, 100, n)
+
+# True rule: pass if composite score > 50
+score = 5 * hours + 0.5 * attendance + np.random.normal(0, 5, n)
+labels = (score > 50).astype(int)  # 0 = Fail, 1 = Pass
+
+X = np.column_stack([hours, attendance])
+
+# ---- STEP 2: Train/test split ----
+X_train, X_test, y_train, y_test = train_test_split(
+    X, labels, test_size=0.2, random_state=42
+)
+
+# ---- STEP 3: Logistic Regression Pipeline ----
+lr_pipeline = Pipeline([
+    ('scaler', StandardScaler()),       # standardize features
+    ('model', LogisticRegression())     # logistic regression
+])
+lr_pipeline.fit(X_train, y_train)
+y_pred_lr = lr_pipeline.predict(X_test)
+
+print("LOGISTIC REGRESSION")
+print(f"Accuracy: {accuracy_score(y_test, y_pred_lr):.4f}")
+print(classification_report(y_test, y_pred_lr,
+                             target_names=['Fail', 'Pass']))
+
+# ---- STEP 4: SVM Pipeline ----
+svm_pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model', SVC(kernel='rbf', C=1.0, gamma='scale'))
+])
+svm_pipeline.fit(X_train, y_train)
+y_pred_svm = svm_pipeline.predict(X_test)
+
+print("\nSVM (RBF)")
+print(f"Accuracy: {accuracy_score(y_test, y_pred_svm):.4f}")
+print(classification_report(y_test, y_pred_svm,
+                             target_names=['Fail', 'Pass']))</code></pre>
+        </section>
+
+        <!-- ── SECTION 11: KEY EQUATIONS ───────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>11. Key Equations — Quick Reference</h2>
+
+            <table class="eq-table">
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Formula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sigmoid Function</td>
+                        <td>\(\sigma(z) = \frac{1}{1 + e^{-z}}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Logistic Regression Model</td>
+                        <td>\(\hat{y} = \sigma(wx + b)\)</td>
+                    </tr>
+                    <tr>
+                        <td>Binary Cross-Entropy</td>
+                        <td>\(-\frac{1}{n}\sum[y\log\hat{y} + (1-y)\log(1-\hat{y})]\)</td>
+                    </tr>
+                    <tr>
+                        <td>Gradient (w.r.t. \(w\))</td>
+                        <td>\(\frac{1}{n}\sum(\hat{y}_i - y_i)x_i\)</td>
+                    </tr>
+                    <tr>
+                        <td>Gradient (w.r.t. \(b\))</td>
+                        <td>\(\frac{1}{n}\sum(\hat{y}_i - y_i)\)</td>
+                    </tr>
+                    <tr>
+                        <td>SVM Objective</td>
+                        <td>\(\min \frac{1}{2}\|w\|^2\) s.t. \(y_i(w \cdot x_i + b) \geq 1\)</td>
+                    </tr>
+                    <tr>
+                        <td>Precision</td>
+                        <td>\(\frac{TP}{TP + FP}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Recall</td>
+                        <td>\(\frac{TP}{TP + FN}\)</td>
+                    </tr>
+                    <tr>
+                        <td>F1-Score</td>
+                        <td>\(2 \cdot \frac{P \cdot R}{P + R}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Softmax</td>
+                        <td>\(P(y=k|x) = \frac{e^{z_k}}{\sum_j e^{z_j}}\)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ── SECTION 12: SUMMARY ────────────────────────────────────────── -->
+        <section class="content-section text-content">
+            <h2>12. Lecture Summary</h2>
+
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="num">1</div>
+                    <p>Logistic Regression = Linear Regression + Sigmoid. Outputs probabilities, not numbers.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">2</div>
+                    <p>The Sigmoid squashes values into [0, 1] — turning a linear model into a classifier.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">3</div>
+                    <p>Binary Cross-Entropy replaces MSE — harshly penalizes confident wrong predictions.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">4</div>
+                    <p>SVM finds the maximum-margin boundary — the most robust separator. Kernels handle non-linear
+                        data.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">5</div>
+                    <p>Accuracy alone is dangerous — use Precision, Recall, and F1 on imbalanced datasets.</p>
+                </div>
+                <div class="summary-item">
+                    <div class="num">6</div>
+                    <p>The Confusion Matrix tells the full story: TP, FP, FN, TN — four numbers that matter.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── COMING NEXT ─────────────────────────────────────────────────── -->
+        <section class="content-section" style="border-top:1px solid var(--border);padding-top:3rem;text-align:center;">
+            <h3 style="color:var(--text-muted);text-transform:uppercase;font-size:0.9rem;letter-spacing:0.1em;">Coming
+                Next</h3>
+            <h2 style="border:none;padding:0;font-size:2.2rem;margin-bottom:0.5rem;">Tutorial 5: Binary Classification
+            </h2>
+            <p style="color:#a1a1aa;max-width:500px;margin:0 auto 2rem auto;">You just learned the theory. Now you will
+                build a logistic regression classifier from scratch, train SVMs with different kernels, and master the
+                confusion matrix.</p>
+            <a href="tutorial_5.html" class="btn btn-primary" style="display:inline-flex;margin:0 auto;">
+                <i data-lucide="arrow-right"></i> Go to Tutorial 5
+            </a>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

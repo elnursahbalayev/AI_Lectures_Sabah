@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 5 Tutorial: Binary Classification — Pass/Fail | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Article specific overrides */
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        /* Tool/strategy comparison */
+        .tool-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .tool-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        /* Data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Step indicator */
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Pipeline flow */
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        /* Assignment card */
+        .assignment-card {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .assignment-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        @media (max-width: 700px) {
+            .tool-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="lecture_5.html">Lecture 5</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 05 Tutorial</span>
+            <h1>Binary Classification:<br>Pass/Fail Prediction</h1>
+            <p class="subtitle">Build a Logistic Regression classifier from scratch, train SVMs with different kernels,
+                visualize decision boundaries, and master the confusion matrix.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar
+                        Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1: Introduction -->
+        <section class="content-section text-content">
+            <h2>1. Introduction</h2>
+            <p>Last week, we predicted continuous numbers (housing prices). Today, we predict <strong>discrete
+                    labels</strong> — does a student Pass or Fail based on their study hours and class attendance?</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="target"></i> Today's Goal</h4>
+                <ul>
+                    <li>Implement Logistic Regression from scratch using NumPy.</li>
+                    <li>Compare your implementation to Scikit-learn's <code>LogisticRegression</code>.</li>
+                    <li>Train SVM classifiers with different kernels.</li>
+                    <li>Visualize decision boundaries for both models.</li>
+                    <li>Evaluate using Accuracy, Precision, Recall, F1, and the Confusion Matrix.</li>
+                    <li>Experiment with threshold tuning and observe its effect on predictions.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: Environment Setup -->
+        <section class="content-section text-content">
+            <h2>2. Environment Setup</h2>
+
+            <pre><code class="language-python"># ============================================================
+# ENVIRONMENT SETUP
+# Import all libraries we'll need for binary classification.
+# ============================================================
+
+import pandas as pd              # data manipulation
+import numpy as np               # numerical operations
+import matplotlib.pyplot as plt  # plotting
+
+# Scikit-learn: classification models and evaluation
+from sklearn.linear_model import LogisticRegression        # logistic regression
+from sklearn.svm import SVC                                 # support vector classifier
+from sklearn.preprocessing import StandardScaler            # feature scaling
+from sklearn.model_selection import train_test_split        # split data
+from sklearn.metrics import (accuracy_score, precision_score,
+                             recall_score, f1_score,
+                             confusion_matrix,
+                             classification_report)          # evaluation metrics
+from sklearn.pipeline import Pipeline                       # chain steps together
+
+import warnings
+warnings.filterwarnings('ignore')  # suppress warnings for cleaner output
+
+# Verify our setup
+print(f"Pandas:  {pd.__version__}")
+print(f"NumPy:   {np.__version__}")
+print("\nReady to build our first classifier!")</code></pre>
+        </section>
+
+        <!-- Section 3: Creating Our Dataset -->
+        <section class="content-section text-content">
+            <h2>3. Creating Our Dataset</h2>
+            <p>We'll generate a realistic student performance dataset with known relationships so we can verify our
+                classifier learns correctly.</p>
+
+            <pre><code class="language-python"># ============================================================
+# CREATE A REALISTIC STUDENT PERFORMANCE DATASET
+# We generate data with a KNOWN formula so we can check if
+# the classifier correctly learns the pass/fail boundary.
+# ============================================================
+
+np.random.seed(42)   # reproducibility
+n = 400              # number of students
+
+# Generate features (input variables)
+data = {
+    'study_hours': np.random.uniform(0, 12, n),     # hours studied per week
+    'attendance': np.random.uniform(40, 100, n),      # attendance percentage
+    'prev_grade': np.random.uniform(20, 100, n),      # previous semester grade
+    'sleep_hours': np.random.uniform(4, 10, n),       # average sleep per night
+}
+df = pd.DataFrame(data)
+
+# Generate labels with known formula + noise
+# TRUE RELATIONSHIP:
+#   score = 4*study_hours + 0.3*attendance + 0.2*prev_grade + 2*sleep + noise
+#   Pass (1) if score > 50, else Fail (0)
+score = (
+    4 * df['study_hours'] +       # studying helps the most
+    0.3 * df['attendance'] +      # attendance matters
+    0.2 * df['prev_grade'] +      # past performance predicts future
+    2 * df['sleep_hours'] +       # sleep is important too
+    np.random.normal(0, 5, n)     # real-world noise
+)
+df['passed'] = (score > 50).astype(int)
+
+print(f"Dataset shape: {df.shape}")
+print(f"\nClass distribution:")
+print(df['passed'].value_counts())
+print(f"\nPass rate: {df['passed'].mean():.1%}")
+print(f"\nFirst 5 rows:")
+df.head()</code></pre>
+
+            <div class="insight-box">
+                <strong>Why synthetic data?</strong> By using a known formula, we can check if the model correctly
+                learns the decision boundary. In real projects, you won't know the true relationship — that's what the
+                model discovers!
+            </div>
+        </section>
+
+        <!-- Section 4: Exploration -->
+        <section class="content-section text-content">
+            <h2>4. Step 1 — Exploration</h2>
+            <div class="step-indicator">STEP 1 OF 6 &bull; Know Your Data</div>
+
+            <h3>4.1 Basic Info</h3>
+            <pre><code class="language-python"># ============================================================
+# STEP 1: EXPLORE THE DATA
+# Before building any model, understand the data distribution.
+# Particularly important: is the class distribution balanced?
+# ============================================================
+
+print("=" * 50)
+print("DATASET OVERVIEW")
+print("=" * 50)
+
+print(f"\nShape: {df.shape[0]} rows x {df.shape[1]} columns")
+print(f"\nColumn types:")
+print(df.dtypes)
+
+# describe() reveals ranges, means, and standard deviations
+print(f"\nBasic statistics:")
+df.describe().round(1)</code></pre>
+
+            <h3>4.2 Visualize Class Distribution</h3>
+            <pre><code class="language-python"># ============================================================
+# SCATTER PLOTS: Feature values colored by class (Pass/Fail)
+# Looking for visual separation between the two classes.
+# ============================================================
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+features = ['study_hours', 'attendance', 'prev_grade', 'sleep_hours']
+colors = {0: '#ef4444', 1: '#4ade80'}  # Fail=red, Pass=green
+
+for ax, feat in zip(axes.flatten(), features):
+    for label in [0, 1]:
+        mask = df['passed'] == label
+        ax.scatter(df.loc[mask, feat], df.loc[mask, 'passed'],
+                   alpha=0.4, s=15, color=colors[label],
+                   label=f"{'Pass' if label else 'Fail'}")
+    ax.set_xlabel(feat)
+    ax.set_ylabel('Passed')
+    ax.set_title(f'Pass/Fail vs {feat}')
+    ax.legend()
+
+plt.tight_layout()
+plt.savefig('classification_features.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <h3>4.3 2D Feature Space</h3>
+            <pre><code class="language-python"># ============================================================
+# 2D SCATTER PLOT: Study Hours vs Attendance, colored by label.
+# This is the space where we'll visualize decision boundaries.
+# ============================================================
+
+fig, ax = plt.subplots(figsize=(10, 7))
+
+for label, color, name in [(0, '#ef4444', 'Fail'), (1, '#4ade80', 'Pass')]:
+    mask = df['passed'] == label
+    ax.scatter(df.loc[mask, 'study_hours'], df.loc[mask, 'attendance'],
+               alpha=0.5, s=25, color=color, label=name)
+
+ax.set_xlabel('Study Hours per Week')
+ax.set_ylabel('Attendance (%)')
+ax.set_title('Pass/Fail Distribution')
+ax.legend()
+plt.tight_layout()
+plt.savefig('class_distribution_2d.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <div class="note-box">
+                <strong>Discussion:</strong> Can you visually see a boundary that separates Pass from Fail? Is the
+                boundary perfectly clean, or is there overlap? The overlap is caused by our noise term — just like
+                real-world data.
+            </div>
+        </section>
+
+        <!-- Section 5: Logistic Regression from Scratch -->
+        <section class="content-section text-content">
+            <h2>5. Step 2 — Logistic Regression from Scratch</h2>
+            <div class="step-indicator">STEP 2 OF 6 &bull; Build It Yourself</div>
+
+            <p>Let's implement logistic regression with gradient descent to understand the mechanics.</p>
+
+            <h3>5.1 Prepare Data</h3>
+            <pre><code class="language-python"># ============================================================
+# PREPARE DATA FOR 2D CLASSIFICATION
+# We use study_hours and attendance for clear visualization.
+# ============================================================
+
+X_simple = df[['study_hours', 'attendance']].values  # 2 features
+y = df['passed'].values                               # binary labels
+
+# Split: 80% train, 20% test
+X_train_s, X_test_s, y_train, y_test = train_test_split(
+    X_simple, y, test_size=0.2, random_state=42
+)
+
+# Scale features — CRITICAL for gradient descent convergence
+# Without scaling, features on different scales cause zigzagging
+scaler = StandardScaler()
+X_train_sc = scaler.fit_transform(X_train_s)   # fit on train, transform train
+X_test_sc = scaler.transform(X_test_s)          # only transform test (no fit!)
+
+print(f"Training: {len(X_train_s)} samples")
+print(f"Test:     {len(X_test_s)} samples")
+print(f"Pass rate (train): {y_train.mean():.1%}")
+print(f"Pass rate (test):  {y_test.mean():.1%}")</code></pre>
+
+            <h3>5.2 Sigmoid + Gradient Descent</h3>
+            <pre><code class="language-python"># ============================================================
+# LOGISTIC REGRESSION FROM SCRATCH — GRADIENT DESCENT
+# Key differences from Week 4's linear regression:
+#   1. Apply sigmoid to get probabilities instead of raw values
+#   2. Use Binary Cross-Entropy loss instead of MSE
+#   3. Threshold at 0.5 to get class predictions
+# ============================================================
+
+def sigmoid(z):
+    """The sigmoid function — squashes any value to [0, 1].
+    np.clip prevents overflow in exp() for very large/small z."""
+    return 1 / (1 + np.exp(-np.clip(z, -250, 250)))
+
+def logistic_regression_gd(X, y, lr=0.1, epochs=1000):
+    """Train logistic regression using Gradient Descent.
+
+    Args:
+        X: input features (n_samples x n_features)
+        y: binary labels (0 or 1)
+        lr: learning rate
+        epochs: number of training iterations
+
+    Returns:
+        w: learned weight vector
+        b: learned bias
+        history: list of BCE losses at each epoch
+    """
+    n_samples, n_features = X.shape
+    w = np.zeros(n_features)  # initialize weights to zero
+    b = 0.0                    # initialize bias to zero
+    history = []               # track loss over time
+
+    for epoch in range(epochs):
+        # FORWARD PASS: compute probabilities
+        z = X @ w + b                # linear combination
+        y_pred = sigmoid(z)          # squash to [0, 1]
+
+        # COMPUTE LOSS: Binary Cross-Entropy
+        # Add 1e-8 to prevent log(0) = -infinity
+        loss = -np.mean(y * np.log(y_pred + 1e-8)
+                      + (1 - y) * np.log(1 - y_pred + 1e-8))
+        history.append(loss)
+
+        # COMPUTE GRADIENTS: direction to improve
+        dw = (1 / n_samples) * X.T @ (y_pred - y)   # weight gradients
+        db = (1 / n_samples) * np.sum(y_pred - y)    # bias gradient
+
+        # UPDATE PARAMETERS: step down the loss surface
+        w -= lr * dw
+        b -= lr * db
+
+        # Log progress
+        if epoch % 200 == 0:
+            acc = np.mean((y_pred >= 0.5) == y)
+            print(f"Epoch {epoch:4d} | Loss: {loss:.4f} | Accuracy: {acc:.2%}")
+
+    return w, b, history
+
+# ---- TRAIN our from-scratch model ----
+w, b, history = logistic_regression_gd(X_train_sc, y_train, lr=0.1, epochs=1000)
+print(f"\nFinal weights: {w}")
+print(f"Final bias: {b:.4f}")</code></pre>
+
+            <h3>5.3 Visualize Training & Decision Boundary</h3>
+            <pre><code class="language-python"># ============================================================
+# VISUALIZE TRAINING
+# Left: loss curve (should decrease smoothly)
+# Right: decision boundary with test points
+# ============================================================
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# PLOT 1: Loss curve — shows convergence of BCE loss
+axes[0].plot(history, color='#3b82f6', linewidth=2)
+axes[0].set_xlabel('Epoch')
+axes[0].set_ylabel('Binary Cross-Entropy Loss')
+axes[0].set_title('Training Loss Curve')
+
+# PLOT 2: Decision boundary
+h = 0.02  # step size for mesh grid
+x_min, x_max = X_train_sc[:, 0].min() - 1, X_train_sc[:, 0].max() + 1
+y_min, y_max = X_train_sc[:, 1].min() - 1, X_train_sc[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                      np.arange(y_min, y_max, h))
+grid = np.c_[xx.ravel(), yy.ravel()]
+Z = sigmoid(grid @ w + b).reshape(xx.shape)
+
+# Color the regions: red = Fail, green = Pass
+axes[1].contourf(xx, yy, Z, levels=[0, 0.5, 1],
+                 alpha=0.3, colors=['#ef4444', '#4ade80'])
+# Draw the decision boundary line (where probability = 0.5)
+axes[1].contour(xx, yy, Z, levels=[0.5], colors='white', linewidths=2)
+# Plot test data points
+for label, color, name in [(0, '#ef4444', 'Fail'), (1, '#4ade80', 'Pass')]:
+    mask = y_test == label
+    axes[1].scatter(X_test_sc[mask, 0], X_test_sc[mask, 1],
+                    color=color, s=25, alpha=0.7, label=name,
+                    edgecolors='white', linewidth=0.5)
+axes[1].set_xlabel('Study Hours (scaled)')
+axes[1].set_ylabel('Attendance (scaled)')
+axes[1].set_title('Decision Boundary (from scratch)')
+axes[1].legend()
+
+plt.tight_layout()
+plt.savefig('logistic_from_scratch.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 6: Compare with Scikit-learn -->
+        <section class="content-section text-content">
+            <h2>6. Step 3 — Compare with Scikit-learn</h2>
+            <div class="step-indicator">STEP 3 OF 6 &bull; Validate Your Code</div>
+
+            <h3>6.1 Fit Scikit-learn Model</h3>
+            <pre><code class="language-python"># ============================================================
+# SCIKIT-LEARN LOGISTIC REGRESSION
+# Compare our from-scratch model to the industry standard.
+# sklearn uses optimized solvers (L-BFGS, SAGA, etc.)
+# ============================================================
+
+sk_model = LogisticRegression()
+sk_model.fit(X_train_sc, y_train)
+
+# Compare the learned parameters
+print(f"Scikit-learn weights = {sk_model.coef_[0]}")
+print(f"Scikit-learn bias    = {sk_model.intercept_[0]:.4f}")
+print(f"\nOur model    weights = {w}")
+print(f"Our model    bias    = {b:.4f}")</code></pre>
+
+            <h3>6.2 Evaluate Both Models</h3>
+            <pre><code class="language-python"># ============================================================
+# HEAD-TO-HEAD COMPARISON
+# Evaluate both models on the SAME test set.
+# ============================================================
+
+# Our model predictions (threshold at 0.5)
+y_pred_ours = (sigmoid(X_test_sc @ w + b) >= 0.5).astype(int)
+
+# Scikit-learn predictions
+y_pred_sk = sk_model.predict(X_test_sc)
+
+# Print comparison table
+print("=" * 55)
+print("MODEL COMPARISON")
+print("=" * 55)
+print(f"\n{'Metric':<12} {'Our Model':>15} {'Scikit-learn':>15}")
+print("-" * 44)
+print(f"{'Accuracy':<12} {accuracy_score(y_test, y_pred_ours):>15.4f} "
+      f"{accuracy_score(y_test, y_pred_sk):>15.4f}")
+print(f"{'Precision':<12} {precision_score(y_test, y_pred_ours):>15.4f} "
+      f"{precision_score(y_test, y_pred_sk):>15.4f}")
+print(f"{'Recall':<12} {recall_score(y_test, y_pred_ours):>15.4f} "
+      f"{recall_score(y_test, y_pred_sk):>15.4f}")
+print(f"{'F1':<12} {f1_score(y_test, y_pred_ours):>15.4f} "
+      f"{f1_score(y_test, y_pred_sk):>15.4f}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Discussion:</strong> The models should have very similar performance. Any small differences
+                are due to sklearn using more sophisticated optimization (like L-BFGS with regularization).
+                Try increasing our epochs to 5000 — the gap should shrink further.
+            </div>
+        </section>
+
+        <!-- Section 7: SVM Comparison -->
+        <section class="content-section text-content">
+            <h2>7. Step 4 — Support Vector Machines</h2>
+            <div class="step-indicator">STEP 4 OF 6 &bull; Maximum Margin</div>
+
+            <p>Now let's train SVMs with different kernels and compare both the decision boundaries and the metrics.</p>
+
+            <pre><code class="language-python"># ============================================================
+# SVM WITH DIFFERENT KERNELS
+# Each kernel produces a different shaped decision boundary.
+# Linear → straight line. RBF → curved. Poly → polynomial.
+# ============================================================
+
+kernels = ['linear', 'rbf', 'poly']
+svm_results = {}
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+
+for ax, kernel in zip(axes, kernels):
+    # Train SVM with this kernel
+    svm = SVC(kernel=kernel, C=1.0, gamma='scale')
+    svm.fit(X_train_sc, y_train)
+
+    # Evaluate on test set
+    y_pred_svm = svm.predict(X_test_sc)
+    acc = accuracy_score(y_test, y_pred_svm)
+    f1 = f1_score(y_test, y_pred_svm)
+    svm_results[kernel] = {'accuracy': acc, 'f1': f1}
+
+    # Plot decision boundary
+    h = 0.02
+    x_min, x_max = X_train_sc[:, 0].min() - 1, X_train_sc[:, 0].max() + 1
+    y_min, y_max = X_train_sc[:, 1].min() - 1, X_train_sc[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                          np.arange(y_min, y_max, h))
+    Z = svm.predict(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
+
+    # Color regions and overlay test data
+    ax.contourf(xx, yy, Z, alpha=0.3, colors=['#ef4444', '#4ade80'])
+    for label, color, name in [(0, '#ef4444', 'Fail'), (1, '#4ade80', 'Pass')]:
+        mask = y_test == label
+        ax.scatter(X_test_sc[mask, 0], X_test_sc[mask, 1],
+                   color=color, s=25, alpha=0.7, label=name,
+                   edgecolors='white', linewidth=0.5)
+    ax.set_title(f'SVM ({kernel})\nAcc={acc:.3f} | F1={f1:.3f}')
+    ax.set_xlabel('Study Hours (scaled)')
+    ax.legend()
+
+axes[0].set_ylabel('Attendance (scaled)')
+plt.tight_layout()
+plt.savefig('svm_kernels.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+# Summary table
+print("\n--- SVM Kernel Comparison ---")
+print(f"{'Kernel':<10} {'Accuracy':>10} {'F1 Score':>10}")
+print("-" * 32)
+for kernel, scores in svm_results.items():
+    print(f"{kernel:<10} {scores['accuracy']:>10.4f} {scores['f1']:>10.4f}")</code></pre>
+
+            <div class="warning-box">
+                <strong>Observation:</strong> Notice how the <strong>RBF kernel</strong> creates a curved boundary
+                while the <strong>linear kernel</strong> draws a straight line. The polynomial kernel creates
+                an even more complex boundary. More complex ≠ always better — watch for overfitting!
+            </div>
+        </section>
+
+        <!-- Section 8: Full Model Comparison -->
+        <section class="content-section text-content">
+            <h2>8. Step 5 — Full Model Comparison</h2>
+            <div class="step-indicator">STEP 5 OF 6 &bull; Use All Features</div>
+
+            <p>Now let's use <strong>all features</strong> and compare all models side-by-side.</p>
+
+            <pre><code class="language-python"># ============================================================
+# FULL MODEL COMPARISON — ALL FEATURES
+# More features → more signal → better predictions (usually).
+# ============================================================
+
+# Prepare all features
+X = df.drop('passed', axis=1)
+y = df['passed']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Define models with Pipelines (scale + model)
+models = {
+    'Logistic Regression': Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', LogisticRegression())
+    ]),
+    'SVM (Linear)': Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', SVC(kernel='linear'))
+    ]),
+    'SVM (RBF)': Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', SVC(kernel='rbf', C=1.0, gamma='scale'))
+    ]),
+}
+
+# Train and evaluate ALL models
+print("=" * 67)
+print("FULL MODEL COMPARISON (ALL FEATURES)")
+print("=" * 67)
+print(f"\n{'Model':<25} {'Accuracy':>10} {'Precision':>10} "
+      f"{'Recall':>10} {'F1':>10}")
+print("-" * 67)
+
+for name, pipe in models.items():
+    pipe.fit(X_train, y_train)
+    y_pred = pipe.predict(X_test)
+    print(f"{name:<25} "
+          f"{accuracy_score(y_test, y_pred):>10.4f} "
+          f"{precision_score(y_test, y_pred):>10.4f} "
+          f"{recall_score(y_test, y_pred):>10.4f} "
+          f"{f1_score(y_test, y_pred):>10.4f}")</code></pre>
+
+            <div class="success-box">
+                <strong>Key Observation:</strong> With all 4 features, every model should achieve higher accuracy
+                than with just 2 features. More relevant features = more information = better decisions.
+            </div>
+        </section>
+
+        <!-- Section 9: Confusion Matrix -->
+        <section class="content-section text-content">
+            <h2>9. Step 6 — Confusion Matrix & Analysis</h2>
+            <div class="step-indicator">STEP 6 OF 6 &bull; Diagnose Your Model</div>
+
+            <p>The confusion matrix tells you exactly <strong>where</strong> your model makes mistakes.</p>
+
+            <pre><code class="language-python"># ============================================================
+# CONFUSION MATRIX & DETAILED ANALYSIS
+# The confusion matrix reveals the full picture:
+#   TP (caught correctly), FP (false alarm),
+#   FN (missed!), TN (correctly rejected)
+# ============================================================
+
+# Use Logistic Regression with all features
+best_pipeline = models['Logistic Regression']
+best_pipeline.fit(X_train, y_train)
+y_pred = best_pipeline.predict(X_test)
+
+# Compute confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# PLOT 1: Confusion Matrix as heatmap
+im = axes[0].imshow(cm, cmap='Blues', interpolation='nearest')
+axes[0].set_title('Confusion Matrix')
+axes[0].set_xlabel('Predicted Label')
+axes[0].set_ylabel('Actual Label')
+axes[0].set_xticks([0, 1])
+axes[0].set_yticks([0, 1])
+axes[0].set_xticklabels(['Fail', 'Pass'])
+axes[0].set_yticklabels(['Fail', 'Pass'])
+# Annotate each cell with the count
+for i in range(2):
+    for j in range(2):
+        axes[0].text(j, i, str(cm[i, j]), ha='center', va='center',
+                     fontsize=20,
+                     color='white' if cm[i, j] > cm.max()/2 else 'black')
+plt.colorbar(im, ax=axes[0])
+
+# PLOT 2: Metrics bar chart
+metrics = {
+    'Accuracy': accuracy_score(y_test, y_pred),
+    'Precision': precision_score(y_test, y_pred),
+    'Recall': recall_score(y_test, y_pred),
+    'F1': f1_score(y_test, y_pred),
+}
+colors = ['#3b82f6', '#8b5cf6', '#ef4444', '#f59e0b']
+bars = axes[1].bar(metrics.keys(), metrics.values(), color=colors, alpha=0.8)
+axes[1].set_ylim(0, 1.15)
+axes[1].set_title('Classification Metrics')
+# Annotate each bar with its value
+for bar, val in zip(bars, metrics.values()):
+    axes[1].text(bar.get_x() + bar.get_width()/2,
+                 bar.get_height() + 0.02,
+                 f'{val:.3f}', ha='center', fontsize=12,
+                 fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('confusion_matrix_analysis.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+# Full classification report — precision, recall, F1 per class
+print("\n--- Classification Report ---")
+print(classification_report(y_test, y_pred,
+                             target_names=['Fail', 'Pass']))</code></pre>
+
+            <div class="note-box">
+                <strong>What to look for:</strong>
+                <ul>
+                    <li>The <strong>diagonal</strong> (TL → BR) shows correct predictions. Off-diagonal = errors.</li>
+                    <li><strong>FN (False Negatives)</strong> = students who passed but were predicted to fail — "missed
+                        detections."</li>
+                    <li><strong>FP (False Positives)</strong> = students who failed but were predicted to pass — "false
+                        alarms."</li>
+                    <li>In a real school, FN might be worse (missing a student who needs help), so you might want higher
+                        <strong>Recall</strong>.
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 10: Experiments -->
+        <section class="content-section text-content">
+            <h2>10. Experiment Ideas</h2>
+
+            <div class="note-box">
+                <h4>Extend Your Analysis</h4>
+                <ul>
+                    <li><strong>Experiment A:</strong> Change the decision threshold from 0.5 to 0.3 and 0.7. How does
+                        this affect Precision vs. Recall? Use
+                        <code>model.predict_proba()</code> to get probabilities before thresholding.
+                    </li>
+                    <li><strong>Experiment B:</strong> Try different values of C in SVM (0.01, 1, 100). How does
+                        regularization strength change the decision boundary?</li>
+                    <li><strong>Experiment C:</strong> Make the dataset imbalanced (e.g., change threshold to score >
+                        30)
+                        and observe how accuracy becomes misleading while F1 reveals the truth.</li>
+                    <li><strong>Experiment D:</strong> Find a real-world binary classification dataset on Kaggle (e.g.,
+                        Titanic survival, heart disease) and apply this same pipeline.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 11: Assignment -->
+        <section class="content-section text-content">
+            <h2>11. Assignment for Next Week</h2>
+
+            <div class="assignment-card">
+                <h3><i data-lucide="clipboard-list"></i> Deliverables</h3>
+                <ul>
+                    <li><strong>Coding:</strong> Submit a Jupyter Notebook that:
+                        <ol style="margin-top: 0.5rem;">
+                            <li>Loads a dataset (provided or from Kaggle — try Titanic!).</li>
+                            <li>Explores the data with visualizations and class distribution analysis.</li>
+                            <li>Implements Logistic Regression from scratch using sigmoid + gradient descent.</li>
+                            <li>Trains Scikit-learn <code>LogisticRegression</code> and <code>SVC</code> and compares.
+                            </li>
+                            <li>Evaluates using Accuracy, Precision, Recall, F1, and the Confusion Matrix.</li>
+                            <li>Visualizes decision boundaries for at least two models.</li>
+                        </ol>
+                    </li>
+                    <li><strong>Report:</strong> Write a brief paragraph (3-5 sentences) explaining when you would
+                        prioritize Precision over Recall (and vice versa), with a real-world example.</li>
+                    <li><strong>Bonus:</strong> Implement ROC curve plotting and compute AUC (Area Under the Curve).
+                        Which
+                        model has the highest AUC?</li>
+                </ul>
+            </div>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">See you at the Lecture!</p>
+                <a href="lecture_5.html" class="btn btn-primary" style="display:inline-flex;margin:1rem auto 0 auto;">
+                    <i data-lucide="arrow-left"></i> Back to Lecture 5
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>
