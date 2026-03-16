@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6 Tutorial: Ensemble Methods — Fraud Detection | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Article specific overrides */
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .tool-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .tool-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .assignment-card {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .assignment-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        @media (max-width: 700px) {
+            .tool-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="lecture_6.html">Lecture 6</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 06 Tutorial</span>
+            <h1>Ensemble Methods:<br>Fraud Detection</h1>
+            <p class="subtitle">Build a fraud detection system using Decision Trees, Random Forests, and XGBoost on a
+                highly imbalanced dataset.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar
+                        Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1: Introduction -->
+        <section class="content-section text-content">
+            <h2>1. Introduction</h2>
+            <p>Last week, we classified balanced datasets (Pass/Fail). Today, we face a <strong>real-world
+                    challenge</strong>: detecting fraud in financial transactions where only ~1-2% of transactions are
+                fraudulent.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="target"></i> Today's Goal</h4>
+                <ul>
+                    <li>Build and visualize a Decision Tree classifier.</li>
+                    <li>Train a Random Forest and understand its advantages over a single tree.</li>
+                    <li>Use XGBoost with hyperparameter tuning.</li>
+                    <li>Handle severe class imbalance using <code>scale_pos_weight</code> and class weighting.</li>
+                    <li>Compare all models: Logistic Regression, SVM, Random Forest, Gradient Boosting, XGBoost.</li>
+                    <li>Extract and visualize feature importance.</li>
+                    <li>Apply cross-validation for robust evaluation.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: Environment Setup -->
+        <section class="content-section text-content">
+            <h2>2. Environment Setup</h2>
+
+            <pre><code class="language-python"># ============================================================
+# ENVIRONMENT SETUP
+# Import libraries for ensemble methods and fraud detection.
+# ============================================================
+
+import pandas as pd              # data manipulation
+import numpy as np               # numerical operations
+import matplotlib.pyplot as plt  # plotting
+
+# Scikit-learn: tree & ensemble models
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import (accuracy_score, precision_score, recall_score,
+                             f1_score, confusion_matrix, classification_report,
+                             roc_auc_score, roc_curve)
+from sklearn.pipeline import Pipeline
+
+import warnings
+warnings.filterwarnings('ignore')
+
+# XGBoost — install with: pip install xgboost
+from xgboost import XGBClassifier
+
+# Verify versions
+print(f"Pandas:  {pd.__version__}")
+print(f"NumPy:   {np.__version__}")
+print("\nReady to detect fraud!")</code></pre>
+        </section>
+
+        <!-- Section 3: Creating Dataset -->
+        <section class="content-section text-content">
+            <h2>3. Creating Our Dataset</h2>
+            <p>We'll generate a synthetic fraud detection dataset with realistic class imbalance (~2% fraud).</p>
+
+            <pre><code class="language-python"># ============================================================
+# CREATE A SYNTHETIC FRAUD DETECTION DATASET
+# Key challenge: only ~2% of transactions are fraudulent.
+# This extreme imbalance makes accuracy a misleading metric.
+# ============================================================
+
+np.random.seed(42)
+n = 5000  # total transactions
+
+# Generate features with different distributions for Normal vs. Fraud
+data = {
+    'amount': np.concatenate([
+        np.random.exponential(50, int(n * 0.98)),    # Normal: small amounts
+        np.random.exponential(500, int(n * 0.02))    # Fraud: larger amounts
+    ]),
+    'hour': np.concatenate([
+        np.random.normal(14, 4, int(n * 0.98)).clip(0, 23),   # Normal: daytime
+        np.random.normal(3, 2, int(n * 0.02)).clip(0, 23)     # Fraud: late night
+    ]),
+    'distance_from_home': np.concatenate([
+        np.random.exponential(10, int(n * 0.98)),    # Normal: close
+        np.random.exponential(100, int(n * 0.02))    # Fraud: far away
+    ]),
+    'num_transactions_last_hour': np.concatenate([
+        np.random.poisson(1, int(n * 0.98)),         # Normal: few
+        np.random.poisson(5, int(n * 0.02))          # Fraud: many rapid
+    ]),
+    'is_international': np.concatenate([
+        np.random.binomial(1, 0.05, int(n * 0.98)),  # Normal: rarely
+        np.random.binomial(1, 0.6, int(n * 0.02))    # Fraud: often
+    ]),
+}
+df = pd.DataFrame(data)
+
+# Add noise features (should be ignored by good models)
+df['day_of_week'] = np.random.randint(0, 7, n)
+df['user_age'] = np.random.normal(35, 12, n).clip(18, 80)
+
+# Labels: 98% normal, 2% fraud
+df['is_fraud'] = np.concatenate([
+    np.zeros(int(n * 0.98)),
+    np.ones(int(n * 0.02))
+]).astype(int)
+
+# Shuffle to mix normal and fraud transactions
+df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+print(f"Dataset shape: {df.shape}")
+print(f"\nClass distribution:")
+print(df['is_fraud'].value_counts())
+print(f"\nFraud rate: {df['is_fraud'].mean():.1%}")
+print(f"\nFirst 5 rows:")
+df.head()</code></pre>
+
+            <div class="warning-box">
+                <strong>The Imbalance Problem:</strong> A model that always predicts "Normal" gets 98% accuracy — while
+                catching zero fraud. This is why we need <strong>Precision, Recall, F1, and AUC</strong> instead of just
+                accuracy.
+            </div>
+        </section>
+
+        <!-- Section 4: Exploration -->
+        <section class="content-section text-content">
+            <h2>4. Step 1 — Exploration</h2>
+            <div class="step-indicator">STEP 1 OF 7 &bull; Know Your Data</div>
+
+            <h3>4.1 Class Imbalance Visualization</h3>
+            <pre><code class="language-python"># ============================================================
+# VISUALIZE THE CLASS IMBALANCE
+# The bar chart will immediately show why accuracy is useless.
+# ============================================================
+
+print("=" * 50)
+print("DATASET OVERVIEW")
+print("=" * 50)
+print(f"\nShape: {df.shape[0]} rows x {df.shape[1]} columns")
+print(f"\nFraud distribution:")
+print(df['is_fraud'].value_counts())
+print(f"\nFraud rate: {df['is_fraud'].mean():.2%}")
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Bar chart of class distribution
+counts = df['is_fraud'].value_counts()
+axes[0].bar(['Normal', 'Fraud'], counts.values,
+            color=['#4ade80', '#ef4444'], alpha=0.8)
+axes[0].set_title('Class Distribution')
+axes[0].set_ylabel('Count')
+for i, v in enumerate(counts.values):
+    axes[0].text(i, v + 30, str(v), ha='center', fontweight='bold')
+
+# Amount distribution by class
+for label, color, name in [(0, '#4ade80', 'Normal'), (1, '#ef4444', 'Fraud')]:
+    mask = df['is_fraud'] == label
+    axes[1].hist(df.loc[mask, 'amount'], bins=50, alpha=0.5,
+                 color=color, label=name, density=True)
+axes[1].set_title('Transaction Amount Distribution')
+axes[1].set_xlabel('Amount ($)')
+axes[1].legend()
+axes[1].set_xlim(0, 500)
+
+plt.tight_layout()
+plt.savefig('fraud_distribution.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <h3>4.2 Feature Distributions</h3>
+            <pre><code class="language-python"># ============================================================
+# COMPARE FEATURE DISTRIBUTIONS: NORMAL vs. FRAUD
+# Features with clear separation will be most useful.
+# ============================================================
+
+fig, axes = plt.subplots(2, 3, figsize=(16, 10))
+features = ['amount', 'hour', 'distance_from_home',
+            'num_transactions_last_hour', 'is_international', 'user_age']
+
+for ax, feat in zip(axes.flatten(), features):
+    for label, color, name in [(0, '#4ade80', 'Normal'),
+                                (1, '#ef4444', 'Fraud')]:
+        mask = df['is_fraud'] == label
+        ax.hist(df.loc[mask, feat], bins=30, alpha=0.5,
+                color=color, label=name, density=True)
+    ax.set_title(f'{feat}')
+    ax.legend()
+
+plt.suptitle('Feature Distributions: Normal vs. Fraud',
+             fontsize=14, fontweight='bold')
+plt.tight_layout()
+plt.savefig('feature_distributions.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <div class="note-box">
+                <strong>Discussion:</strong> Which features show clear separation between Normal and Fraud? Which look
+                like noise? Features like <code>amount</code>, <code>hour</code>, and <code>distance_from_home</code>
+                should show obvious differences, while <code>day_of_week</code> and <code>user_age</code> should look
+                similar for both classes.
+            </div>
+        </section>
+
+        <!-- Section 5: Decision Tree -->
+        <section class="content-section text-content">
+            <h2>5. Step 2 — Decision Tree</h2>
+            <div class="step-indicator">STEP 2 OF 7 &bull; The Building Block</div>
+
+            <h3>5.1 Train a Decision Tree</h3>
+            <pre><code class="language-python"># ============================================================
+# DECISION TREE CLASSIFIER
+# Our baseline tree model. We limit depth to prevent
+# overfitting and keep the visualization readable.
+# ============================================================
+
+feature_cols = ['amount', 'hour', 'distance_from_home',
+                'num_transactions_last_hour', 'is_international',
+                'day_of_week', 'user_age']
+
+X = df[feature_cols]
+y = df['is_fraud']
+
+# stratify=y ensures the train/test split preserves the fraud ratio
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Training: {len(X_train)} samples ({y_train.mean():.2%} fraud)")
+print(f"Test:     {len(X_test)} samples  ({y_test.mean():.2%} fraud)")
+
+# Train a Decision Tree (limited depth for interpretability)
+dt = DecisionTreeClassifier(max_depth=5, random_state=42)
+dt.fit(X_train, y_train)
+
+y_pred_dt = dt.predict(X_test)
+
+print(f"\nDecision Tree Results:")
+print(f"Accuracy:  {accuracy_score(y_test, y_pred_dt):.4f}")
+print(f"Precision: {precision_score(y_test, y_pred_dt):.4f}")
+print(f"Recall:    {recall_score(y_test, y_pred_dt):.4f}")
+print(f"F1-Score:  {f1_score(y_test, y_pred_dt):.4f}")</code></pre>
+
+            <h3>5.2 Visualize the Tree</h3>
+            <pre><code class="language-python"># ============================================================
+# VISUALIZE THE DECISION TREE
+# See exactly which features and thresholds the tree uses.
+# This is why trees are the most interpretable model.
+# ============================================================
+
+fig, ax = plt.subplots(figsize=(20, 10))
+plot_tree(dt, feature_names=feature_cols,
+          class_names=['Normal', 'Fraud'],
+          filled=True, rounded=True, ax=ax, fontsize=8,
+          proportion=True, impurity=True)
+plt.title('Decision Tree for Fraud Detection', fontsize=14)
+plt.tight_layout()
+plt.savefig('decision_tree_viz.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <div class="insight-box">
+                <strong>Read the tree:</strong> Each node shows the split rule (e.g., "amount &le; 150"), the Gini
+                impurity, and the class distribution. Follow the path from root to leaf to understand how the model
+                makes decisions.
+            </div>
+        </section>
+
+        <!-- Section 6: Random Forest -->
+        <section class="content-section text-content">
+            <h2>6. Step 3 — Random Forest</h2>
+            <div class="step-indicator">STEP 3 OF 7 &bull; From One Tree to Many</div>
+
+            <pre><code class="language-python"># ============================================================
+# RANDOM FOREST — 200 TREES
+# class_weight='balanced' automatically adjusts weights
+# inversely proportional to class frequency.
+# For our 98/2 split, fraud samples get ~49x the weight.
+# ============================================================
+
+rf = RandomForestClassifier(
+    n_estimators=200,         # 200 trees in the forest
+    max_depth=None,           # let trees grow fully (each overfits)
+    max_features='sqrt',      # sqrt(7) ≈ 2-3 features per split
+    class_weight='balanced',  # handle imbalance automatically
+    random_state=42
+)
+rf.fit(X_train, y_train)
+
+y_pred_rf = rf.predict(X_test)
+
+print("Random Forest Results:")
+print(f"Accuracy:  {accuracy_score(y_test, y_pred_rf):.4f}")
+print(f"Precision: {precision_score(y_test, y_pred_rf):.4f}")
+print(f"Recall:    {recall_score(y_test, y_pred_rf):.4f}")
+print(f"F1-Score:  {f1_score(y_test, y_pred_rf):.4f}")
+print(f"\n{classification_report(y_test, y_pred_rf, target_names=['Normal', 'Fraud'])}")</code></pre>
+
+            <div class="success-box">
+                <strong>Compare to the single tree:</strong> The Random Forest should have better Recall (catches more
+                fraud) and often better F1. This is the power of ensembling — 200 diverse trees voting together.
+            </div>
+        </section>
+
+        <!-- Section 7: XGBoost -->
+        <section class="content-section text-content">
+            <h2>7. Step 4 — XGBoost</h2>
+            <div class="step-indicator">STEP 4 OF 7 &bull; Industry-Grade Boosting</div>
+
+            <h3>7.1 Handle Imbalance with scale_pos_weight</h3>
+            <pre><code class="language-python"># ============================================================
+# XGBOOST WITH IMBALANCE HANDLING
+# scale_pos_weight tells XGBoost how much more weight to
+# give the positive (fraud) class. For 98/2 split, ratio ≈ 49.
+# ============================================================
+
+# Calculate the imbalance ratio
+n_normal = (y_train == 0).sum()
+n_fraud = (y_train == 1).sum()
+scale_ratio = n_normal / n_fraud
+
+print(f"Normal: {n_normal}, Fraud: {n_fraud}")
+print(f"Imbalance ratio: {scale_ratio:.1f}:1")
+print(f"scale_pos_weight = {scale_ratio:.1f}")
+
+# Train XGBoost
+xgb = XGBClassifier(
+    n_estimators=300,          # 300 boosting rounds
+    learning_rate=0.1,         # shrinkage — smaller = more conservative
+    max_depth=5,               # shallow trees to prevent overfitting
+    subsample=0.8,             # use 80% of data per tree
+    colsample_bytree=0.8,     # use 80% of features per tree
+    scale_pos_weight=scale_ratio,  # handle class imbalance
+    eval_metric='logloss',     # optimization metric
+    random_state=42
+)
+xgb.fit(X_train, y_train)
+
+y_pred_xgb = xgb.predict(X_test)
+
+print("\nXGBoost Results:")
+print(f"Accuracy:  {accuracy_score(y_test, y_pred_xgb):.4f}")
+print(f"Precision: {precision_score(y_test, y_pred_xgb):.4f}")
+print(f"Recall:    {recall_score(y_test, y_pred_xgb):.4f}")
+print(f"F1-Score:  {f1_score(y_test, y_pred_xgb):.4f}")
+print(f"\n{classification_report(y_test, y_pred_xgb, target_names=['Normal', 'Fraud'])}")</code></pre>
+
+            <h3>7.2 Feature Importance</h3>
+            <pre><code class="language-python"># ============================================================
+# FEATURE IMPORTANCE FROM XGBOOST
+# Which features does the model rely on most?
+# Noise features should rank low — if they rank high,
+# something is wrong.
+# ============================================================
+
+importances = xgb.feature_importances_
+
+fig, ax = plt.subplots(figsize=(10, 6))
+sorted_idx = np.argsort(importances)
+ax.barh(np.array(feature_cols)[sorted_idx],
+        importances[sorted_idx], color='#3b82f6', alpha=0.8)
+ax.set_xlabel('Feature Importance (Gini)')
+ax.set_title('XGBoost Feature Importance')
+plt.tight_layout()
+plt.savefig('feature_importance.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+print("\nFeature Importance Ranking:")
+for feat, imp in sorted(zip(feature_cols, importances),
+                         key=lambda x: x[1], reverse=True):
+    print(f"  {feat:<30} {imp:.4f}")</code></pre>
+
+            <div class="note-box">
+                <strong>Check your intuition:</strong> Do the important features match expectations?
+                <code>amount</code>, <code>distance_from_home</code>, and <code>hour</code> should rank high. Noise
+                features like <code>day_of_week</code> and <code>user_age</code> should rank low.
+            </div>
+        </section>
+
+        <!-- Section 8: Full Comparison -->
+        <section class="content-section text-content">
+            <h2>8. Step 5 — Full Model Comparison</h2>
+            <div class="step-indicator">STEP 5 OF 7 &bull; The Big Picture</div>
+
+            <pre><code class="language-python"># ============================================================
+# COMPARE ALL MODELS — WEEKS 4-6 ALGORITHMS
+# This comparison shows the progression from simple models
+# to powerful ensembles on a challenging real-world problem.
+# ============================================================
+
+models = {
+    'Logistic Regression': Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', LogisticRegression(class_weight='balanced'))
+    ]),
+    'SVM (RBF)': Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', SVC(kernel='rbf', class_weight='balanced',
+                      probability=True))
+    ]),
+    'Decision Tree': DecisionTreeClassifier(
+        max_depth=5, class_weight='balanced', random_state=42),
+    'Random Forest': RandomForestClassifier(
+        n_estimators=200, class_weight='balanced', random_state=42),
+    'Gradient Boosting': GradientBoostingClassifier(
+        n_estimators=200, learning_rate=0.1, random_state=42),
+    'XGBoost': XGBClassifier(
+        n_estimators=300, learning_rate=0.1, max_depth=5,
+        scale_pos_weight=scale_ratio, eval_metric='logloss',
+        random_state=42),
+}
+
+# Train and evaluate
+print("=" * 77)
+print("FULL MODEL COMPARISON — FRAUD DETECTION")
+print("=" * 77)
+print(f"\n{'Model':<25} {'Accuracy':>10} {'Precision':>10} "
+      f"{'Recall':>10} {'F1':>10} {'AUC':>10}")
+print("-" * 77)
+
+results = {}
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    # Get probabilities for AUC
+    if hasattr(model, 'predict_proba'):
+        y_prob = model.predict_proba(X_test)[:, 1]
+    elif hasattr(model, 'named_steps'):
+        y_prob = model.predict_proba(X_test)[:, 1]
+    else:
+        y_prob = y_pred.astype(float)
+
+    acc = accuracy_score(y_test, y_pred)
+    prec = precision_score(y_test, y_pred, zero_division=0)
+    rec = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    auc = roc_auc_score(y_test, y_prob)
+
+    results[name] = {
+        'accuracy': acc, 'precision': prec,
+        'recall': rec, 'f1': f1, 'auc': auc
+    }
+    print(f"{name:<25} {acc:>10.4f} {prec:>10.4f} "
+          f"{rec:>10.4f} {f1:>10.4f} {auc:>10.4f}")</code></pre>
+        </section>
+
+        <!-- Section 9: ROC Curves -->
+        <section class="content-section text-content">
+            <h2>9. Step 6 — ROC Curves &amp; Visual Analysis</h2>
+            <div class="step-indicator">STEP 6 OF 7 &bull; Visualize Performance</div>
+
+            <pre><code class="language-python"># ============================================================
+# ROC CURVES & F1 COMPARISON
+# ROC curves show the tradeoff between catching fraud (TPR)
+# and raising false alarms (FPR) at every threshold.
+# AUC = Area Under Curve. Higher = better. 0.5 = random.
+# ============================================================
+
+fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+
+# PLOT 1: ROC Curves for all models
+for name, model in models.items():
+    if hasattr(model, 'predict_proba'):
+        y_prob = model.predict_proba(X_test)[:, 1]
+    else:
+        y_prob = model.predict(X_test).astype(float)
+    fpr, tpr, _ = roc_curve(y_test, y_prob)
+    auc = roc_auc_score(y_test, y_prob)
+    axes[0].plot(fpr, tpr,
+                 label=f'{name} (AUC={auc:.3f})', linewidth=2)
+
+axes[0].plot([0, 1], [0, 1], 'k--', alpha=0.5, label='Random')
+axes[0].set_xlabel('False Positive Rate')
+axes[0].set_ylabel('True Positive Rate')
+axes[0].set_title('ROC Curves — All Models')
+axes[0].legend(fontsize=8)
+
+# PLOT 2: F1 Score comparison bar chart
+model_names = list(results.keys())
+f1_scores = [results[n]['f1'] for n in model_names]
+colors = ['#3b82f6', '#8b5cf6', '#ef4444',
+          '#4ade80', '#f59e0b', '#06b6d4']
+bars = axes[1].barh(model_names, f1_scores,
+                     color=colors, alpha=0.8)
+axes[1].set_xlabel('F1 Score')
+axes[1].set_title('F1 Score Comparison')
+axes[1].set_xlim(0, 1.1)
+for bar, val in zip(bars, f1_scores):
+    axes[1].text(val + 0.01,
+                 bar.get_y() + bar.get_height()/2,
+                 f'{val:.3f}', va='center', fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('model_comparison.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 10: Cross-Validation -->
+        <section class="content-section text-content">
+            <h2>10. Step 7 — Cross-Validation</h2>
+            <div class="step-indicator">STEP 7 OF 7 &bull; Robust Evaluation</div>
+
+            <pre><code class="language-python"># ============================================================
+# 5-FOLD CROSS-VALIDATION
+# A single train/test split can be lucky or unlucky.
+# Cross-validation averages over 5 different splits,
+# giving a more reliable performance estimate.
+# ============================================================
+
+print("=" * 55)
+print("5-FOLD CROSS-VALIDATION (F1 Score)")
+print("=" * 55)
+
+cv_models = {
+    'Random Forest': RandomForestClassifier(
+        n_estimators=200, class_weight='balanced',
+        random_state=42),
+    'Gradient Boosting': GradientBoostingClassifier(
+        n_estimators=200, learning_rate=0.1, random_state=42),
+    'XGBoost': XGBClassifier(
+        n_estimators=300, learning_rate=0.1, max_depth=5,
+        scale_pos_weight=scale_ratio,
+        eval_metric='logloss', random_state=42),
+}
+
+for name, model in cv_models.items():
+    scores = cross_val_score(model, X, y, cv=5, scoring='f1')
+    print(f"{name:<25} F1: {scores.mean():.4f} "
+          f"(+/- {scores.std():.4f})")</code></pre>
+
+            <div class="insight-box">
+                <strong>Why cross-validation matters:</strong> A model that scores 0.95 on one split but 0.60 on another
+                is unreliable. The standard deviation tells you how stable the model is across different data splits.
+                Lower std = more reliable.
+            </div>
+        </section>
+
+        <!-- Section 11: Experiments -->
+        <section class="content-section text-content">
+            <h2>11. Experiment Ideas</h2>
+
+            <div class="note-box">
+                <h4>Extend Your Analysis</h4>
+                <ul>
+                    <li><strong>Experiment A:</strong> Remove <code>class_weight='balanced'</code> and
+                        <code>scale_pos_weight</code> from all models. How does this affect Recall on the fraud class?
+                        Does accuracy still look "good"?</li>
+                    <li><strong>Experiment B:</strong> Tune XGBoost: try <code>max_depth</code> values of 3, 5, 8, 12.
+                        Plot train vs. test F1 to find the sweet spot before overfitting.</li>
+                    <li><strong>Experiment C:</strong> Increase fraud rate to 10% and 30%. At what fraud rate does class
+                        weighting stop helping?</li>
+                    <li><strong>Experiment D:</strong> Download the real Kaggle Credit Card Fraud dataset and apply this
+                        same pipeline. Compare synthetic vs. real-world results.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 12: Assignment -->
+        <section class="content-section text-content">
+            <h2>12. Assignment for Next Week</h2>
+
+            <div class="assignment-card">
+                <h3><i data-lucide="clipboard-list"></i> Deliverables</h3>
+                <ul>
+                    <li><strong>Coding:</strong> Submit a Jupyter Notebook that:
+                        <ol style="margin-top: 0.5rem;">
+                            <li>Loads an imbalanced dataset (Kaggle Credit Card Fraud, or synthetic with &le;5% positive
+                                class).</li>
+                            <li>Trains and compares Decision Tree, Random Forest, Gradient Boosting, and XGBoost.</li>
+                            <li>Handles class imbalance using at least two techniques (<code>class_weight</code>,
+                                <code>scale_pos_weight</code>, or oversampling).</li>
+                            <li>Evaluates using Precision, Recall, F1, AUC-ROC, and Confusion Matrix (not just
+                                accuracy!).</li>
+                            <li>Visualizes feature importance and ROC curves for all models.</li>
+                            <li>Uses 5-fold cross-validation for the final comparison.</li>
+                        </ol>
+                    </li>
+                    <li><strong>Report:</strong> Write a brief paragraph (3-5 sentences) explaining why accuracy is
+                        misleading on imbalanced datasets, with a numerical example.</li>
+                    <li><strong>Bonus:</strong> Implement hyperparameter search for XGBoost using
+                        <code>GridSearchCV</code> or <code>RandomizedSearchCV</code>. Which parameters improve F1 the
+                        most?</li>
+                </ul>
+            </div>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">See you at the Lecture!</p>
+                <a href="lecture_6.html" class="btn btn-primary"
+                    style="display:inline-flex;margin:1rem auto 0 auto;">
+                    <i data-lucide="arrow-left"></i> Back to Lecture 6
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

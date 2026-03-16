@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6 Lecture: Ensemble Methods | AI Lectures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .math-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .param-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .param-card .term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .param-card .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .param-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tree-diagram {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 700px) {
+            .compare-grid,
+            .param-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tutorial_6.html">Tutorial 6</a></li>
+            <li><a href="lecture_5.html">Lecture 5</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 06 Lecture</span>
+            <h1>Ensemble Methods:<br>The Wisdom of Crowds</h1>
+            <p class="subtitle">Why many weak models beat one strong model — from Decision Trees to Random Forests to XGBoost.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar
+                        Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 0: Roadmap -->
+        <section class="content-section text-content">
+            <h2>0. Lecture Roadmap</h2>
+            <blockquote>A single model is fragile — it overfits, underfits, or gets stuck in one perspective. Ensemble
+                methods combine many models to cancel out each other's mistakes, producing predictions that are more
+                accurate and more robust than any individual model.</blockquote>
+
+            <p>In Weeks 4-5, we trained single models: Linear Regression, Logistic Regression, SVM. Today, we ask:
+                <em>What if we trained hundreds of models and let them vote?</em></p>
+
+            <div class="note-box">
+                <h4><i data-lucide="map"></i> Today's Topics</h4>
+                <ol>
+                    <li>The Wisdom of Crowds — Why Ensembles Work</li>
+                    <li>Decision Trees — The Building Block</li>
+                    <li>Bagging — Reducing Variance with Bootstrap</li>
+                    <li>Random Forests — Bagging + Feature Randomness</li>
+                    <li>Boosting — Learning from Mistakes</li>
+                    <li>Gradient Boosting Machines (GBM)</li>
+                    <li>XGBoost &amp; LightGBM — Industry-Grade Boosting</li>
+                    <li>The Bias-Variance Tradeoff</li>
+                    <li>Feature Importance — What the Model Learned</li>
+                    <li>Practical Implementation</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 1: Wisdom of Crowds -->
+        <section class="content-section text-content">
+            <h2>1. The Wisdom of Crowds</h2>
+
+            <h3>1.1 The Idea</h3>
+            <p>In 1906, Francis Galton observed that the <strong>average</strong> of 787 people's guesses about the
+                weight of an ox was more accurate than any individual guess — including experts. This is the
+                <em>Wisdom of Crowds</em>.</p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Approach</th>
+                        <th>Strategy</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Single Model</strong></td>
+                        <td>One model makes all predictions</td>
+                        <td>Prone to overfitting or systematic errors</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ensemble</strong></td>
+                        <td>Many models vote / average predictions</td>
+                        <td>Errors cancel out → better performance</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.2 Why Ensembles Work — Error Cancellation</h3>
+            <p>If we have \(N\) independent models, each with error rate \(\epsilon < 0.5\), the probability that the
+                <strong>majority</strong> is wrong drops exponentially with \(N\):</p>
+
+            <div class="math-block">
+                $$P(\text{majority wrong}) = \sum_{k > N/2}^{N} \binom{N}{k} \epsilon^k (1-\epsilon)^{N-k}$$
+            </div>
+
+            <p>For \(N = 21\) models each with \(\epsilon = 0.3\) (70% accuracy individually), the ensemble achieves
+                <strong>~97% accuracy</strong> through majority voting.</p>
+
+            <div class="insight-box">
+                <strong>Key Insight:</strong> Ensembles work best when individual models are <strong>diverse</strong> —
+                they make different mistakes. If all models make the same errors, voting doesn't help.
+            </div>
+
+            <h3>1.3 Types of Ensembles</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Strategy</th>
+                        <th>Key Method</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bagging</strong></td>
+                        <td>Train models in parallel on different data subsets</td>
+                        <td>Random Forests</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Boosting</strong></td>
+                        <td>Train models sequentially, each fixing previous errors</td>
+                        <td>XGBoost, LightGBM</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stacking</strong></td>
+                        <td>Train a meta-model on outputs of base models</td>
+                        <td>Advanced technique</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 2: Decision Trees -->
+        <section class="content-section text-content">
+            <h2>2. Decision Trees — The Building Block</h2>
+
+            <h3>2.1 What Is a Decision Tree?</h3>
+            <p>A decision tree makes predictions by asking a sequence of yes/no questions about the features, splitting
+                the data at each step until it reaches a prediction.</p>
+
+            <div class="tree-diagram">
+                 Is study_hours > 5?
+                /                    \
+              Yes                     No
+              /                        \
+     Is attendance > 70?          Predict: FAIL
+        /            \
+      Yes             No
+      /                \
+  Predict: PASS    Predict: FAIL</div>
+
+            <p>Each internal node is a <strong>question</strong> about a feature. Each leaf is a <strong>prediction</strong>.</p>
+
+            <h3>2.2 How Splits Are Chosen</h3>
+            <p>At each node, the tree picks the feature and threshold that best separates the classes. The quality of a
+                split is measured by <strong>impurity reduction</strong>:</p>
+
+            <p><strong>Gini Impurity</strong> (most common):</p>
+            <div class="math-block">
+                $$\text{Gini}(S) = 1 - \sum_{k=1}^{K} p_k^2$$
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Gini Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Perfect split (all one class)</td>
+                        <td>\(0\) — pure</td>
+                    </tr>
+                    <tr>
+                        <td>Worst case (50/50 binary)</td>
+                        <td>\(0.5\) — maximum impurity</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Entropy</strong> (alternative):</p>
+            <div class="math-block">
+                $$\text{Entropy}(S) = -\sum_{k=1}^{K} p_k \log_2(p_k)$$
+            </div>
+
+            <h3>2.3 The Problem with Decision Trees</h3>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4><i data-lucide="check-circle"></i> Strengths</h4>
+                    <ul>
+                        <li>Easy to interpret ("if X > 5 and Y < 3...")</li>
+                        <li>Handles non-linear boundaries</li>
+                        <li>No feature scaling needed</li>
+                    </ul>
+                </div>
+                <div class="compare-card">
+                    <h4><i data-lucide="alert-triangle"></i> Weaknesses</h4>
+                    <ul>
+                        <li><strong>Overfits</strong> easily — deep trees memorize noise</li>
+                        <li><strong>High variance</strong> — small data changes → completely different tree</li>
+                        <li>Often outperformed by other algorithms</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <strong>This is exactly what ensembles fix.</strong> A single tree is fragile. A <em>forest</em> of trees
+                is robust.
+            </div>
+        </section>
+
+        <!-- Section 3: Bagging -->
+        <section class="content-section text-content">
+            <h2>3. Bagging — Bootstrap Aggregating</h2>
+
+            <h3>3.1 The Bootstrap</h3>
+            <p><strong>Bootstrap sampling</strong>: Draw \(n\) samples from the training set <strong>with
+                    replacement</strong>. Some samples appear multiple times, others are left out (~37% are excluded on
+                average). Each bootstrap sample creates a slightly different dataset → a slightly different model →
+                <strong>diversity</strong>.</p>
+
+            <h3>3.2 Bagging Algorithm</h3>
+            <ol>
+                <li>Create \(B\) bootstrap samples from the training data.</li>
+                <li>Train one model (typically a decision tree) on each bootstrap sample.</li>
+                <li>For classification: <strong>majority vote</strong>. For regression: <strong>average</strong>.</li>
+            </ol>
+
+            <div class="math-block">
+                $$\hat{y}_{\text{ensemble}} = \text{mode}(\hat{y}_1, \hat{y}_2, \ldots, \hat{y}_B)$$
+            </div>
+
+            <h3>3.3 Why Bagging Reduces Variance</h3>
+            <p>If each model has variance \(\sigma^2\) and they are independent, the variance of the average is:</p>
+            <div class="math-block">
+                $$\text{Var}(\bar{y}) = \frac{\sigma^2}{B}$$
+            </div>
+            <p>More trees → lower variance → less overfitting. <strong>Bagging cannot increase bias</strong> — it only
+                reduces variance.</p>
+        </section>
+
+        <!-- Section 4: Random Forests -->
+        <section class="content-section text-content">
+            <h2>4. Random Forests</h2>
+
+            <h3>4.1 The Key Innovation</h3>
+            <p>Random Forest = Bagging + <strong>Random Feature Selection</strong>.</p>
+            <p>At each split, instead of considering <strong>all</strong> features, a Random Forest only considers a
+                random subset of \(m\) features:</p>
+
+            <div class="math-block">
+                $$m \approx \sqrt{p} \quad (\text{classification}) \qquad m \approx p/3 \quad (\text{regression})$$
+            </div>
+
+            <h3>4.2 Why Random Feature Selection?</h3>
+            <p>Without it, if one feature is very strong (e.g., "income" for credit risk), <strong>every tree</strong>
+                will split on it first → all trees look similar → low diversity → weak ensemble.</p>
+            <p>Random feature selection <strong>decorrelates</strong> the trees, forcing them to find different patterns.</p>
+
+            <h3>4.3 The Algorithm</h3>
+            <div class="pipeline-flow">
+                For each tree t = 1 to B:<br>
+                1. Draw bootstrap sample D<sub>t</sub> from training data<br>
+                2. Grow a tree: at each node, randomly select m features → find best split<br>
+                3. Do NOT prune — let it overfit!<br><br>
+                Prediction: Majority vote of all B trees
+            </div>
+
+            <div class="insight-box">
+                <strong>Why let trees overfit?</strong> Each individual tree has low bias but high variance. Averaging many
+                high-variance models reduces variance while keeping bias low.
+            </div>
+
+            <h3>4.4 Hyperparameters</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>What It Controls</th>
+                        <th>Typical Values</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>n_estimators</code></td>
+                        <td>Number of trees</td>
+                        <td>100-1000</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_depth</code></td>
+                        <td>Maximum tree depth</td>
+                        <td>None (full), 10-30</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_features</code></td>
+                        <td>Features per split (\(m\))</td>
+                        <td><code>'sqrt'</code>, <code>'log2'</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>min_samples_split</code></td>
+                        <td>Minimum samples to split a node</td>
+                        <td>2-10</td>
+                    </tr>
+                    <tr>
+                        <td><code>min_samples_leaf</code></td>
+                        <td>Minimum samples in a leaf</td>
+                        <td>1-5</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 5: Boosting -->
+        <section class="content-section text-content">
+            <h2>5. Boosting — Learning from Mistakes</h2>
+
+            <h3>5.1 The Core Idea</h3>
+            <p>While bagging trains models <strong>in parallel</strong> and averages them, boosting trains models
+                <strong>sequentially</strong>, where each new model focuses on the mistakes of the previous ones.</p>
+
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4>Bagging</h4>
+                    <ul>
+                        <li>Models trained independently</li>
+                        <li>Each sees random subset of data</li>
+                        <li>Reduces <strong>variance</strong></li>
+                        <li>Robust to overfitting</li>
+                    </ul>
+                </div>
+                <div class="compare-card">
+                    <h4>Boosting</h4>
+                    <ul>
+                        <li>Models trained sequentially</li>
+                        <li>Each focuses on hard examples</li>
+                        <li>Reduces <strong>bias</strong></li>
+                        <li>Can overfit if not regularized</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>5.2 AdaBoost — The Original Boosting Algorithm</h3>
+            <ol>
+                <li>Initialize all sample weights equally: \(w_i = 1/n\).</li>
+                <li>For each round \(t = 1, \ldots, T\):
+                    <ul>
+                        <li>Train a <strong>weak learner</strong> (e.g., decision stump) on weighted data.</li>
+                        <li>Compute weighted error: \(\epsilon_t = \sum_{i: \hat{y}_i \neq y_i} w_i\)</li>
+                        <li>Compute model weight: \(\alpha_t = \frac{1}{2} \ln\left(\frac{1 - \epsilon_t}{\epsilon_t}\right)\)</li>
+                        <li><strong>Increase weights</strong> on misclassified samples, <strong>decrease</strong> on correct.</li>
+                    </ul>
+                </li>
+                <li>Final prediction: weighted vote of all weak learners.</li>
+            </ol>
+
+            <div class="math-block">
+                $$H(x) = \text{sign}\left(\sum_{t=1}^{T} \alpha_t h_t(x)\right)$$
+            </div>
+
+            <div class="note-box">
+                <strong>Key Insight:</strong> AdaBoost turns many "slightly better than random" classifiers into one
+                strong classifier. A decision stump alone might be 55% accurate — but 500 boosted stumps can reach 99%.
+            </div>
+        </section>
+
+        <!-- Section 6: Gradient Boosting -->
+        <section class="content-section text-content">
+            <h2>6. Gradient Boosting Machines (GBM)</h2>
+
+            <h3>6.1 The Framework</h3>
+            <p>Gradient Boosting generalizes boosting by framing it as <strong>gradient descent in function
+                    space</strong>. Each new tree predicts the <strong>residuals</strong> (errors) of the current
+                ensemble:</p>
+
+            <div class="math-block">
+                $$F_t(x) = F_{t-1}(x) + \eta \cdot h_t(x)$$
+            </div>
+
+            <p>Where \(h_t(x)\) is a tree trained on the negative gradient (residuals) and \(\eta\) is the learning
+                rate.</p>
+
+            <h3>6.2 Step-by-Step for Regression</h3>
+            <ol>
+                <li>Start with a constant prediction: \(F_0(x) = \bar{y}\) (the mean).</li>
+                <li>For round \(t = 1, \ldots, T\):
+                    <ul>
+                        <li>Compute residuals: \(r_i = y_i - F_{t-1}(x_i)\)</li>
+                        <li>Fit a tree \(h_t\) to the residuals.</li>
+                        <li>Update: \(F_t(x) = F_{t-1}(x) + \eta \cdot h_t(x)\)</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <div class="pipeline-flow">
+                F₀(x) = mean(y) → compute residuals → fit tree h₁ → update F₁ = F₀ + η·h₁<br>
+                → compute residuals → fit tree h₂ → update F₂ = F₁ + η·h₂ → ... → Final model F_T
+            </div>
+
+            <h3>6.3 The Learning Rate \(\eta\)</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>\(\eta\) Value</th>
+                        <th>Effect</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Large</strong> (e.g., 0.3)</td>
+                        <td>Learns fast but may overshoot → overfitting</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Small</strong> (e.g., 0.01)</td>
+                        <td>Learns slowly but more precisely → needs more trees</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>Rule of Thumb:</strong> Use a small learning rate (\(\eta = 0.01\) to \(0.1\)) with many trees.
+                This is called <strong>shrinkage</strong> and is the most important regularizer in gradient boosting.
+            </div>
+        </section>
+
+        <!-- Section 7: XGBoost & LightGBM -->
+        <section class="content-section text-content">
+            <h2>7. XGBoost &amp; LightGBM</h2>
+
+            <h3>7.1 Why XGBoost Dominates Competitions</h3>
+            <p>XGBoost (eXtreme Gradient Boosting) adds several improvements over basic Gradient Boosting:</p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>What It Does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Regularization</strong></td>
+                        <td>L1 and L2 penalties on tree weights prevent overfitting</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Second-order gradients</strong></td>
+                        <td>Uses Hessian (second derivative) for better split finding</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Column subsampling</strong></td>
+                        <td>Like Random Forest — samples features at each tree/split</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Missing values</strong></td>
+                        <td>Learns the optimal direction for missing values</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Parallel computation</strong></td>
+                        <td>Parallelizes split finding within each tree</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Built-in CV</strong></td>
+                        <td>Native cross-validation for early stopping</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>7.2 Key Hyperparameters</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Controls</th>
+                        <th>Range</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>n_estimators</code></td>
+                        <td>Number of boosting rounds</td>
+                        <td>100-3000</td>
+                    </tr>
+                    <tr>
+                        <td><code>learning_rate</code></td>
+                        <td>Step size (\(\eta\))</td>
+                        <td>0.01-0.3</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_depth</code></td>
+                        <td>Tree depth</td>
+                        <td>3-10</td>
+                    </tr>
+                    <tr>
+                        <td><code>subsample</code></td>
+                        <td>Fraction of data per tree</td>
+                        <td>0.6-1.0</td>
+                    </tr>
+                    <tr>
+                        <td><code>colsample_bytree</code></td>
+                        <td>Fraction of features per tree</td>
+                        <td>0.6-1.0</td>
+                    </tr>
+                    <tr>
+                        <td><code>reg_alpha</code> / <code>reg_lambda</code></td>
+                        <td>L1 / L2 regularization</td>
+                        <td>0-10</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>7.3 LightGBM — Even Faster</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Technique</th>
+                        <th>Effect</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Leaf-wise growth</strong></td>
+                        <td>Grows leaf with largest loss reduction (vs. XGBoost's level-wise)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Histogram-based splitting</strong></td>
+                        <td>Bins continuous features → fewer split candidates</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GOSS</strong></td>
+                        <td>Keeps large-gradient instances, samples from small-gradient ones</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note-box">
+                <strong>When to use which:</strong> XGBoost is the safe default. LightGBM is faster on large datasets
+                (100k+ rows). Both typically outperform Random Forests on tabular data.
+            </div>
+        </section>
+
+        <!-- Section 8: Bias-Variance Tradeoff -->
+        <section class="content-section text-content">
+            <h2>8. The Bias-Variance Tradeoff</h2>
+
+            <h3>8.1 The Central Tension of Machine Learning</h3>
+            <p>Every model's error can be decomposed as:</p>
+            <div class="math-block">
+                $$\text{Error} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Noise}$$
+            </div>
+
+            <div class="param-grid">
+                <div class="param-card">
+                    <div class="term">Bias</div>
+                    <div class="name">Systematic Error</div>
+                    <div class="desc">How far off the average prediction is from truth. Consistently aiming left.</div>
+                </div>
+                <div class="param-card">
+                    <div class="term">Variance</div>
+                    <div class="name">Sensitivity to Data</div>
+                    <div class="desc">How much predictions change with different training data. Shots scattered everywhere.</div>
+                </div>
+            </div>
+
+            <h3>8.2 How Ensembles Address the Tradeoff</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Bias</th>
+                        <th>Variance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Single Deep Tree</strong></td>
+                        <td>Low</td>
+                        <td><strong>High</strong> (overfits)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Random Forest</strong> (Bagging)</td>
+                        <td>Low (unchanged)</td>
+                        <td><strong>Low</strong> (averaging)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gradient Boosting</strong></td>
+                        <td><strong>Low</strong> (corrects errors)</td>
+                        <td>Can increase without regularization</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>8.3 Overfitting vs. Underfitting</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Symptom</th>
+                        <th>Diagnosis</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Train ≈ 99%, Test ≈ 75%</td>
+                        <td><strong>Overfitting</strong></td>
+                        <td>Reduce complexity, add regularization, more data</td>
+                    </tr>
+                    <tr>
+                        <td>Train ≈ 70%, Test ≈ 68%</td>
+                        <td><strong>Underfitting</strong></td>
+                        <td>Increase complexity, add features</td>
+                    </tr>
+                    <tr>
+                        <td>Train ≈ 92%, Test ≈ 90%</td>
+                        <td><strong>Good fit</strong></td>
+                        <td>Ship it!</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 9: Feature Importance -->
+        <section class="content-section text-content">
+            <h2>9. Feature Importance</h2>
+
+            <h3>9.1 Gini Importance</h3>
+            <p>For each feature, sum the total reduction in impurity across all splits in all trees that used that
+                feature:</p>
+            <div class="math-block">
+                $$\text{Importance}(f) = \sum_{\text{trees}} \sum_{\text{splits on } f} \Delta \text{Gini}$$
+            </div>
+
+            <h3>9.2 Permutation Importance</h3>
+            <p>A more robust approach: randomly shuffle one feature and measure how much accuracy drops:</p>
+            <div class="math-block">
+                $$\text{Importance}(f) = \text{Score}_{\text{original}} - \text{Score}_{\text{shuffled } f}$$
+            </div>
+
+            <pre><code class="language-python">from sklearn.inspection import permutation_importance
+
+result = permutation_importance(model, X_test, y_test,
+                                n_repeats=10, random_state=42)
+for i in result.importances_mean.argsort()[::-1]:
+    print(f"{feature_names[i]:<25} "
+          f"{result.importances_mean[i]:.4f} +/- "
+          f"{result.importances_std[i]:.4f}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Why it matters:</strong> Feature importance helps you understand what the model learned, debug
+                unexpected behavior, and select the most informative features.
+            </div>
+        </section>
+
+        <!-- Section 10: Practical Implementation -->
+        <section class="content-section text-content">
+            <h2>10. Practical Implementation</h2>
+
+            <h3>10.1 Random Forest</h3>
+            <pre><code class="language-python">from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Create and train a Random Forest
+rf = RandomForestClassifier(
+    n_estimators=200,       # 200 trees
+    max_depth=None,         # unlimited depth
+    max_features='sqrt',    # sqrt(p) features per split
+    random_state=42
+)
+rf.fit(X_train, y_train)
+
+# Evaluate
+y_pred = rf.predict(X_test)
+print(f"Random Forest Accuracy: {accuracy_score(y_test, y_pred):.4f}")
+print(classification_report(y_test, y_pred))</code></pre>
+
+            <h3>10.2 XGBoost</h3>
+            <pre><code class="language-python">from xgboost import XGBClassifier
+
+# Create and train XGBoost
+xgb = XGBClassifier(
+    n_estimators=300,
+    learning_rate=0.1,
+    max_depth=5,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    eval_metric='logloss',
+    random_state=42
+)
+xgb.fit(X_train, y_train)
+
+# Evaluate
+y_pred_xgb = xgb.predict(X_test)
+print(f"XGBoost Accuracy: {accuracy_score(y_test, y_pred_xgb):.4f}")</code></pre>
+
+            <h3>10.3 Comparing All Models</h3>
+            <pre><code class="language-python">from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from xgboost import XGBClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+models = {
+    'Logistic Regression': Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', LogisticRegression())
+    ]),
+    'SVM (RBF)': Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', SVC(kernel='rbf'))
+    ]),
+    'Random Forest': RandomForestClassifier(
+        n_estimators=200, random_state=42),
+    'Gradient Boosting': GradientBoostingClassifier(
+        n_estimators=200, learning_rate=0.1, random_state=42),
+    'XGBoost': XGBClassifier(
+        n_estimators=200, learning_rate=0.1,
+        eval_metric='logloss', random_state=42),
+}
+
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    acc = accuracy_score(y_test, model.predict(X_test))
+    print(f"{name:<25} Accuracy: {acc:.4f}")</code></pre>
+        </section>
+
+        <!-- Section 11: Quick Reference -->
+        <section class="content-section text-content">
+            <h2>11. Key Equations — Quick Reference</h2>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Formula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Gini Impurity</td>
+                        <td>\(1 - \sum p_k^2\)</td>
+                    </tr>
+                    <tr>
+                        <td>Entropy</td>
+                        <td>\(-\sum p_k \log_2 p_k\)</td>
+                    </tr>
+                    <tr>
+                        <td>Bagging Prediction</td>
+                        <td>\(\hat{y} = \text{mode}(\hat{y}_1, \ldots, \hat{y}_B)\)</td>
+                    </tr>
+                    <tr>
+                        <td>RF Features per Split</td>
+                        <td>\(m \approx \sqrt{p}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Gradient Boosting Update</td>
+                        <td>\(F_t(x) = F_{t-1}(x) + \eta \cdot h_t(x)\)</td>
+                    </tr>
+                    <tr>
+                        <td>AdaBoost Model Weight</td>
+                        <td>\(\alpha_t = \frac{1}{2}\ln\frac{1-\epsilon_t}{\epsilon_t}\)</td>
+                    </tr>
+                    <tr>
+                        <td>Bias-Variance</td>
+                        <td>\(\text{Error} = \text{Bias}^2 + \text{Variance} + \text{Noise}\)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 12: Summary -->
+        <section class="content-section text-content">
+            <h2>12. Summary</h2>
+
+            <div class="success-box">
+                <ol>
+                    <li><strong>Decision Trees</strong> are intuitive but overfit — low bias, high variance.</li>
+                    <li><strong>Bagging</strong> trains many models on bootstrap samples and averages — reduces variance.</li>
+                    <li><strong>Random Forests</strong> add random feature selection to decorrelate trees.</li>
+                    <li><strong>Boosting</strong> trains sequentially, each model correcting the previous — reduces bias.</li>
+                    <li><strong>Gradient Boosting</strong> = gradient descent in function space, fitting trees to residuals.</li>
+                    <li><strong>XGBoost</strong> and <strong>LightGBM</strong> dominate tabular data competitions.</li>
+                    <li>The <strong>Bias-Variance Tradeoff</strong> is the fundamental tension ensembles navigate.</li>
+                    <li><strong>Feature Importance</strong> reveals what the model learned.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 13: Bridge -->
+        <section class="content-section text-content">
+            <h2>13. Bridge to the Tutorial</h2>
+            <p>In the tutorial session, you will:</p>
+            <ul>
+                <li>Build a fraud detection system using an imbalanced dataset.</li>
+                <li>Train a Decision Tree and visualize it.</li>
+                <li>Implement a Random Forest and compare to a single tree.</li>
+                <li>Train XGBoost and tune its hyperparameters.</li>
+                <li>Handle class imbalance using <code>scale_pos_weight</code> and class weighting.</li>
+                <li>Compare all models: Logistic Regression, SVM, Random Forest, Gradient Boosting, XGBoost.</li>
+                <li>Extract and visualize feature importance.</li>
+                <li>Use cross-validation with early stopping.</li>
+            </ul>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">A single model is a gamble — an
+                    ensemble is a strategy.</p>
+                <a href="tutorial_6.html" class="btn btn-primary"
+                    style="display:inline-flex;margin:1rem auto 0 auto;">
+                    Continue to Tutorial 6 <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering & InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>
