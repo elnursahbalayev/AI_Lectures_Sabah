@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 8 Tutorial: Model Evaluation & Deployment | AI Lectures</title>
+    <meta name="description" content="Week 8 Tutorial: Build a complete evaluation and deployment pipeline — learning curves, confusion matrix, ROC/PR curves, RandomizedSearchCV, and Streamlit deployment.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .assignment-card {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .assignment-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-card {
+            background: rgba(24, 24, 27, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+
+        .metric-card .metric-label {
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .metric-card .metric-name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .metric-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 700px) {
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="lecture_8.html">Lecture 8</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 08 Tutorial</span>
+            <h1>Model Evaluation<br>&amp; Deployment</h1>
+            <p class="subtitle">Build a complete evaluation and deployment pipeline — learning curves, confusion matrix, ROC &amp; PR curves, RandomizedSearchCV, and a live Streamlit churn predictor.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1: Introduction -->
+        <section class="content-section text-content">
+            <h2>1. Introduction</h2>
+            <p>In previous weeks, we trained many models. Today we ask the harder question: <strong>how do we know they work?</strong> A model that looks great on training data but fails in production is worse than useless — it is dangerous.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="target"></i> Today's Goal</h4>
+                <ul>
+                    <li>Diagnose overfitting using <strong>learning curves</strong> and train/validation gap analysis.</li>
+                    <li>Build a complete <strong>confusion matrix</strong> visualization with TP, FP, FN, TN annotations.</li>
+                    <li>Compute Precision, Recall, F1-Score, and <strong>AUC-ROC</strong> for multiple models.</li>
+                    <li>Plot and compare <strong>ROC and Precision-Recall curves</strong> across three models.</li>
+                    <li>Implement <strong>Stratified K-Fold</strong> cross-validation and interpret mean ± std results.</li>
+                    <li>Run <code>RandomizedSearchCV</code> to find optimal hyperparameters.</li>
+                    <li>Save the best model pipeline with <code>joblib</code> and deploy it as a <strong>Streamlit</strong> web app.</li>
+                </ul>
+            </div>
+
+            <p>The four key evaluation pillars we will build today:</p>
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Pillar 1</div>
+                    <div class="metric-name">Bias-Variance Diagnosis</div>
+                    <div class="metric-desc">Learning curves reveal whether a model is over- or under-fitting, and whether more data would help.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Pillar 2</div>
+                    <div class="metric-name">Classification Metrics</div>
+                    <div class="metric-desc">Confusion matrix, Precision, Recall, F1 — because accuracy alone is always misleading for imbalanced classes.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Pillar 3</div>
+                    <div class="metric-name">ROC &amp; PR Curves</div>
+                    <div class="metric-desc">Threshold-independent ranking quality. AUC-ROC and Average Precision compare models fairly.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Pillar 4</div>
+                    <div class="metric-name">Deployment</div>
+                    <div class="metric-desc">A model in a notebook helps no one. We save the full pipeline and wrap it in a Streamlit web application.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Environment Setup -->
+        <section class="content-section text-content">
+            <h2>2. Environment Setup</h2>
+
+            <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+from sklearn.datasets import make_classification
+from sklearn.model_selection import (
+    train_test_split, StratifiedKFold, cross_validate,
+    learning_curve, RandomizedSearchCV
+)
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.metrics import (
+    classification_report, confusion_matrix,
+    roc_curve, auc, precision_recall_curve,
+    average_precision_score, f1_score
+)
+from scipy.stats import randint, uniform
+import joblib
+import warnings
+warnings.filterwarnings('ignore')
+
+print(f"Pandas:  {pd.__version__}")
+print(f"NumPy:   {np.__version__}")
+print("\nReady to evaluate and deploy models!")</code></pre>
+        </section>
+
+        <!-- Section 3: Dataset -->
+        <section class="content-section text-content">
+            <h2>3. Creating Our Dataset — Customer Churn</h2>
+            <p>We will build a synthetic <strong>customer churn dataset</strong> — a classic binary classification problem with class imbalance. Approximately 22% of customers churn, which is realistic and makes accuracy an unreliable metric.</p>
+
+            <div class="warning-box">
+                <strong>Why synthetic data?</strong> We control the ground truth. We know exactly which features drive churn, so we can verify that our models are learning the right patterns and not just memorizing noise.
+            </div>
+
+            <pre><code class="language-python">np.random.seed(42)
+n = 5000
+
+# --- Generate realistic customer churn features ---
+account_tenure   = np.random.exponential(scale=24, size=n).clip(1, 120)
+monthly_spend    = np.random.lognormal(mean=4.5, sigma=0.8, size=n).clip(5, 500)
+support_tickets  = np.random.poisson(lam=2, size=n).clip(0, 15)
+login_frequency  = np.random.exponential(scale=8, size=n).clip(0.5, 50)
+num_products     = np.random.randint(1, 8, size=n)
+contract_type    = np.random.choice([0, 1, 2], size=n, p=[0.4, 0.35, 0.25])
+payment_failures = np.random.poisson(lam=0.8, size=n).clip(0, 5)
+
+# --- Churn probability --- long tenure, more products → less churn
+churn_logit = (
+    -0.05 * account_tenure
+    - 0.002 * monthly_spend
+    + 0.4  * support_tickets
+    - 0.1  * login_frequency
+    - 0.3  * num_products
+    - 0.8  * contract_type
+    + 0.9  * payment_failures
+    + np.random.normal(0, 1.2, size=n)
+)
+
+churn_prob = 1 / (1 + np.exp(-churn_logit))
+y = (churn_prob > 0.55).astype(int)   # ~22% churn rate
+
+df = pd.DataFrame({
+    'account_tenure':   account_tenure.round(1),
+    'monthly_spend':    monthly_spend.round(2),
+    'support_tickets':  support_tickets,
+    'login_frequency':  login_frequency.round(1),
+    'num_products':     num_products,
+    'contract_type':    contract_type,
+    'payment_failures': payment_failures,
+    'churned':          y
+})
+
+feature_cols = [c for c in df.columns if c != 'churned']
+X = df[feature_cols].values
+y = df['churned'].values
+
+print(f"Dataset shape:  {df.shape}")
+print(f"Churn rate:     {y.mean():.1%}")
+print(f"Non-churn (0):  {(y==0).sum()}")
+print(f"Churn (1):      {(y==1).sum()}")
+df[feature_cols].describe().round(2)</code></pre>
+        </section>
+
+        <!-- Section 4: Split -->
+        <section class="content-section text-content">
+            <h2>4. Step 1 — Train / Validation / Test Split</h2>
+            <div class="step-indicator">STEP 1 OF 11 &bull; Protect Your Test Set</div>
+
+            <div class="pipeline-flow">
+                All Data (100%)<br>
+                ├── Train (60%) — model learns weights from this<br>
+                ├── Validation (20%) — used to tune hyperparameters<br>
+                └── Test (20%) — final, one-time evaluation
+            </div>
+
+            <pre><code class="language-python"># Step 1: Hold out 20% as the sacred test set
+X_temp, X_test, y_temp, y_test = train_test_split(
+    X, y, test_size=0.20, random_state=42, stratify=y
+)
+
+# Step 2: From remaining 80%, reserve 25% (= 20% of total) as validation
+X_train, X_val, y_train, y_val = train_test_split(
+    X_temp, y_temp, test_size=0.25, random_state=42, stratify=y_temp
+)
+
+print(f"Total dataset:  {len(y):>6} samples")
+print(f"  Train:        {len(y_train):>6} ({len(y_train)/len(y):.0%})")
+print(f"  Validation:   {len(y_val):>6} ({len(y_val)/len(y):.0%})")
+print(f"  Test:         {len(y_test):>6} ({len(y_test)/len(y):.0%})")
+print(f"\nChurn rate in each split:")
+print(f"  Train:      {y_train.mean():.1%}")
+print(f"  Validation: {y_val.mean():.1%}")
+print(f"  Test:       {y_test.mean():.1%}")</code></pre>
+
+            <div class="note-box">
+                <strong>Verify stratification:</strong> All three splits should show nearly identical churn rates (~22%). If they differ significantly, your stratification failed. The <code>stratify=y</code> parameter in <code>train_test_split</code> guarantees this.
+            </div>
+        </section>
+
+        <!-- Section 5: Pipelines -->
+        <section class="content-section text-content">
+            <h2>5. Step 2 — Build Three Model Pipelines</h2>
+            <div class="step-indicator">STEP 2 OF 11 &bull; Prevent Data Leakage</div>
+
+            <p>We wrap each model in a <code>Pipeline</code> with <code>StandardScaler</code>. This is not just convenience — it is <strong>correctness</strong>. When the scaler is inside the pipeline and we use cross-validation, the scaler is refit on each training fold independently. Fitting the scaler before splitting is data leakage.</p>
+
+            <pre><code class="language-python">pipelines = {
+    'Logistic Regression': Pipeline([
+        ('scaler', StandardScaler()),
+        ('clf', LogisticRegression(C=1.0, max_iter=1000, random_state=42))
+    ]),
+    'Random Forest': Pipeline([
+        ('scaler', StandardScaler()),
+        ('clf', RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42))
+    ]),
+    'Gradient Boosting': Pipeline([
+        ('scaler', StandardScaler()),
+        ('clf', GradientBoostingClassifier(n_estimators=100, learning_rate=0.1,
+                                           max_depth=4, random_state=42))
+    ]),
+}</code></pre>
+        </section>
+
+        <!-- Section 6: Cross-Validation -->
+        <section class="content-section text-content">
+            <h2>6. Step 3 — Cross-Validation: Diagnosing Overfitting</h2>
+            <div class="step-indicator">STEP 3 OF 11 &bull; Measure Generalization</div>
+
+            <pre><code class="language-python">cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+metrics = ['accuracy', 'f1_weighted', 'roc_auc']
+
+cv_results = {}
+
+print("=" * 65)
+print(f"{'Model':<25} {'Metric':<18} {'Train':>8} {'Val':>8} {'Gap':>8}")
+print("=" * 65)
+
+for name, pipe in pipelines.items():
+    result = cross_validate(
+        pipe, X_train, y_train,
+        cv=cv,
+        scoring=metrics,
+        return_train_score=True
+    )
+    cv_results[name] = result
+
+    for m in metrics:
+        tr = result[f'train_{m}'].mean()
+        va = result[f'test_{m}'].mean()
+        gap = tr - va
+        flag = " ← overfit" if gap > 0.07 else ""
+        print(f"{name:<25} {m:<18} {tr:>8.4f} {va:>8.4f} {gap:>+8.4f}{flag}")
+    print("-" * 65)</code></pre>
+
+            <h3>6.1 Visualize the Train vs. Validation Gap</h3>
+            <pre><code class="language-python">fig, axes = plt.subplots(1, 3, figsize=(17, 5))
+colors = {'Logistic Regression': '#3b82f6',
+          'Random Forest': '#4ade80',
+          'Gradient Boosting': '#f59e0b'}
+
+for ax, metric in zip(axes, metrics):
+    x = np.arange(len(pipelines))
+    width = 0.35
+
+    for i, (name, result) in enumerate(cv_results.items()):
+        tr_mean = result[f'train_{metric}'].mean()
+        tr_std  = result[f'train_{metric}'].std()
+        va_mean = result[f'test_{metric}'].mean()
+        va_std  = result[f'test_{metric}'].std()
+
+        ax.bar(i - width/2, tr_mean, width, label='Train' if i == 0 else "_",
+               color=colors[name], alpha=0.9, yerr=tr_std, capsize=4)
+        ax.bar(i + width/2, va_mean, width, label='Validation' if i == 0 else "_",
+               color=colors[name], alpha=0.4, yerr=va_std, capsize=4, hatch='//')
+
+    ax.set_xticks(x)
+    ax.set_xticklabels([n.replace(' ', '\n') for n in pipelines.keys()], fontsize=9)
+    ax.set_ylabel(metric.replace('_', ' ').title())
+    ax.set_title(metric.replace("_", " ").title(), fontsize=11, fontweight='bold')
+    ax.set_ylim(0.5, 1.05)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+axes[0].legend(['Train (solid)', 'Validation (hatched)'], fontsize=9)
+plt.suptitle('Cross-Validation: Train vs. Validation Scores', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('cv_comparison.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 7: Learning Curves -->
+        <section class="content-section text-content">
+            <h2>7. Step 4 — Learning Curves: Does More Data Help?</h2>
+            <div class="step-indicator">STEP 4 OF 11 &bull; Bias vs. Variance</div>
+
+            <p>Learning curves plot model performance as the training set size grows. They answer a critical question before you spend time collecting more data: <em>would adding more samples actually improve my model?</em></p>
+
+            <pre><code class="language-python">fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+train_sizes_frac = np.linspace(0.1, 1.0, 10)
+
+for ax, (name, pipe) in zip(axes, pipelines.items()):
+    train_sizes, train_scores, val_scores = learning_curve(
+        pipe, X_train, y_train,
+        train_sizes=train_sizes_frac,
+        cv=StratifiedKFold(n_splits=5, shuffle=True, random_state=42),
+        scoring='f1_weighted',
+        n_jobs=-1
+    )
+
+    tr_mean = train_scores.mean(axis=1)
+    tr_std  = train_scores.std(axis=1)
+    va_mean = val_scores.mean(axis=1)
+    va_std  = val_scores.std(axis=1)
+
+    ax.plot(train_sizes, tr_mean, 'b-o', label='Train', linewidth=2, markersize=5)
+    ax.fill_between(train_sizes, tr_mean - tr_std, tr_mean + tr_std, alpha=0.1, color='blue')
+    ax.plot(train_sizes, va_mean, 'r-o', label='Validation', linewidth=2, markersize=5)
+    ax.fill_between(train_sizes, va_mean - va_std, va_mean + va_std, alpha=0.1, color='red')
+
+    gap = tr_mean[-1] - va_mean[-1]
+    ax.annotate(f'Gap: {gap:.3f}', xy=(train_sizes[-1], va_mean[-1]),
+                xytext=(-60, -20), textcoords='offset points',
+                fontsize=9, color='darkred',
+                arrowprops=dict(arrowstyle='->', color='darkred'))
+
+    ax.set_xlabel('Training Samples')
+    ax.set_ylabel('F1-Score (Weighted)')
+    ax.set_title(name, fontsize=11, fontweight='bold')
+    ax.legend(fontsize=9)
+    ax.set_ylim(0.5, 1.05)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+plt.suptitle('Learning Curves — Does More Data Help?', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('learning_curves.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <div class="insight-box">
+                <strong>How to read learning curves:</strong>
+                <ul>
+                    <li>Both curves converge to a similar <em>low</em> value → <strong>Underfitting</strong>. More data will not help. Use a more complex model.</li>
+                    <li>Train is high, validation is low, gap stays wide → <strong>Overfitting</strong>. More data <em>will</em> help. Also try regularization.</li>
+                    <li>Both curves converge to a similar <em>high</em> value → well-fitted. Ready for production.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 8: Confusion Matrix -->
+        <section class="content-section text-content">
+            <h2>8. Step 5 — Confusion Matrix &amp; Classification Report</h2>
+            <div class="step-indicator">STEP 5 OF 11 &bull; Beyond Accuracy</div>
+
+            <p>Our churn dataset has ~22% positive class. A model that always predicts "no churn" would achieve <strong>78% accuracy</strong> while catching zero churn cases. The confusion matrix reveals this failure immediately.</p>
+
+            <pre><code class="language-python"># Fit all models
+fitted_models = {}
+for name, pipe in pipelines.items():
+    pipe.fit(X_train, y_train)
+    fitted_models[name] = pipe
+
+# Confusion matrices on VALIDATION set (not test yet!)
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+for ax, (name, pipe) in zip(axes, fitted_models.items()):
+    y_pred = pipe.predict(X_val)
+    cm = confusion_matrix(y_val, y_pred)
+    cm_norm = cm.astype(float) / cm.sum(axis=1)[:, np.newaxis]
+
+    im = ax.imshow(cm_norm, interpolation='nearest', cmap='Blues', vmin=0, vmax=1)
+    plt.colorbar(im, ax=ax, fraction=0.04)
+
+    labels_text = [
+        [f'TN\n{cm[0,0]}\n({cm_norm[0,0]:.0%})', f'FP\n{cm[0,1]}\n({cm_norm[0,1]:.0%})'],
+        [f'FN\n{cm[1,0]}\n({cm_norm[1,0]:.0%})', f'TP\n{cm[1,1]}\n({cm_norm[1,1]:.0%})']
+    ]
+    for i in range(2):
+        for j in range(2):
+            color = 'white' if cm_norm[i, j] > 0.5 else 'black'
+            ax.text(j, i, labels_text[i][j], ha='center', va='center',
+                    fontsize=10, color=color, fontweight='bold')
+
+    ax.set_xticks([0, 1])
+    ax.set_yticks([0, 1])
+    ax.set_xticklabels(['Predicted\nNo Churn', 'Predicted\nChurn'])
+    ax.set_yticklabels(['Actual\nNo Churn', 'Actual\nChurn'])
+    ax.set_title(name, fontsize=11, fontweight='bold')
+
+plt.suptitle('Confusion Matrices (Validation Set)', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('confusion_matrices.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <pre><code class="language-python"># Print classification reports
+for name, pipe in fitted_models.items():
+    y_pred = pipe.predict(X_val)
+    print(f"\n{'='*55}")
+    print(f"  {name}")
+    print(f"{'='*55}")
+    print(classification_report(y_val, y_pred,
+                                 target_names=['No Churn', 'Churn'],
+                                 digits=4))</code></pre>
+
+            <div class="warning-box">
+                <strong>FN vs. FP — which error costs more?</strong><br>
+                A <strong>False Negative</strong> (predicted "no churn" but customer churned) = missed retention opportunity, lost revenue.<br>
+                A <strong>False Positive</strong> (predicted "churn" but customer didn't) = unnecessary retention campaign cost.<br>
+                If campaigns are cheap and churn is costly, <strong>maximize Recall</strong>. If campaigns are expensive, <strong>balance with F1</strong>.
+            </div>
+        </section>
+
+        <!-- Section 9: ROC Curves -->
+        <section class="content-section text-content">
+            <h2>9. Step 6 — ROC &amp; Precision-Recall Curves</h2>
+            <div class="step-indicator">STEP 6 OF 11 &bull; Threshold-Independent Evaluation</div>
+
+            <pre><code class="language-python">fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+
+line_styles = ['-', '--', '-.']
+model_colors = ['#3b82f6', '#4ade80', '#f59e0b']
+
+# ROC Curves
+for (name, pipe), ls, color in zip(fitted_models.items(), line_styles, model_colors):
+    y_prob = pipe.predict_proba(X_val)[:, 1]
+    fpr, tpr, _ = roc_curve(y_val, y_prob)
+    roc_auc = auc(fpr, tpr)
+    axes[0].plot(fpr, tpr, ls, color=color, linewidth=2.2,
+                 label=f'{name} (AUC={roc_auc:.4f})')
+
+axes[0].plot([0, 1], [0, 1], 'k--', linewidth=1, label='Random (AUC=0.50)')
+axes[0].set_xlabel('False Positive Rate (FPR)', fontsize=11)
+axes[0].set_ylabel('True Positive Rate (Recall)', fontsize=11)
+axes[0].set_title('ROC Curve — All Models', fontsize=12, fontweight='bold')
+axes[0].legend(fontsize=10)
+axes[0].spines['top'].set_visible(False)
+axes[0].spines['right'].set_visible(False)
+
+# Add operating point at threshold=0.5
+for (name, pipe), color in zip(fitted_models.items(), model_colors):
+    y_prob = pipe.predict_proba(X_val)[:, 1]
+    y_pred_50 = (y_prob >= 0.5).astype(int)
+    cm = confusion_matrix(y_val, y_pred_50)
+    fpr_pt = cm[0, 1] / (cm[0, 1] + cm[0, 0])
+    tpr_pt = cm[1, 1] / (cm[1, 1] + cm[1, 0])
+    axes[0].scatter(fpr_pt, tpr_pt, color=color, s=80, zorder=5, marker='o',
+                    edgecolors='black', linewidth=1)
+
+# Precision-Recall Curves
+for (name, pipe), ls, color in zip(fitted_models.items(), line_styles, model_colors):
+    y_prob = pipe.predict_proba(X_val)[:, 1]
+    precision, recall, _ = precision_recall_curve(y_val, y_prob)
+    ap = average_precision_score(y_val, y_prob)
+    axes[1].plot(recall, precision, ls, color=color, linewidth=2.2,
+                 label=f'{name} (AP={ap:.4f})')
+
+baseline = y_val.mean()
+axes[1].axhline(y=baseline, color='k', linestyle='--', linewidth=1,
+                label=f'Baseline (AP={baseline:.4f})')
+axes[1].set_xlabel('Recall', fontsize=11)
+axes[1].set_ylabel('Precision', fontsize=11)
+axes[1].set_title('Precision-Recall Curve — All Models', fontsize=12, fontweight='bold')
+axes[1].legend(fontsize=10)
+axes[1].spines['top'].set_visible(False)
+axes[1].spines['right'].set_visible(False)
+
+plt.suptitle('ROC & Precision-Recall Curves (Validation Set)', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('roc_pr_curves.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <div class="note-box">
+                <strong>ROC vs. PR — when to use which?</strong><br>
+                Use <strong>ROC-AUC</strong> when false positives and false negatives have similar cost and the dataset is roughly balanced.<br>
+                Use <strong>PR-AUC (Average Precision)</strong> when the positive class is rare and highly important (fraud, disease). The PR curve is more informative in heavily imbalanced settings.
+            </div>
+        </section>
+
+        <!-- Section 10: Threshold Optimization -->
+        <section class="content-section text-content">
+            <h2>10. Step 7 — Threshold Optimization</h2>
+            <div class="step-indicator">STEP 7 OF 11 &bull; 0.5 Is Rarely Optimal</div>
+
+            <p>The default threshold of 0.5 is almost never optimal for imbalanced problems. Let's find the threshold that maximizes F1-score on the validation set.</p>
+
+            <pre><code class="language-python">gb_pipe  = fitted_models['Gradient Boosting']
+y_prob   = gb_pipe.predict_proba(X_val)[:, 1]
+
+thresholds = np.arange(0.1, 0.9, 0.02)
+f1_scores  = []
+precision_scores = []
+recall_scores    = []
+
+from sklearn.metrics import precision_score, recall_score
+
+for thresh in thresholds:
+    y_pred_thresh = (y_prob >= thresh).astype(int)
+    if y_pred_thresh.sum() == 0 or y_pred_thresh.sum() == len(y_pred_thresh):
+        f1_scores.append(0); precision_scores.append(0); recall_scores.append(0)
+        continue
+    f1_scores.append(f1_score(y_val, y_pred_thresh, zero_division=0))
+    precision_scores.append(precision_score(y_val, y_pred_thresh, zero_division=0))
+    recall_scores.append(recall_score(y_val, y_pred_thresh, zero_division=0))
+
+best_thresh = thresholds[np.argmax(f1_scores)]
+
+fig, ax = plt.subplots(figsize=(11, 5))
+ax.plot(thresholds, f1_scores,        'b-', linewidth=2.2, label='F1-Score')
+ax.plot(thresholds, precision_scores, 'g--', linewidth=1.8, label='Precision')
+ax.plot(thresholds, recall_scores,    'r--', linewidth=1.8, label='Recall')
+ax.axvline(x=best_thresh, color='black', linestyle=':', linewidth=1.5,
+           label=f'Best threshold = {best_thresh:.2f}')
+ax.axvline(x=0.5, color='gray', linestyle=':', linewidth=1,
+           label='Default threshold = 0.50')
+ax.set_xlabel('Classification Threshold', fontsize=11)
+ax.set_ylabel('Score', fontsize=11)
+ax.set_title('Threshold Analysis — Gradient Boosting', fontsize=12, fontweight='bold')
+ax.legend(fontsize=10)
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+plt.tight_layout()
+plt.savefig('threshold_analysis.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+print(f"--- Default threshold (0.50) ---")
+y_pred_default = (y_prob >= 0.50).astype(int)
+print(classification_report(y_val, y_pred_default, target_names=['No Churn', 'Churn'], digits=4))
+
+print(f"--- Optimal threshold ({best_thresh:.2f}) ---")
+y_pred_optimal = (y_prob >= best_thresh).astype(int)
+print(classification_report(y_val, y_pred_optimal, target_names=['No Churn', 'Churn'], digits=4))</code></pre>
+        </section>
+
+        <!-- Section 11: Hyperparameter Tuning -->
+        <section class="content-section text-content">
+            <h2>11. Step 8 — Hyperparameter Tuning with RandomizedSearchCV</h2>
+            <div class="step-indicator">STEP 8 OF 11 &bull; Smart Search</div>
+
+            <p>Grid search tries every combination — this scales exponentially. <strong>Randomized search</strong> samples \(N\) random configurations and finds equally good results with a fraction of the compute. Research by Bergstra &amp; Bengio (2012) confirmed this empirically.</p>
+
+            <pre><code class="language-python">from scipy.stats import randint, uniform
+
+param_dist = {
+    'clf__n_estimators':      randint(50, 400),
+    'clf__learning_rate':     uniform(0.01, 0.3),
+    'clf__max_depth':         randint(2, 8),
+    'clf__min_samples_split': randint(2, 20),
+    'clf__subsample':         uniform(0.6, 0.4),
+}
+
+gb_pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('clf', GradientBoostingClassifier(random_state=42))
+])
+
+random_search = RandomizedSearchCV(
+    gb_pipeline,
+    param_dist,
+    n_iter=40,
+    cv=StratifiedKFold(n_splits=5, shuffle=True, random_state=42),
+    scoring='roc_auc',
+    random_state=42,
+    n_jobs=-1,
+    verbose=0
+)
+
+print("Running RandomizedSearchCV (40 candidates × 5 folds = 200 fits)...")
+random_search.fit(X_train, y_train)
+
+print(f"\nBest parameters found:")
+for k, v in random_search.best_params_.items():
+    print(f"  {k:<35} {v}")
+print(f"\nBest CV AUC-ROC:    {random_search.best_score_:.4f}")
+
+best_model = random_search.best_estimator_
+y_prob_best = best_model.predict_proba(X_val)[:, 1]
+val_auc = auc(*roc_curve(y_val, y_prob_best)[:2])
+print(f"Validation AUC-ROC: {val_auc:.4f}")</code></pre>
+
+            <pre><code class="language-python"># Visualize search results
+results_df = pd.DataFrame(random_search.cv_results_)
+results_df = results_df[['param_clf__n_estimators', 'param_clf__learning_rate',
+                           'param_clf__max_depth', 'mean_test_score', 'std_test_score']]
+results_df.columns = ['n_estimators', 'learning_rate', 'max_depth', 'mean_auc', 'std_auc']
+results_df = results_df.sort_values('mean_auc', ascending=False)
+
+print("Top 10 hyperparameter configurations:")
+print(results_df.head(10).round(4).to_string(index=False))
+
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+sc = axes[0].scatter(results_df['learning_rate'], results_df['mean_auc'],
+                      c=results_df['n_estimators'], cmap='plasma', s=60, alpha=0.7)
+plt.colorbar(sc, ax=axes[0], label='n_estimators')
+axes[0].set_xlabel('Learning Rate')
+axes[0].set_ylabel('Mean CV AUC-ROC')
+axes[0].set_title('Learning Rate vs. CV AUC', fontsize=11, fontweight='bold')
+axes[0].spines['top'].set_visible(False)
+axes[0].spines['right'].set_visible(False)
+
+sc2 = axes[1].scatter(results_df['max_depth'], results_df['mean_auc'],
+                       c=results_df['learning_rate'], cmap='viridis', s=60, alpha=0.7)
+plt.colorbar(sc2, ax=axes[1], label='Learning Rate')
+axes[1].set_xlabel('Max Depth')
+axes[1].set_ylabel('Mean CV AUC-ROC')
+axes[1].set_title('Max Depth vs. CV AUC', fontsize=11, fontweight='bold')
+axes[1].spines['top'].set_visible(False)
+axes[1].spines['right'].set_visible(False)
+
+plt.suptitle('RandomizedSearchCV Results', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('hyperparameter_search.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 12: Final Test Evaluation -->
+        <section class="content-section text-content">
+            <h2>12. Step 9 — The Final Test Evaluation (Once Only!)</h2>
+            <div class="step-indicator">STEP 9 OF 11 &bull; The Moment of Truth</div>
+
+            <div class="warning-box">
+                <strong>This is the moment of truth.</strong> All decisions — model choice, hyperparameters, threshold — were made using only train and validation data. We now evaluate exactly <em>once</em> on the held-out test set. If you evaluate and then adjust, you have leaked information and your reported metrics are dishonest.
+            </div>
+
+            <pre><code class="language-python">final_model = random_search.best_estimator_
+final_model.fit(X_train, y_train)   # refit on full training set
+
+y_test_prob = final_model.predict_proba(X_test)[:, 1]
+y_test_pred_optimal = (y_test_prob >= best_thresh).astype(int)
+
+print("=" * 55)
+print("  FINAL TEST SET EVALUATION (UNSEEN DATA)")
+print("=" * 55)
+
+fpr_t, tpr_t, _ = roc_curve(y_test, y_test_prob)
+test_auc = auc(fpr_t, tpr_t)
+print(f"\nAUC-ROC (test):  {test_auc:.4f}")
+print(f"AUC-ROC (val):   {val_auc:.4f}")
+print(f"Gap (overfit?):  {val_auc - test_auc:+.4f}")
+
+print(f"\n--- Classification Report (threshold = {best_thresh:.2f}) ---")
+print(classification_report(y_test, y_test_pred_optimal,
+                             target_names=['No Churn', 'Churn'], digits=4))</code></pre>
+        </section>
+
+        <!-- Section 13: Save Model -->
+        <section class="content-section text-content">
+            <h2>13. Step 10 — Save the Model Pipeline</h2>
+            <div class="step-indicator">STEP 10 OF 11 &bull; Persist Your Work</div>
+
+            <pre><code class="language-python">import joblib
+
+model_path = 'churn_model.joblib'
+joblib.dump(final_model, model_path)
+print(f"Model saved to: {model_path}")
+
+# Verify: load and predict
+loaded_model = joblib.load(model_path)
+test_prediction = loaded_model.predict(X_test[:5])
+test_proba      = loaded_model.predict_proba(X_test[:5])[:, 1]
+
+print("\nVerification — first 5 test predictions:")
+for i, (pred, prob) in enumerate(zip(test_prediction, test_proba)):
+    label = "CHURN RISK" if pred == 1 else "RETAIN"
+    print(f"  Customer {i+1}: {label} (p={prob:.3f})")</code></pre>
+
+            <div class="note-box">
+                <strong>Always save the full Pipeline, not just the model.</strong> If you save only the classifier, you must manually reapply the same scaler at inference time — a maintenance nightmare. The <code>joblib</code> file bundles the scaler and classifier together.
+            </div>
+        </section>
+
+        <!-- Section 14: Streamlit App -->
+        <section class="content-section text-content">
+            <h2>14. Step 11 — Streamlit Deployment App</h2>
+            <div class="step-indicator">STEP 11 OF 11 &bull; Ship It</div>
+
+            <p>Save the following as <code>churn_app.py</code> in the same directory as your notebook and model file. Run with <code>streamlit run churn_app.py</code>.</p>
+
+            <pre><code class="language-python"># churn_app.py — Streamlit Churn Prediction Web App
+import streamlit as st
+import joblib
+import numpy as np
+
+st.set_page_config(
+    page_title="Customer Churn Predictor",
+    page_icon="🔮",
+    layout="wide"
+)
+
+@st.cache_resource
+def load_model():
+    return joblib.load('churn_model.joblib')
+
+model = load_model()
+OPTIMAL_THRESHOLD = 0.40  # Set to the best_thresh you found
+
+st.title("🔮 Customer Churn Prediction System")
+st.markdown("*Powered by Gradient Boosting — Real-time churn risk assessment*")
+st.divider()
+
+col1, col2 = st.columns([1, 2])
+
+with col1:
+    st.subheader("Customer Features")
+    account_tenure   = st.slider("Account Tenure (months)", 1, 120, 24)
+    monthly_spend    = st.number_input("Monthly Spend ($)", 5.0, 500.0, 95.0, step=5.0)
+    support_tickets  = st.number_input("Support Tickets (last 3 months)", 0, 15, 2)
+    login_frequency  = st.slider("Login Frequency (per month)", 0.5, 50.0, 8.0)
+    num_products     = st.slider("Number of Products Subscribed", 1, 7, 3)
+    contract_type    = st.selectbox("Contract Type",
+                                    options=[0, 1, 2],
+                                    format_func=lambda x: {0: "Month-to-Month", 1: "1 Year", 2: "2 Year"}[x])
+    payment_failures = st.number_input("Payment Failures (last 12 months)", 0, 5, 0)
+
+    predict_btn = st.button("🔍 Assess Churn Risk", type="primary", use_container_width=True)
+
+with col2:
+    if predict_btn:
+        X_input = np.array([[account_tenure, monthly_spend, support_tickets,
+                              login_frequency, num_products, contract_type, payment_failures]])
+        probability = model.predict_proba(X_input)[0][1]
+        prediction  = int(probability >= OPTIMAL_THRESHOLD)
+
+        st.subheader("Prediction Result")
+        risk_level = "HIGH" if prediction == 1 else "LOW"
+        risk_color = "🔴" if prediction == 1 else "🟢"
+
+        col_a, col_b, col_c = st.columns(3)
+        col_a.metric("Risk Level", f"{risk_color} {risk_level}")
+        col_b.metric("Churn Probability", f"{probability:.1%}")
+        col_c.metric("Threshold Used", f"{OPTIMAL_THRESHOLD:.0%}")
+
+        st.progress(float(probability), text=f"Churn Probability: {probability:.1%}")
+
+        if prediction == 1:
+            st.error("⚠️ **High Churn Risk Detected** — Recommend immediate retention action.")
+            st.markdown("""
+            **Suggested Actions:**
+            - 📞 Proactive outreach from account team
+            - 🎁 Loyalty discount or free upgrade offer
+            - 🔄 Contract renewal incentive
+            - 📋 Review open support tickets
+            """)
+        else:
+            st.success("✅ **Low Churn Risk** — Customer appears stable.")
+            st.markdown("""
+            **Suggested Actions:**
+            - 📈 Upsell opportunity assessment
+            - ⭐ Candidate for referral program
+            """)
+    else:
+        st.info("👈 Adjust customer features and click **Assess Churn Risk** to get a prediction.")</code></pre>
+
+            <div class="success-box">
+                <strong>Run your app:</strong> <code>streamlit run churn_app.py</code><br>
+                Your model is now a live web app accessible at <code>http://localhost:8501</code>.<br><br>
+                <strong>Bonus:</strong> Deploy for free at <a href="https://share.streamlit.io" style="color: var(--primary);">share.streamlit.io</a> — connect your GitHub repo and get a public URL in minutes.
+            </div>
+        </section>
+
+        <!-- Section 15: Experiments -->
+        <section class="content-section text-content">
+            <h2>15. Experiment Ideas</h2>
+
+            <div class="note-box">
+                <h4><i data-lucide="flask-conical"></i> Extend Your Analysis</h4>
+                <ul>
+                    <li><strong>Experiment A — Threshold Sensitivity:</strong> Change <code>OPTIMAL_THRESHOLD</code> in <code>churn_app.py</code> from 0.40 to 0.60. How does this change the number of flagged customers? In a dataset of 10,000 customers, what is the cost difference if each retention campaign costs $50?</li>
+                    <li><strong>Experiment B — Imbalance Handling:</strong> Use <code>class_weight='balanced'</code> in the Gradient Boosting classifier (or try SMOTE oversampling). Does Recall for the churn class improve? Does overall AUC change?</li>
+                    <li><strong>Experiment C — Feature Engineering:</strong> Create <code>spend_per_product = monthly_spend / num_products</code> and <code>ticket_rate = support_tickets / account_tenure</code>. Rerun the full pipeline. Do these derived features improve AUC?</li>
+                    <li><strong>Experiment D — Calibration:</strong> Use <code>sklearn.calibration.CalibratedClassifierCV</code> to calibrate the model's probability outputs. Plot a calibration curve (reliability diagram). Are the raw probabilities well-calibrated?</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 16: Assignment -->
+        <section class="content-section text-content">
+            <h2>16. Assignment for Next Week</h2>
+
+            <div class="assignment-card">
+                <h3><i data-lucide="clipboard-list"></i> Weekly Assignment</h3>
+                <p><strong>Coding:</strong> Submit a Jupyter Notebook that:</p>
+                <ol>
+                    <li>Loads a classification dataset of your choice (e.g., Kaggle Telco Customer Churn, Heart Disease UCI, or Credit Card Fraud).</li>
+                    <li>Implements a correct train/validation/test split with <strong>no data leakage</strong> (use Pipelines).</li>
+                    <li>Trains at least <strong>3 different model types</strong> and compares them using 5-Fold Cross-Validation reporting mean ± std of AUC-ROC and F1.</li>
+                    <li>Plots Learning Curves for the best model and interprets whether the model is over- or under-fitting.</li>
+                    <li>Runs <code>RandomizedSearchCV</code> (at least 30 iterations) on the best model.</li>
+                    <li>Evaluates the final model on the test set with a full classification report, ROC curve, and Precision-Recall curve.</li>
+                    <li>Saves the model with <code>joblib</code> and writes a Streamlit app that accepts feature inputs and outputs a prediction with probability.</li>
+                </ol>
+                <p><strong>Report:</strong> Write a 5-sentence paragraph answering: <em>"What is data leakage, how does it happen in a preprocessing pipeline, and how does using <code>sklearn.pipeline.Pipeline</code> prevent it?"</em></p>
+                <p><strong>Bonus:</strong> Deploy your Streamlit app to <a href="https://share.streamlit.io" style="color: var(--accent);">Streamlit Community Cloud</a> (free) and submit the public URL.</p>
+            </div>
+
+            <p style="text-align: center; font-size: 1.1rem; color: var(--text-muted); margin-top: 3rem;">
+                <em><strong>A model without an evaluation is just expensive guessing.</strong></em>
+            </p>
+
+            <a href="lecture_8.html" class="btn btn-primary"
+                style="display:inline-flex;margin:1rem auto 0 auto;">
+                <i data-lucide="arrow-left"></i> Back to Lecture 8
+            </a>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering &amp; InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

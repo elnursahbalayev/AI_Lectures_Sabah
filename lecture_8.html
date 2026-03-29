@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 8 Lecture: Model Evaluation & Deployment | AI Lectures</title>
+    <meta name="description" content="Week 8: Model Evaluation & Deployment — Overfitting, Cross-Validation, Precision, Recall, F1, AUC-ROC, hyperparameter tuning, and deploying ML models as APIs.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .math-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .metric-card .formula {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .metric-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .cm-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            max-width: 400px;
+            margin: 1.5rem auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .cm-cell {
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .cm-cell.tp { background: rgba(74, 222, 128, 0.12); }
+        .cm-cell.tn { background: rgba(59, 130, 246, 0.12); }
+        .cm-cell.fp { background: rgba(245, 158, 11, 0.12); }
+        .cm-cell.fn { background: rgba(239, 68, 68, 0.12); }
+        .cm-cell .cm-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; margin-bottom: 0.4rem; font-family: 'JetBrains Mono', monospace; }
+        .cm-cell .cm-value { font-size: 1.3rem; color: white; }
+        .cm-cell .cm-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; font-weight: 400; }
+
+        .split-diagram {
+            display: flex;
+            gap: 4px;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 56px;
+        }
+
+        .split-train { background: rgba(59, 130, 246, 0.3); flex: 6; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600; color: var(--primary); }
+        .split-val   { background: rgba(139, 92, 246, 0.3); flex: 2; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600; color: var(--accent); }
+        .split-test  { background: rgba(16, 185, 129, 0.3); flex: 2; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600; color: #10b981; }
+
+        @media (max-width: 700px) {
+            .compare-grid, .metric-grid { grid-template-columns: 1fr; }
+            .article-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tutorial_8.html">Tutorial 8</a></li>
+            <li><a href="lecture_7.html">Lecture 7</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 08 Lecture</span>
+            <h1>Model Evaluation &amp; Deployment:<br>How Do You Know It Actually Works?</h1>
+            <p class="subtitle">Overfitting, Cross-Validation, Precision/Recall/F1, AUC-ROC, hyperparameter tuning, and wrapping your model as a live API.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 0: Roadmap -->
+        <section class="content-section text-content">
+            <h2>0. Lecture Roadmap</h2>
+            <blockquote>A model that performs perfectly on training data and fails in production is worse than useless — it's dangerous. Model evaluation is the discipline of measuring generalization, not memorization. Deployment is the art of making your model useful to the world.</blockquote>
+
+            <p>In Weeks 4–7, we built models. Today, we ask the harder question: <em>How do we know any of them actually work?</em></p>
+
+            <div class="note-box">
+                <h4><i data-lucide="map"></i> Today's Topics</h4>
+                <ol>
+                    <li>The Generalization Problem — Overfitting &amp; Underfitting</li>
+                    <li>The Bias-Variance Tradeoff</li>
+                    <li>Proper Evaluation: Train / Validation / Test Split</li>
+                    <li>Cross-Validation — K-Fold and Stratified K-Fold</li>
+                    <li>Classification Metrics — Precision, Recall, F1-Score, AUC-ROC</li>
+                    <li>Regression Metrics — MSE, RMSE, MAE, R²</li>
+                    <li>The Confusion Matrix — Reading It Like a Professional</li>
+                    <li>The ROC Curve &amp; AUC</li>
+                    <li>Hyperparameter Tuning — Grid Search &amp; Randomized Search</li>
+                    <li>Deployment — Wrapping Your Model as a Service</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 1: Generalization -->
+        <section class="content-section text-content">
+            <h2>1. The Generalization Problem</h2>
+
+            <h3>1.1 What We Actually Want</h3>
+            <p>When we train a machine learning model, the goal is <strong>never</strong> to perform well on the training data. The goal is to perform well on <strong>unseen data</strong> — data the model has never seen before.</p>
+
+            <div class="insight-box">
+                <strong>Generalization</strong> is the ability of a model to perform well on new, unseen data drawn from the same distribution it was trained on.
+            </div>
+
+            <h3>1.2 The Three Failure Modes</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Failure</th>
+                        <th>Symptom</th>
+                        <th>Cause</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Overfitting</strong></td>
+                        <td>High train accuracy, low test accuracy</td>
+                        <td>Model memorized the training data including its noise</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Underfitting</strong></td>
+                        <td>Low train accuracy, low test accuracy</td>
+                        <td>Model is too simple to capture the pattern</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Leakage</strong></td>
+                        <td>Unrealistically high test accuracy</td>
+                        <td>Test data accidentally contaminated the training process</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 2: Bias-Variance -->
+        <section class="content-section text-content">
+            <h2>2. The Bias-Variance Tradeoff</h2>
+
+            <p>Every model's error decomposes into three fundamental components:</p>
+            <div class="math-block">
+                $$\text{Expected Error} = \text{Bias}^2 + \text{Variance} + \text{Irreducible Noise}$$
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Definition</th>
+                        <th>Symptom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bias</strong></td>
+                        <td>Systematic error from wrong model assumptions</td>
+                        <td>Model consistently wrong in the same direction (underfitting)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Variance</strong></td>
+                        <td>Sensitivity to fluctuations in training data</td>
+                        <td>Model gives wildly different results on different subsets (overfitting)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Noise</strong></td>
+                        <td>Irreducible error in the data itself</td>
+                        <td>Cannot be reduced by any model</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="insight-box">
+                <strong>The Core Tradeoff:</strong> As model complexity increases, bias decreases but variance increases. The optimal model is at the point of minimum <em>total</em> expected error.
+            </div>
+
+            <table class="data-table">
+                <thead><tr><th>Problem</th><th>Solution</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Overfitting (high variance)</strong></td><td>More data, regularization (L1/L2), simpler model, dropout, cross-validation</td></tr>
+                    <tr><td><strong>Underfitting (high bias)</strong></td><td>More complex model, more features, less regularization, more training time</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 3: Splits -->
+        <section class="content-section text-content">
+            <h2>3. Proper Evaluation: The Split Strategy</h2>
+
+            <h3>3.1 Train / Test Split</h3>
+            <p>The fundamental rule: <strong>never evaluate a model on data it has seen during training.</strong></p>
+
+            <pre><code class="language-python">from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,       # 80% train, 20% test
+    random_state=42,
+    stratify=y           # preserve class proportions — critical for imbalanced data
+)
+
+print(f"Train: {X_train.shape[0]} ({X_train.shape[0]/len(X):.0%})")
+print(f"Test:  {X_test.shape[0]}  ({X_test.shape[0]/len(X):.0%})")</code></pre>
+
+            <div class="warning-box">
+                <strong>The test set is sacred.</strong> You look at it exactly <strong>once</strong> — at the very end, after all decisions about model design and hyperparameters are finalized. Evaluating on the test set and then adjusting your model is data leakage.
+            </div>
+
+            <h3>3.2 Train / Validation / Test Split</h3>
+            <p>For hyperparameter tuning, you need a third set — the <strong>validation set</strong>:</p>
+
+            <div class="split-diagram">
+                <div class="split-train">Train (60%)</div>
+                <div class="split-val">Val (20%)</div>
+                <div class="split-test">Test (20%)</div>
+            </div>
+
+            <pre><code class="language-python"># Two-stage split: 60% train / 20% val / 20% test
+X_temp, X_test, y_temp, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(X_temp, y_temp, test_size=0.25, random_state=42)
+# 0.25 × 0.80 = 0.20 → final is 60/20/20
+
+print(f"Train: {len(X_train)} | Validation: {len(X_val)} | Test: {len(X_test)}")</code></pre>
+
+            <div class="warning-box">
+                <strong>Critical leakage warning:</strong> Fit your <code>StandardScaler</code>, <code>PCA</code>, or any preprocessing <strong>only on training data</strong>, then <code>transform()</code> validation and test data. Fitting on all data before splitting leaks information.
+            </div>
+        </section>
+
+        <!-- Section 4: Cross-Validation -->
+        <section class="content-section text-content">
+            <h2>4. Cross-Validation</h2>
+
+            <h3>4.1 The Problem with a Single Split</h3>
+            <p>A single 80/20 split is sensitive to <em>which</em> 20% ended up in the test set. With small datasets, this variance in the estimate can be large. <strong>K-Fold Cross-Validation</strong> solves this:</p>
+            <ol>
+                <li>Split data into \(K\) equal-sized <strong>folds</strong>.</li>
+                <li>Train on \(K-1\) folds, evaluate on the held-out fold.</li>
+                <li>Repeat \(K\) times — each fold serves as the test set exactly once.</li>
+                <li>Report the <strong>mean ± std</strong> of scores across all \(K\) folds.</li>
+            </ol>
+            <div class="math-block">
+                $$\text{CV Score} = \frac{1}{K} \sum_{i=1}^{K} \text{score}_i$$
+            </div>
+
+            <h3>4.2 K-Fold in Python</h3>
+            <pre><code class="language-python">from sklearn.model_selection import cross_val_score, KFold
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+kfold = KFold(n_splits=5, shuffle=True, random_state=42)
+cv_scores = cross_val_score(model, X_train, y_train,
+                             cv=kfold, scoring='f1_weighted')
+
+print(f"CV Scores per fold: {cv_scores.round(4)}")
+print(f"Mean CV Score:      {cv_scores.mean():.4f}")
+print(f"Std Dev:            {cv_scores.std():.4f}")
+print(f"95% CI: ({cv_scores.mean()-2*cv_scores.std():.4f}, "
+      f"{cv_scores.mean()+2*cv_scores.std():.4f})")</code></pre>
+
+            <div class="note-box">
+                A <strong>high standard deviation</strong> across folds means the model is sensitive to the training split — a warning sign of high variance (overfitting).
+            </div>
+
+            <h3>4.3 Stratified K-Fold — For Classification</h3>
+            <p>Regular K-Fold splits randomly, which can produce folds with very few examples of minority classes. <strong>Stratified K-Fold</strong> preserves the original class ratio in every fold:</p>
+
+            <pre><code class="language-python">from sklearn.model_selection import StratifiedKFold, cross_validate
+
+skfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+results = cross_validate(
+    model, X_train, y_train,
+    cv=skfold,
+    scoring=['accuracy', 'f1_weighted', 'roc_auc'],
+    return_train_score=True
+)
+
+for metric in ['accuracy', 'f1_weighted', 'roc_auc']:
+    tr = results[f'train_{metric}'].mean()
+    va = results[f'test_{metric}'].mean()
+    gap = tr - va
+    flag = " ← potential overfit" if gap > 0.05 else ""
+    print(f"{metric:<20}: Train={tr:.4f}  Val={va:.4f}  Gap={gap:+.4f}{flag}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Always use Stratified K-Fold for classification</strong>, especially with imbalanced classes. This is the default when you pass <code>cv=5</code> to <code>cross_val_score</code> with a classifier.
+            </div>
+
+            <h3>4.4 Common K Values</h3>
+            <table class="data-table">
+                <thead><tr><th>K</th><th>Trade-off</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>K = 5</strong></td><td>Fast, less variance in the estimate — good default for most tasks</td></tr>
+                    <tr><td><strong>K = 10</strong></td><td>More reliable estimate, more compute — common in research papers</td></tr>
+                    <tr><td><strong>K = n (Leave-One-Out)</strong></td><td>Maximum data use, extremely slow, high variance — avoid for large datasets</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 5: Classification Metrics -->
+        <section class="content-section text-content">
+            <h2>5. Classification Metrics</h2>
+
+            <h3>5.1 Why Accuracy Is Insufficient</h3>
+            <p>Consider a fraud detection system where 99% of transactions are legitimate:</p>
+            <ul>
+                <li>A model that <strong>always predicts "not fraud"</strong> achieves <strong>99% accuracy</strong>.</li>
+                <li>But it catches <strong>zero fraud cases</strong> — completely useless in practice.</li>
+            </ul>
+            <p>Accuracy is misleading for <strong>imbalanced classes</strong>. We need richer metrics.</p>
+
+            <h3>5.2 The Confusion Matrix</h3>
+            <p>For binary classification, all predictions fall into one of four categories:</p>
+
+            <div class="cm-grid">
+                <div class="cm-cell tn">
+                    <div class="cm-label">Actual: NO / Predicted: NO</div>
+                    <div class="cm-value">TN</div>
+                    <div class="cm-desc">True Negative<br>Correct rejection</div>
+                </div>
+                <div class="cm-cell fp">
+                    <div class="cm-label">Actual: NO / Predicted: YES</div>
+                    <div class="cm-value">FP</div>
+                    <div class="cm-desc">False Positive<br>"False alarm"</div>
+                </div>
+                <div class="cm-cell fn">
+                    <div class="cm-label">Actual: YES / Predicted: NO</div>
+                    <div class="cm-value">FN</div>
+                    <div class="cm-desc">False Negative<br>"Missed it"</div>
+                </div>
+                <div class="cm-cell tp">
+                    <div class="cm-label">Actual: YES / Predicted: YES</div>
+                    <div class="cm-value">TP</div>
+                    <div class="cm-desc">True Positive<br>Correct detection</div>
+                </div>
+            </div>
+
+            <h3>5.3 Precision, Recall, and F1-Score</h3>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="formula">TP / (TP + FP)</div>
+                    <div class="name">Precision</div>
+                    <div class="desc">"Of all positives I predicted, how many truly are?" — minimizes false alarms</div>
+                </div>
+                <div class="metric-card">
+                    <div class="formula">TP / (TP + FN)</div>
+                    <div class="name">Recall (Sensitivity)</div>
+                    <div class="desc">"Of all actual positives, how many did I catch?" — minimizes missed hits</div>
+                </div>
+                <div class="metric-card">
+                    <div class="formula">2 · P·R / (P+R)</div>
+                    <div class="name">F1-Score</div>
+                    <div class="desc">Harmonic mean of Precision and Recall — penalizes extreme imbalance</div>
+                </div>
+                <div class="metric-card">
+                    <div class="formula">(TP+TN) / All</div>
+                    <div class="name">Accuracy</div>
+                    <div class="desc">Overall correctness — misleading for imbalanced datasets</div>
+                </div>
+            </div>
+
+            <div class="math-block">
+                $$F_1 = 2 \cdot \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+            </div>
+
+            <div class="note-box">
+                <strong>Why harmonic mean?</strong> The arithmetic average of (1.0, 0.0) = 0.5 — deceptively high. The harmonic mean = 0.0, correctly revealing the model is useless when either metric is zero.
+            </div>
+
+            <h3>5.4 When to Optimize Which Metric</h3>
+            <table class="data-table">
+                <thead><tr><th>Task</th><th>Prioritize</th><th>Reason</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Cancer diagnosis</strong></td><td>Recall</td><td>FN (missed cancer) is catastrophic</td></tr>
+                    <tr><td><strong>Spam filtering</strong></td><td>Precision</td><td>FP (good email deleted) is unacceptable</td></tr>
+                    <tr><td><strong>Fraud detection</strong></td><td>F1</td><td>Both FP (blocked customer) and FN (missed fraud) matter</td></tr>
+                    <tr><td><strong>Balanced dataset</strong></td><td>Accuracy</td><td>OK when both classes have equal importance and size</td></tr>
+                </tbody>
+            </table>
+
+            <h3>5.5 Classification Report in Python</h3>
+            <pre><code class="language-python">from sklearn.metrics import classification_report, confusion_matrix
+
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+# Full report: precision, recall, f1, support per class
+print(classification_report(y_test, y_pred, digits=4))
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+print(f"\nConfusion Matrix:\n{cm}")
+print(f"\nTP={cm[1,1]}  FP={cm[0,1]}  FN={cm[1,0]}  TN={cm[0,0]}")</code></pre>
+        </section>
+
+        <!-- Section 6: ROC / AUC -->
+        <section class="content-section text-content">
+            <h2>6. The ROC Curve &amp; AUC</h2>
+
+            <h3>6.1 Threshold Dependence</h3>
+            <p>Most classifiers output a <strong>probability</strong>. The threshold (default 0.5) converts it to a hard label. The <strong>ROC (Receiver Operating Characteristic) curve</strong> plots:</p>
+            <ul>
+                <li><strong>True Positive Rate (TPR = Recall)</strong> on the y-axis.</li>
+                <li><strong>False Positive Rate (FPR = FP/(FP+TN))</strong> on the x-axis.</li>
+            </ul>
+            <p>...at <em>every possible threshold</em> from 0 to 1.</p>
+
+            <h3>6.2 AUC — Area Under the Curve</h3>
+            <div class="math-block">
+                $$AUC = \int_0^1 TPR(FPR) \, d(FPR)$$
+            </div>
+
+            <table class="data-table">
+                <thead><tr><th>AUC Value</th><th>Interpretation</th></tr></thead>
+                <tbody>
+                    <tr><td>1.0</td><td>Perfect classifier</td></tr>
+                    <tr><td>0.9+</td><td>Excellent</td></tr>
+                    <tr><td>0.7 – 0.9</td><td>Good</td></tr>
+                    <tr><td>0.5</td><td>Random guessing (diagonal line)</td></tr>
+                    <tr><td>&lt; 0.5</td><td>Worse than random — flip your predictions!</td></tr>
+                </tbody>
+            </table>
+
+            <div class="insight-box">
+                <strong>AUC is threshold-independent.</strong> It measures the model's ability to rank positives above negatives across all thresholds — extremely useful for imbalanced class problems.
+            </div>
+
+            <pre><code class="language-python">from sklearn.metrics import roc_curve, auc, RocCurveDisplay
+import matplotlib.pyplot as plt
+
+y_prob = model.predict_proba(X_test)[:, 1]   # P(class = 1)
+
+fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+roc_auc = auc(fpr, tpr)
+
+print(f"AUC-ROC: {roc_auc:.4f}")
+
+RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc, estimator_name='Model').plot()
+plt.plot([0, 1], [0, 1], 'k--', label='Random (AUC=0.5)')
+plt.title('ROC Curve')
+plt.legend()
+plt.show()</code></pre>
+
+            <h3>6.3 Precision-Recall Curve</h3>
+            <p>For highly imbalanced datasets, the <strong>Precision-Recall curve</strong> is more informative than ROC:</p>
+            <pre><code class="language-python">from sklearn.metrics import precision_recall_curve, average_precision_score
+
+precision, recall, _ = precision_recall_curve(y_test, y_prob)
+ap = average_precision_score(y_test, y_prob)
+
+plt.plot(recall, precision, 'b-', linewidth=2)
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.title(f'Precision-Recall Curve (AP={ap:.4f})')
+plt.show()</code></pre>
+
+            <div class="warning-box">
+                <strong>Rule:</strong> Use <strong>ROC-AUC</strong> when FP and FN have similar cost. Use <strong>PR-AUC (Average Precision)</strong> when the positive class is rare and highly important (e.g., rare disease, fraud).
+            </div>
+        </section>
+
+        <!-- Section 7: Regression Metrics -->
+        <section class="content-section text-content">
+            <h2>7. Regression Metrics</h2>
+
+            <table class="data-table">
+                <thead>
+                    <tr><th>Metric</th><th>Formula</th><th>Interpretation</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>MSE</strong></td>
+                        <td>\(\frac{1}{n}\sum(y_i - \hat{y}_i)^2\)</td>
+                        <td>Penalizes large errors heavily — sensitive to outliers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RMSE</strong></td>
+                        <td>\(\sqrt{MSE}\)</td>
+                        <td>Same units as \(y\) — most interpretable</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MAE</strong></td>
+                        <td>\(\frac{1}{n}\sum|y_i - \hat{y}_i|\)</td>
+                        <td>Robust to outliers — treats all errors equally</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R²</strong></td>
+                        <td>\(1 - SS_{res}/SS_{tot}\)</td>
+                        <td>Variance explained (1.0 = perfect, 0 = baseline mean)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="math-block">
+                $$R^2 = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i - \bar{y})^2}$$
+            </div>
+
+            <pre><code class="language-python">from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+import numpy as np
+
+y_pred_reg = model.predict(X_test)
+
+mse  = mean_squared_error(y_test, y_pred_reg)
+rmse = np.sqrt(mse)
+mae  = mean_absolute_error(y_test, y_pred_reg)
+r2   = r2_score(y_test, y_pred_reg)
+
+print(f"MSE:  {mse:.4f}")
+print(f"RMSE: {rmse:.4f}")
+print(f"MAE:  {mae:.4f}")
+print(f"R²:   {r2:.4f}")</code></pre>
+
+            <div class="note-box">
+                <strong>Key distinction:</strong> MSE squares errors, making it sensitive to outliers. MAE treats all errors equally. When your target contains outliers (e.g., house prices with mansions), prefer MAE or RMSE and report both.
+            </div>
+        </section>
+
+        <!-- Section 8: Hyperparameter Tuning -->
+        <section class="content-section text-content">
+            <h2>8. Hyperparameter Tuning</h2>
+
+            <h3>8.1 Parameters vs. Hyperparameters</h3>
+            <table class="data-table">
+                <thead><tr><th>Type</th><th>Definition</th><th>Examples</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Parameters</strong></td>
+                        <td>Learned from data during training</td>
+                        <td>Weights \(w\), biases \(b\), tree split thresholds</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hyperparameters</strong></td>
+                        <td>Set before training; control the learning process</td>
+                        <td><code>n_estimators</code>, <code>max_depth</code>, <code>learning_rate</code>, <code>C</code>, <code>gamma</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>8.2 Grid Search — Exhaustive Search</h3>
+            <pre><code class="language-python">from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+
+param_grid = {
+    'n_estimators':      [50, 100, 200],
+    'max_depth':         [None, 5, 10, 20],
+    'min_samples_split': [2, 5, 10],
+}
+
+grid_search = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid,
+    cv=5,            # 5-fold CV for each combination
+    scoring='f1_weighted',
+    n_jobs=-1,       # use all CPU cores
+    verbose=1
+)
+grid_search.fit(X_train, y_train)
+
+print(f"Best parameters: {grid_search.best_params_}")
+print(f"Best CV score:   {grid_search.best_score_:.4f}")
+
+# Evaluate ONCE on the test set (at the very end)
+best_model = grid_search.best_estimator_
+print(f"Test accuracy:   {best_model.score(X_test, y_test):.4f}")</code></pre>
+
+            <div class="warning-box">
+                <strong>Combinatorial explosion:</strong> 3 × 4 × 3 = 36 combinations × 5 folds = 180 model fits above. Grid search scales exponentially — becomes prohibitive quickly.
+            </div>
+
+            <h3>8.3 Randomized Search — The Better Default</h3>
+            <pre><code class="language-python">from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+
+param_dist = {
+    'n_estimators':      randint(50, 500),
+    'max_depth':         [None, 5, 10, 15, 20, 30],
+    'min_samples_split': randint(2, 20),
+    'max_features':      ['sqrt', 'log2'],
+}
+
+random_search = RandomizedSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_dist,
+    n_iter=50,           # try 50 random combinations
+    cv=5,
+    scoring='f1_weighted',
+    random_state=42,
+    n_jobs=-1
+)
+random_search.fit(X_train, y_train)
+
+print(f"Best parameters: {random_search.best_params_}")
+print(f"Best CV score:   {random_search.best_score_:.4f}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Research finding (Bergstra &amp; Bengio, 2012):</strong> Randomized search finds equally good or better hyperparameters as grid search using a fraction of the compute. Prefer it in practice.
+            </div>
+        </section>
+
+        <!-- Section 9: Full Pipeline -->
+        <section class="content-section text-content">
+            <h2>9. The Full Evaluation Pipeline</h2>
+
+            <div class="pipeline-flow">
+                Raw Data → StandardScaler → Model → cross_validate() → best hyperparams<br>
+                → Final fit on X_train → Evaluate once on X_test → Deploy
+            </div>
+
+            <pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import StratifiedKFold, cross_validate
+
+# Pipeline bundles preprocessing + model — prevents data leakage in CV
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('clf', GradientBoostingClassifier(n_estimators=200, learning_rate=0.1,
+                                       random_state=42))
+])
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+results = cross_validate(
+    pipeline, X_train, y_train,
+    cv=cv,
+    scoring=['accuracy', 'f1_weighted', 'roc_auc'],
+    return_train_score=True
+)
+
+print(f"{'Metric':<20} {'Train':>10} {'Validation':>12}")
+for m in ['accuracy', 'f1_weighted', 'roc_auc']:
+    tr = results[f'train_{m}'].mean()
+    va = results[f'test_{m}'].mean()
+    gap = tr - va
+    flag = " ⚠️ overfit" if gap > 0.05 else ""
+    print(f"{m:<20} {tr:>10.4f} {va:>12.4f}{flag}") 
+
+pipeline.fit(X_train, y_train)
+print(f"\nFinal Test Score: {pipeline.score(X_test, y_test):.4f}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Pipeline is not just convenience — it is correctness.</strong> When preprocessing is inside a Pipeline used with cross-validation, the scaler is refit on each training fold independently. Fitting the scaler on all data before splitting is a subtle but real form of data leakage.
+            </div>
+        </section>
+
+        <!-- Section 10: Deployment -->
+        <section class="content-section text-content">
+            <h2>10. Deployment — Model as a Service</h2>
+
+            <h3>10.1 Saving and Loading Models</h3>
+            <pre><code class="language-python">import joblib
+
+# Save the full pipeline (scaler + model together)
+joblib.dump(pipeline, 'model_pipeline.joblib')
+print("Model saved to model_pipeline.joblib")
+
+# Load in production
+loaded_model = joblib.load('model_pipeline.joblib')
+y_pred_loaded = loaded_model.predict(X_new)</code></pre>
+
+            <div class="warning-box">
+                <strong>Always save the full Pipeline, not just the classifier.</strong> If you save only the model weights, you must manually reapply the same preprocessing steps in production — a maintenance nightmare.
+            </div>
+
+            <h3>10.2 Streamlit — Instant Web App</h3>
+            <pre><code class="language-python"># app.py — run with: streamlit run app.py
+import streamlit as st
+import joblib
+import numpy as np
+
+model = joblib.load('model_pipeline.joblib')
+
+st.title("🤖 ML Model Prediction App")
+
+# Input sliders
+feature_1 = st.number_input("Feature 1", 0.0, 100.0, 50.0)
+feature_2 = st.slider("Feature 2", 0, 10, 5)
+
+if st.button("Predict", type="primary"):
+    X_input = np.array([[feature_1, feature_2]])
+    pred = model.predict(X_input)[0]
+    prob = model.predict_proba(X_input)[0]
+    st.metric("Prediction", "YES" if pred == 1 else "NO")
+    st.progress(float(prob[1]), text=f"Confidence: {prob[1]:.1%}")</code></pre>
+
+            <h3>10.3 FastAPI — REST Endpoint for Production</h3>
+            <pre><code class="language-python"># api.py — run with: uvicorn api:app --host 0.0.0.0 --port 8000
+from fastapi import FastAPI
+from pydantic import BaseModel
+import joblib
+import numpy as np
+
+app = FastAPI(title="ML Model API", version="1.0")
+model = joblib.load('model_pipeline.joblib')
+
+class Features(BaseModel):
+    feature_1: float
+    feature_2: int
+
+@app.post("/predict")
+def predict(data: Features):
+    X = np.array([[data.feature_1, data.feature_2]])
+    pred = int(model.predict(X)[0])
+    prob = float(model.predict_proba(X)[0][1])
+    return {"prediction": pred, "probability": prob,
+            "label": "YES" if pred == 1 else "NO"}</code></pre>
+
+            <div class="success-box">
+                <strong>Deployment completes the loop:</strong> A model in a Jupyter notebook helps no one. A model behind an API or web app can serve thousands of users instantly, scales to production, and can be monitored and updated independently of the training code.
+            </div>
+        </section>
+
+        <!-- Section 11: Quick Reference -->
+        <section class="content-section text-content">
+            <h2>11. Key Equations — Quick Reference</h2>
+            <table class="data-table">
+                <thead><tr><th>Concept</th><th>Formula</th></tr></thead>
+                <tbody>
+                    <tr><td>Accuracy</td><td>\((TP + TN) / (TP + TN + FP + FN)\)</td></tr>
+                    <tr><td>Precision</td><td>\(TP / (TP + FP)\)</td></tr>
+                    <tr><td>Recall (Sensitivity)</td><td>\(TP / (TP + FN)\)</td></tr>
+                    <tr><td>F1-Score</td><td>\(2 \cdot \frac{P \times R}{P + R}\)</td></tr>
+                    <tr><td>K-Fold CV Score</td><td>\(\frac{1}{K} \sum_{i=1}^K \text{score}_i\)</td></tr>
+                    <tr><td>R²</td><td>\(1 - \frac{\sum(y_i-\hat{y}_i)^2}{\sum(y_i-\bar{y})^2}\)</td></tr>
+                    <tr><td>Total Error</td><td>\(\text{Bias}^2 + \text{Variance} + \text{Noise}\)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 12: Summary -->
+        <section class="content-section text-content">
+            <h2>12. Summary</h2>
+
+            <div class="success-box">
+                <ol>
+                    <li><strong>Generalization is the goal</strong> — train accuracy is meaningless; only unseen test performance matters.</li>
+                    <li><strong>Bias-Variance Tradeoff:</strong> Simple models underfit (high bias), complex ones overfit (high variance). Optimal is at minimum total error.</li>
+                    <li><strong>The test set is sacred</strong> — look at it exactly once. Use cross-validation for all model selection decisions.</li>
+                    <li><strong>Stratified K-Fold</strong> gives a robust, class-balanced estimate of generalization across \(K\) splits.</li>
+                    <li><strong>Accuracy is not enough</strong> — use Precision, Recall, F1 for classification; RMSE and R² for regression.</li>
+                    <li><strong>AUC-ROC</strong> measures ranking ability independent of threshold — essential for imbalanced problems.</li>
+                    <li><strong>Pipelines prevent data leakage</strong> — always bundle preprocessing with the model object.</li>
+                    <li><strong>RandomizedSearchCV</strong> finds good hyperparameters efficiently without the combinatorial explosion of grid search.</li>
+                    <li><strong>Deployment completes the loop</strong> — a model in a notebook helps no one; an API serves the world.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 13: Bridge -->
+        <section class="content-section text-content">
+            <h2>13. Bridge to the Tutorial</h2>
+            <p>In the tutorial session, you will:</p>
+            <ul>
+                <li>Build a complete evaluation pipeline from scratch on a customer churn dataset.</li>
+                <li>Compute and interpret the full confusion matrix and classification report.</li>
+                <li>Plot ROC and Precision-Recall curves for three competing models simultaneously.</li>
+                <li>Implement Stratified K-Fold cross-validation and interpret Train vs. Validation scores to diagnose overfitting.</li>
+                <li>Plot learning curves to determine whether more data would help.</li>
+                <li>Run <code>RandomizedSearchCV</code> (40 configs × 5 folds = 200 fits) to optimize GradientBoosting.</li>
+                <li>Save the best model with <code>joblib</code> and build a Streamlit app for live prediction.</li>
+            </ul>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">A model you can't measure is a model you can't trust.</p>
+                <a href="tutorial_8.html" class="btn btn-primary"
+                    style="display:inline-flex;margin:1rem auto 0 auto;">
+                    Continue to Tutorial 8 <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering &amp; InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Copy buttons
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading progress bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 7 Lecture: Unsupervised Learning | AI Lectures</title>
+    <meta name="description" content="Week 7: Unsupervised Learning — K-Means clustering, DBSCAN, PCA, and anomaly detection. Learn to find hidden structure in data without labels.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .math-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .param-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .param-card .term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .param-card .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .param-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tree-diagram {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 700px) {
+            .compare-grid,
+            .param-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tutorial_7.html">Tutorial 7</a></li>
+            <li><a href="lecture_6.html">Lecture 6</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 07 Lecture</span>
+            <h1>Unsupervised Learning:<br>Finding Structure in the Dark</h1>
+            <p class="subtitle">K-Means, DBSCAN, PCA, and Anomaly Detection — discovering hidden patterns without labels.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 0: Roadmap -->
+        <section class="content-section text-content">
+            <h2>0. Lecture Roadmap</h2>
+            <blockquote>In the real world, labeled data is expensive. Unsupervised learning finds hidden structure in raw data without any labels — discovering natural groupings, compressing information, and detecting anomalies that don't belong.</blockquote>
+
+            <p>In Weeks 4-6, every algorithm had a target label \(y\). Today, we remove that crutch. We only have \(X\) — and we must discover what the data is telling us.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="map"></i> Today's Topics</h4>
+                <ol>
+                    <li>The Landscape of Unsupervised Learning</li>
+                    <li>K-Means Clustering — The Classic Algorithm</li>
+                    <li>Choosing K — The Elbow Method &amp; Silhouette Score</li>
+                    <li>The Limitations of K-Means</li>
+                    <li>DBSCAN — Density-Based Clustering</li>
+                    <li>Dimensionality Reduction — The Curse and the Cure</li>
+                    <li>Principal Component Analysis (PCA)</li>
+                    <li>PCA Mathematics — Eigenvectors &amp; Variance Explained</li>
+                    <li>Anomaly Detection Concepts</li>
+                    <li>Practical Implementation</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 1: Landscape -->
+        <section class="content-section text-content">
+            <h2>1. The Landscape of Unsupervised Learning</h2>
+
+            <h3>1.1 Supervised vs. Unsupervised</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Supervised Learning</th>
+                        <th>Unsupervised Learning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data</strong></td>
+                        <td>\((X, y)\) — features + labels</td>
+                        <td>\(X\) — features only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Goal</strong></td>
+                        <td>Predict \(y\) for new \(X\)</td>
+                        <td>Discover structure in \(X\)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evaluation</strong></td>
+                        <td>Accuracy, F1, MSE (vs. ground truth)</td>
+                        <td>Silhouette score, inertia, visual inspection</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Examples</strong></td>
+                        <td>Regression, Classification</td>
+                        <td>Clustering, Dimensionality Reduction</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.2 Why Unsupervised Learning Matters</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Use Case</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Customer Segmentation</strong></td>
+                        <td>Group users by purchasing behavior — without knowing what the groups should be</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Anomaly Detection</strong></td>
+                        <td>Identify fraudulent transactions, server failures, or defective products</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Compression</strong></td>
+                        <td>Reduce 1000 features to 10, preserving most information</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Exploratory Analysis</strong></td>
+                        <td>Visualize high-dimensional data in 2D/3D to find patterns</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Preprocessing</strong></td>
+                        <td>Use PCA to reduce noise before training a supervised model</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.3 The Three Pillars</h3>
+            <div class="tree-diagram">Unsupervised Learning
+├── Clustering          — "What groups exist?"
+│   ├── K-Means
+│   ├── DBSCAN
+│   └── Hierarchical Clustering
+├── Dimensionality Reduction  — "What's the essence of this data?"
+│   ├── PCA (Principal Component Analysis)
+│   ├── t-SNE (for visualization)
+│   └── Autoencoders (Week 13)
+└── Anomaly Detection   — "What doesn't belong?"
+    ├── Isolation Forest
+    └── One-Class SVM</div>
+        </section>
+
+        <!-- Section 2: K-Means -->
+        <section class="content-section text-content">
+            <h2>2. K-Means Clustering</h2>
+
+            <h3>2.1 The Intuition</h3>
+            <p>Imagine you drop \(K\) pins randomly on a map and assign each city to its nearest pin. Then you move each pin to the center of its assigned cities. Repeat until the pins stop moving. That's K-Means.</p>
+
+            <h3>2.2 The Algorithm</h3>
+            <p><strong>Input</strong>: Data \(X = \{x_1, \ldots, x_n\}\), number of clusters \(K\).</p>
+            <ol>
+                <li><strong>Initialize</strong>: Randomly place \(K\) cluster centroids \(\mu_1, \ldots, \mu_K\).</li>
+                <li><strong>Assign</strong>: Each point \(x_i\) is assigned to the nearest centroid:</li>
+            </ol>
+            <div class="math-block">
+                $$c_i = \arg\min_{k} \|x_i - \mu_k\|^2$$
+            </div>
+            <ol start="3">
+                <li><strong>Update</strong>: Move each centroid to the mean of its assigned points:</li>
+            </ol>
+            <div class="math-block">
+                $$\mu_k = \frac{1}{|C_k|} \sum_{x_i \in C_k} x_i$$
+            </div>
+            <ol start="4">
+                <li><strong>Repeat</strong> steps 2–3 until centroids stop moving (convergence).</li>
+            </ol>
+
+            <h3>2.3 The Objective Function</h3>
+            <p>K-Means minimizes the <strong>Within-Cluster Sum of Squares (WCSS)</strong>, also called <strong>inertia</strong>:</p>
+            <div class="math-block">
+                $$\text{WCSS} = \sum_{k=1}^{K} \sum_{x_i \in C_k} \|x_i - \mu_k\|^2$$
+            </div>
+            <div class="insight-box">
+                <strong>K-Means is an optimization algorithm.</strong> It performs coordinate descent on WCSS, alternating between fixing centroids and updating assignments.
+            </div>
+
+            <h3>2.4 Convergence &amp; Initialization</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Initialization</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Random</strong></td>
+                        <td>Centroids placed at random data points — may give poor local minima</td>
+                    </tr>
+                    <tr>
+                        <td><strong>K-Means++</strong></td>
+                        <td>Smart: first centroid random; each next chosen with probability proportional to distance² from existing centroids. <strong>Default in Scikit-learn.</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.5 K-Means in Python</h3>
+            <pre><code class="language-python">from sklearn.cluster import KMeans
+import numpy as np
+
+# Fit K-Means with K=3 clusters
+kmeans = KMeans(
+    n_clusters=3,
+    init='k-means++',    # smart initialization
+    n_init=10,           # run 10 times, keep best result
+    max_iter=300,        # maximum iterations per run
+    random_state=42
+)
+kmeans.fit(X)
+
+# Results
+labels     = kmeans.labels_             # cluster assignment per point
+centroids  = kmeans.cluster_centers_    # centroid coordinates
+inertia    = kmeans.inertia_            # WCSS (lower = tighter clusters)
+
+print(f"Cluster labels: {np.unique(labels)}")
+print(f"Inertia (WCSS): {inertia:.2f}")</code></pre>
+
+            <h3>2.6 Assumptions and Limitations</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Assumption</th>
+                        <th>What It Means</th>
+                        <th>When It Fails</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Spherical clusters</strong></td>
+                        <td>Each cluster is roughly circular</td>
+                        <td>Elongated, crescent-shaped, or irregular clusters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Similar size</strong></td>
+                        <td>All clusters roughly equal in count</td>
+                        <td>One cluster has 10 points, another has 10,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Similar density</strong></td>
+                        <td>Points equally dense across clusters</td>
+                        <td>Sparse outer clusters mixed with dense core</td>
+                    </tr>
+                    <tr>
+                        <td><strong>K is known</strong></td>
+                        <td>You specify \(K\) in advance</td>
+                        <td>You don't know how many groups exist</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 3: Choosing K -->
+        <section class="content-section text-content">
+            <h2>3. Choosing K — Elbow Method &amp; Silhouette Score</h2>
+
+            <h3>3.1 The Elbow Method</h3>
+            <p>Run K-Means for \(K = 1, 2, \ldots, 10\) and plot inertia vs. \(K\). Look for the "elbow" — the point where adding more clusters stops significantly reducing inertia.</p>
+
+            <pre><code class="language-python">inertias = []
+K_range = range(1, 11)
+
+for k in K_range:
+    km = KMeans(n_clusters=k, init='k-means++', n_init=10, random_state=42)
+    km.fit(X)
+    inertias.append(km.inertia_)
+
+import matplotlib.pyplot as plt
+plt.plot(K_range, inertias, 'bo-', markersize=8)
+plt.xlabel('Number of Clusters K')
+plt.ylabel('Inertia (WCSS)')
+plt.title('Elbow Method for Optimal K')
+plt.tight_layout()
+plt.show()</code></pre>
+
+            <div class="note-box">
+                <strong>The elbow point</strong> is where the inertia "bends" — adding more clusters after this gives diminishing returns.
+            </div>
+
+            <h3>3.2 Silhouette Score — A Better Metric</h3>
+            <p>The <strong>silhouette score</strong> measures how well each point fits its cluster vs. the nearest alternative cluster:</p>
+            <div class="math-block">
+                $$s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}$$
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li>\(a(i)\) = average distance from point \(i\) to all other points <strong>in its cluster</strong> (intra-cluster distance)</li>
+                <li>\(b(i)\) = average distance from point \(i\) to all points <strong>in the nearest other cluster</strong> (inter-cluster distance)</li>
+            </ul>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Score Range</th>
+                        <th>Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>\(s \approx +1\)</td>
+                        <td>Point is well inside its cluster, far from others — <strong>excellent</strong></td>
+                    </tr>
+                    <tr>
+                        <td>\(s \approx 0\)</td>
+                        <td>Point is on the boundary between two clusters</td>
+                    </tr>
+                    <tr>
+                        <td>\(s \approx -1\)</td>
+                        <td>Point is likely assigned to the wrong cluster</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code class="language-python">from sklearn.metrics import silhouette_score
+
+silhouette_scores = []
+
+for k in range(2, 11):   # silhouette requires at least 2 clusters
+    km = KMeans(n_clusters=k, init='k-means++', n_init=10, random_state=42)
+    labels = km.fit_predict(X)
+    score = silhouette_score(X, labels)
+    silhouette_scores.append(score)
+    print(f"K={k}: Silhouette Score = {score:.4f}")</code></pre>
+        </section>
+
+        <!-- Section 4: DBSCAN -->
+        <section class="content-section text-content">
+            <h2>4. DBSCAN — Density-Based Clustering</h2>
+
+            <h3>4.1 The Core Idea</h3>
+            <p>DBSCAN (Density-Based Spatial Clustering of Applications with Noise) defines clusters as <strong>dense regions separated by sparse regions</strong>. Unlike K-Means:</p>
+            <ul>
+                <li>You don't specify \(K\) — the number of clusters is discovered automatically.</li>
+                <li>It can find <strong>arbitrary-shaped clusters</strong> (crescents, spirals, rings).</li>
+                <li>It explicitly identifies <strong>noise points</strong> (outliers) that belong to no cluster.</li>
+            </ul>
+
+            <h3>4.2 Key Concepts</h3>
+            <div class="param-grid">
+                <div class="param-card">
+                    <div class="term">eps (ε)</div>
+                    <div class="name">Neighborhood Radius</div>
+                    <div class="desc">The radius within which we count neighbors for each point</div>
+                </div>
+                <div class="param-card">
+                    <div class="term">min_samples</div>
+                    <div class="name">Core Point Threshold</div>
+                    <div class="desc">Minimum neighbors within ε to qualify as a core point</div>
+                </div>
+                <div class="param-card">
+                    <div class="term">Core Point</div>
+                    <div class="name">Cluster Seed</div>
+                    <div class="desc">Has ≥ min_samples neighbors within ε — starts and expands clusters</div>
+                </div>
+                <div class="param-card">
+                    <div class="term">Noise Point</div>
+                    <div class="name">Outlier (label = −1)</div>
+                    <div class="desc">Not reachable from any core point — explicit anomaly label</div>
+                </div>
+            </div>
+
+            <h3>4.3 DBSCAN in Python</h3>
+            <pre><code class="language-python">from sklearn.cluster import DBSCAN
+
+dbscan = DBSCAN(
+    eps=0.5,          # neighborhood radius
+    min_samples=5     # minimum points to be a core point
+)
+labels_db = dbscan.fit_predict(X)
+
+n_clusters = len(set(labels_db)) - (1 if -1 in labels_db else 0)
+n_noise    = list(labels_db).count(-1)
+
+print(f"Estimated number of clusters: {n_clusters}")
+print(f"Estimated number of noise points: {n_noise}")</code></pre>
+
+            <h3>4.4 K-Means vs. DBSCAN</h3>
+            <div class="compare-grid">
+                <div class="compare-card">
+                    <h4>K-Means</h4>
+                    <ul>
+                        <li>Must specify \(K\)</li>
+                        <li>Spherical clusters only</li>
+                        <li>All points assigned to a cluster</li>
+                        <li>Fast — \(O(nKI)\)</li>
+                        <li>Best for well-separated, compact clusters</li>
+                    </ul>
+                </div>
+                <div class="compare-card">
+                    <h4>DBSCAN</h4>
+                    <ul>
+                        <li>\(K\) automatically discovered</li>
+                        <li>Arbitrary shapes</li>
+                        <li>Noise points explicitly labeled −1</li>
+                        <li>Slower — \(O(n \log n)\) with spatial index</li>
+                        <li>Best for irregular shapes and noisy data</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warning-box">
+                <strong>Rule of thumb:</strong> Start with K-Means. If clusters are irregular or you don't know \(K\), try DBSCAN.
+            </div>
+        </section>
+
+        <!-- Section 5: Curse of Dimensionality -->
+        <section class="content-section text-content">
+            <h2>5. Dimensionality Reduction — The Curse and the Cure</h2>
+
+            <h3>5.1 The Curse of Dimensionality</h3>
+            <p>As the number of features \(p\) grows:</p>
+            <ol>
+                <li><strong>Data becomes sparse</strong>: In a 100-dimensional space, every point is far from every other point. "Nearest neighbor" loses meaning.</li>
+                <li><strong>Distance concentration</strong>: All pairwise distances converge to the same value — contrast disappears.</li>
+                <li><strong>Exponential sample requirements</strong>: You need exponentially more data as \(p\) increases to maintain statistical coverage.</li>
+            </ol>
+
+            <h3>5.2 Why Reduce Dimensions?</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Reason</th>
+                        <th>Benefit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Visualization</strong></td>
+                        <td>Reduce to 2D/3D to plot and inspect data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Remove noise</strong></td>
+                        <td>Low-variance components often capture noise</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Speed up training</strong></td>
+                        <td>Fewer features → faster models</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Avoid the curse</strong></td>
+                        <td>Dense data in lower dimensions works better for distance-based methods</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Storage</strong></td>
+                        <td>Compress data with little information loss</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 6: PCA -->
+        <section class="content-section text-content">
+            <h2>6. Principal Component Analysis (PCA)</h2>
+
+            <h3>6.1 The Core Idea</h3>
+            <p>PCA finds a new coordinate system where:</p>
+            <ul>
+                <li>The <strong>first axis (PC1)</strong> points in the direction of <strong>maximum variance</strong> in the data.</li>
+                <li>The <strong>second axis (PC2)</strong> is <strong>perpendicular to PC1</strong> and captures the next most variance.</li>
+                <li>Each subsequent PC is perpendicular to all previous ones.</li>
+            </ul>
+            <div class="insight-box">
+                <strong>PCA rotates your data to find the most informative directions — then you drop the least informative ones.</strong>
+            </div>
+
+            <h3>6.2 PCA Mathematics</h3>
+            <p>Given a centered data matrix \(X \in \mathbb{R}^{n \times p}\) (zero mean):</p>
+            <p><strong>Step 1 — Compute the covariance matrix:</strong></p>
+            <div class="math-block">
+                $$\Sigma = \frac{1}{n-1} X^T X \in \mathbb{R}^{p \times p}$$
+            </div>
+            <p><strong>Step 2 — Eigendecomposition:</strong></p>
+            <div class="math-block">
+                $$\Sigma = V \Lambda V^T$$
+            </div>
+            <p>Where \(V\) contains the <strong>eigenvectors</strong> (principal component directions) and \(\Lambda\) is a diagonal matrix of <strong>eigenvalues</strong> \(\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_p\).</p>
+            <p><strong>Step 3 — Select top \(d\) components and project:</strong></p>
+            <div class="math-block">
+                $$Z = X W \in \mathbb{R}^{n \times d}, \quad W = V_{[:, 1:d]}$$
+            </div>
+
+            <h3>6.3 Variance Explained</h3>
+            <p>Each eigenvalue \(\lambda_k\) represents the <strong>variance captured</strong> by the \(k\)-th principal component:</p>
+            <div class="math-block">
+                $$\text{Variance Explained by PC}_k = \frac{\lambda_k}{\sum_{j=1}^{p} \lambda_j}$$
+            </div>
+            <div class="note-box">
+                <strong>Common rule:</strong> Choose \(d\) such that cumulative variance explained ≥ 95%.
+            </div>
+
+            <h3>6.4 PCA in Python</h3>
+            <pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+
+# Step 1: Standardize (critical! PCA is sensitive to scale)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Step 2: Apply PCA to reduce to 2 dimensions
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+print(f"Original shape: {X_scaled.shape}")
+print(f"Reduced shape:  {X_pca.shape}")
+print(f"Variance explained by PC1: {pca.explained_variance_ratio_[0]:.2%}")
+print(f"Variance explained by PC2: {pca.explained_variance_ratio_[1]:.2%}")
+print(f"Total variance retained:   {pca.explained_variance_ratio_.sum():.2%}")</code></pre>
+
+            <h3>6.5 Choosing the Number of Components</h3>
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Fit PCA with all components
+pca_full = PCA()
+pca_full.fit(X_scaled)
+
+# Cumulative variance explained
+cumvar = np.cumsum(pca_full.explained_variance_ratio_)
+
+plt.plot(range(1, len(cumvar)+1), cumvar, 'bo-')
+plt.axhline(y=0.95, color='r', linestyle='--', label='95% threshold')
+plt.xlabel('Number of Components')
+plt.ylabel('Cumulative Variance Explained')
+plt.title('PCA — Choosing Number of Components')
+plt.legend()
+plt.show()
+
+# How many components for 95%?
+n_components_95 = np.argmax(cumvar >= 0.95) + 1
+print(f"Components needed for 95% variance: {n_components_95}")</code></pre>
+
+            <h3>6.6 PCA for Visualization</h3>
+            <pre><code class="language-python"># Reduce to 2D and visualize with cluster labels
+pca_2d = PCA(n_components=2)
+X_2d = pca_2d.fit_transform(X_scaled)
+
+plt.figure(figsize=(10, 7))
+scatter = plt.scatter(X_2d[:, 0], X_2d[:, 1],
+                      c=cluster_labels, cmap='tab10', alpha=0.7)
+plt.colorbar(scatter, label='Cluster')
+plt.xlabel(f'PC1 ({pca_2d.explained_variance_ratio_[0]:.1%} variance)')
+plt.ylabel(f'PC2 ({pca_2d.explained_variance_ratio_[1]:.1%} variance)')
+plt.title('PCA 2D Projection of Clusters')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 7: PCA vs t-SNE -->
+        <section class="content-section text-content">
+            <h2>7. PCA vs. t-SNE</h2>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>PCA</th>
+                        <th>t-SNE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Type</strong></td>
+                        <td>Linear transformation</td>
+                        <td>Non-linear</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Speed</strong></td>
+                        <td>Fast</td>
+                        <td>Slow (scales poorly to large \(n\))</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Preserves</strong></td>
+                        <td>Global variance structure</td>
+                        <td>Local neighborhood structure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Use case</strong></td>
+                        <td>Preprocessing, feature reduction for ML</td>
+                        <td>Visualization <em>only</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reproducible</strong></td>
+                        <td>Yes</td>
+                        <td>Stochastic (set <code>random_state</code>)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>Critical rule:</strong> Use PCA for preprocessing (before training a model). Use t-SNE only for visualization — <strong>never</strong> use t-SNE output as features for downstream ML.
+            </div>
+        </section>
+
+        <!-- Section 8: Anomaly Detection -->
+        <section class="content-section text-content">
+            <h2>8. Anomaly Detection</h2>
+
+            <h3>8.1 The Problem</h3>
+            <p><strong>Anomaly detection</strong> identifies observations that are <strong>significantly different from the majority</strong>. Unlike fraud classification (supervised), we often don't have labels for what "anomalous" means.</p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Point anomaly</strong></td>
+                        <td>A single data point is anomalous</td>
+                        <td>A temperature reading of 500°C</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contextual anomaly</strong></td>
+                        <td>Anomalous in context but not globally</td>
+                        <td>30°C in January (but normal in July)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Collective anomaly</strong></td>
+                        <td>A group of points anomalous together</td>
+                        <td>Network packets forming a DDoS pattern</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>8.2 Isolation Forest</h3>
+            <p>The <strong>Isolation Forest</strong> isolates anomalies rather than modeling normal behavior. Anomalies are rare and different → they require <strong>fewer random splits</strong> to isolate.</p>
+            <div class="math-block">
+                $$\text{Anomaly Score}(x) \approx 1 \implies \text{likely anomaly}$$
+            </div>
+
+            <pre><code class="language-python">from sklearn.ensemble import IsolationForest
+
+iso_forest = IsolationForest(
+    n_estimators=100,
+    contamination=0.05,   # expected fraction of anomalies
+    random_state=42
+)
+anomaly_labels = iso_forest.fit_predict(X)
+# Returns: +1 for normal, -1 for anomaly
+
+n_anomalies = (anomaly_labels == -1).sum()
+print(f"Detected anomalies: {n_anomalies} ({n_anomalies/len(X):.1%})")</code></pre>
+
+            <h3>8.3 DBSCAN for Anomaly Detection</h3>
+            <p>DBSCAN naturally identifies outliers as its noise points (label = −1), making it a powerful anomaly detector when cluster structure is known.</p>
+            <pre><code class="language-python"># Treat DBSCAN noise points as anomalies
+dbscan = DBSCAN(eps=0.5, min_samples=5)
+labels = dbscan.fit_predict(X_scaled)
+
+anomalies = X[labels == -1]
+print(f"Anomalies detected by DBSCAN: {len(anomalies)}")</code></pre>
+        </section>
+
+        <!-- Section 9: Full Pipeline -->
+        <section class="content-section text-content">
+            <h2>9. Practical Workflow: Customer Segmentation</h2>
+
+            <p>Here is the end-to-end pipeline connecting all concepts from today's lecture:</p>
+
+            <div class="pipeline-flow">
+                Raw Data → StandardScaler → PCA (95% variance) → Elbow + Silhouette → K-Means<br>
+                → Cluster Labels → Profile Clusters → Business Insights
+            </div>
+
+            <pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+import numpy as np
+import pandas as pd
+
+# 1. Standardize
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_raw)
+
+# 2. Reduce dimensions with PCA (keep 95% variance)
+pca = PCA(n_components=0.95)
+X_pca = pca.fit_transform(X_scaled)
+print(f"Reduced from {X_scaled.shape[1]} to {X_pca.shape[1]} features")
+
+# 3. Find optimal K using Silhouette
+inertias, silhouettes = [], []
+for k in range(2, 11):
+    km = KMeans(n_clusters=k, init='k-means++', n_init=10, random_state=42)
+    labels = km.fit_predict(X_pca)
+    inertias.append(km.inertia_)
+    silhouettes.append(silhouette_score(X_pca, labels))
+
+# 4. Fit final model
+best_k = np.argmax(silhouettes) + 2    # +2 because we started at K=2
+km_final = KMeans(n_clusters=best_k, init='k-means++', n_init=10, random_state=42)
+cluster_labels = km_final.fit_predict(X_pca)
+
+# 5. Profile clusters (the business step!)
+X_df = pd.DataFrame(X_raw, columns=feature_names)
+X_df['Cluster'] = cluster_labels
+print(X_df.groupby('Cluster').mean().round(2))</code></pre>
+        </section>
+
+        <!-- Section 10: Quick Reference -->
+        <section class="content-section text-content">
+            <h2>10. Key Equations — Quick Reference</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Formula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>K-Means Objective (WCSS)</td>
+                        <td>\(\sum_{k=1}^{K} \sum_{x_i \in C_k} \|x_i - \mu_k\|^2\)</td>
+                    </tr>
+                    <tr>
+                        <td>Centroid Update</td>
+                        <td>\(\mu_k = \frac{1}{|C_k|} \sum_{x_i \in C_k} x_i\)</td>
+                    </tr>
+                    <tr>
+                        <td>Silhouette Score</td>
+                        <td>\(s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}\)</td>
+                    </tr>
+                    <tr>
+                        <td>PCA Covariance Matrix</td>
+                        <td>\(\Sigma = \frac{1}{n-1} X^T X\)</td>
+                    </tr>
+                    <tr>
+                        <td>Variance Explained by PC\(_k\)</td>
+                        <td>\(\lambda_k \,/\, \sum_j \lambda_j\)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 11: Summary -->
+        <section class="content-section text-content">
+            <h2>11. Summary</h2>
+
+            <div class="success-box">
+                <ol>
+                    <li><strong>Unsupervised learning</strong> finds structure in data without labels — clustering, dimensionality reduction, and anomaly detection.</li>
+                    <li><strong>K-Means</strong> partitions data into \(K\) spherical clusters by minimizing WCSS. Use the elbow method and silhouette score to choose \(K\).</li>
+                    <li><strong>DBSCAN</strong> finds arbitrary-shaped clusters and explicitly labels outliers as noise — no need to specify \(K\).</li>
+                    <li><strong>The Curse of Dimensionality</strong> makes high-dimensional data sparse — dimensionality reduction is essential before clustering.</li>
+                    <li><strong>PCA</strong> rotates data to directions of maximum variance, retaining 95%+ information with far fewer features.</li>
+                    <li><strong>Anomaly Detection</strong> identifies points that don't belong. Isolation Forest isolates anomalies; DBSCAN labels them as noise.</li>
+                    <li><strong>Always standardize</strong> before clustering or PCA — distance-based algorithms are sensitive to feature scale.</li>
+                    <li><strong>Cluster profiling</strong> (mean features per cluster) turns numbers into business insights.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 12: Bridge -->
+        <section class="content-section text-content">
+            <h2>12. Bridge to the Tutorial</h2>
+            <p>In the tutorial session, you will:</p>
+            <ul>
+                <li>Generate a synthetic customer behavioral dataset (2,000 customers, 4 latent segments).</li>
+                <li>Standardize features and apply PCA for dimension reduction.</li>
+                <li>Use the elbow method and silhouette analysis to find the optimal \(K\).</li>
+                <li>Train K-Means and visualize clusters in 2D PCA projection.</li>
+                <li>Apply DBSCAN and compare its clusters to K-Means.</li>
+                <li>Detect anomalies using Isolation Forest.</li>
+                <li>Profile each customer segment — what does Cluster 0 vs. Cluster 1 look like?</li>
+            </ul>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">Without labels, you must listen to what the data whispers.</p>
+                <a href="tutorial_7.html" class="btn btn-primary"
+                    style="display:inline-flex;margin:1rem auto 0 auto;">
+                    Continue to Tutorial 7 <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering &amp; InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

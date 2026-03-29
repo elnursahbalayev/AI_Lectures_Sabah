@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 7 Tutorial: Unsupervised Learning — Customer Segmentation | AI Lectures</title>
+    <meta name="description" content="Week 7 Tutorial: Build a complete customer segmentation pipeline using K-Means, DBSCAN, PCA, and Isolation Forest. Hands-on unsupervised learning.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* Article specific overrides */
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .tool-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .tool-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .assignment-card {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .assignment-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .segment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .segment-card {
+            background: rgba(24, 24, 27, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+
+        .segment-card .seg-label {
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .segment-card .seg-name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .segment-card .seg-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 700px) {
+            .tool-comparison,
+            .segment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#" >Tutorials</a></li>
+            <li><a href="lecture_7.html">Lecture 7</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 07 Tutorial</span>
+            <h1>Unsupervised Learning:<br>Customer Segmentation</h1>
+            <p class="subtitle">Build a complete segmentation pipeline — K-Means, DBSCAN, PCA, and Isolation Forest on a synthetic customer dataset.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1: Introduction -->
+        <section class="content-section text-content">
+            <h2>1. Introduction</h2>
+            <p>Last week, we classified fraudulent transactions using labeled data. Today, we have <strong>no labels</strong>. We are given a dataset of customer behavior and must discover natural groupings — without being told what those groups should be.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="target"></i> Today's Goal</h4>
+                <ul>
+                    <li>Build a clean preprocessing pipeline with standardization and PCA.</li>
+                    <li>Use the elbow method and silhouette analysis to pick the optimal \(K\).</li>
+                    <li>Train K-Means and visualize the clusters in 2D PCA space.</li>
+                    <li>Apply DBSCAN and compare results to K-Means.</li>
+                    <li>Detect anomalous customers using Isolation Forest.</li>
+                    <li>Profile each cluster to understand <em>who</em> lives inside each segment.</li>
+                </ul>
+            </div>
+
+            <p>The 4 latent customer segments we'll try to discover:</p>
+            <div class="segment-grid">
+                <div class="segment-card">
+                    <div class="seg-label">Segment 0</div>
+                    <div class="seg-name">🏆 High-Value Loyals</div>
+                    <div class="seg-desc">High spend, high frequency, long account tenure. The most valuable segment — reward &amp; upsell.</div>
+                </div>
+                <div class="segment-card">
+                    <div class="seg-label">Segment 1</div>
+                    <div class="seg-name">💰 Bargain Hunters</div>
+                    <div class="seg-desc">Low order value, high frequency, short tenure. Price-sensitive but engaged — target with promotions.</div>
+                </div>
+                <div class="segment-card">
+                    <div class="seg-label">Segment 2</div>
+                    <div class="seg-name">⚠️ Dormant At-Risk</div>
+                    <div class="seg-desc">Medium spend, very low frequency, long since last purchase. Launch re-engagement campaigns.</div>
+                </div>
+                <div class="segment-card">
+                    <div class="seg-label">Segment 3</div>
+                    <div class="seg-name">🚀 New High-Spenders</div>
+                    <div class="seg-desc">High spend but low frequency and new accounts. Nurture to convert into loyal customers.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Environment Setup -->
+        <section class="content-section text-content">
+            <h2>2. Environment Setup</h2>
+
+            <pre><code class="language-python"># ============================================================
+# ENVIRONMENT SETUP — Week 7 Unsupervised Learning
+# All libraries needed for clustering, PCA, and anomaly detection
+# ============================================================
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans, DBSCAN
+from sklearn.metrics import silhouette_score, silhouette_samples
+from sklearn.ensemble import IsolationForest
+
+import warnings
+warnings.filterwarnings('ignore')
+
+print(f"Pandas:  {pd.__version__}")
+print(f"NumPy:   {np.__version__}")
+print("\nReady to discover hidden customer segments!")</code></pre>
+        </section>
+
+        <!-- Section 3: Creating Dataset -->
+        <section class="content-section text-content">
+            <h2>3. Creating Our Dataset</h2>
+            <p>We'll generate a synthetic dataset of <strong>2,000 e-commerce customers</strong> with 5 behavioral features and 4 latent segments. The <code>segment_gt</code> column is our ground truth — but we will <strong>not use it during training</strong>.</p>
+
+            <pre><code class="language-python"># ============================================================
+# GENERATE SYNTHETIC CUSTOMER DATASET
+# 2,000 customers across 4 behavioral segments.
+# We know the true labels, but we will HIDE them during training
+# to simulate a real unsupervised problem.
+# ============================================================
+
+np.random.seed(42)
+n = 2000
+
+# Segment 0: High-Value Loyals   (500 customers)
+# Segment 1: Bargain Hunters      (600 customers)
+# Segment 2: Dormant At-Risk      (550 customers)
+# Segment 3: New High-Spenders    (350 customers)
+segment_sizes = [500, 600, 550, 350]
+
+def make_segment(size, spend_mean, freq_mean, tenure_mean,
+                 recency_mean, categories_mean):
+    return {
+        'avg_order_value': np.random.normal(
+            spend_mean, spend_mean * 0.2, size).clip(5, 500),
+        'purchase_frequency': np.random.normal(
+            freq_mean, freq_mean * 0.3, size).clip(0.5, 50),
+        'account_tenure_months': np.random.normal(
+            tenure_mean, tenure_mean * 0.25, size).clip(1, 60),
+        'days_since_last_purchase': np.random.normal(
+            recency_mean, recency_mean * 0.3, size).clip(1, 365),
+        'num_categories_purchased': np.random.normal(
+            categories_mean, 1.5, size).clip(1, 15).astype(int),
+    }
+
+segments_data = [
+    make_segment(segment_sizes[0], spend_mean=180, freq_mean=12,
+                 tenure_mean=36, recency_mean=15,  categories_mean=8),
+    make_segment(segment_sizes[1], spend_mean=45,  freq_mean=20,
+                 tenure_mean=12, recency_mean=10,  categories_mean=4),
+    make_segment(segment_sizes[2], spend_mean=95,  freq_mean=2,
+                 tenure_mean=42, recency_mean=150, categories_mean=3),
+    make_segment(segment_sizes[3], spend_mean=220, freq_mean=3,
+                 tenure_mean=5,  recency_mean=20,  categories_mean=6),
+]
+
+data = {}
+for key in segments_data[0].keys():
+    data[key] = np.concatenate([seg[key] for seg in segments_data])
+
+df = pd.DataFrame(data)
+df['segment_gt'] = np.concatenate([
+    np.full(sz, i) for i, sz in enumerate(segment_sizes)
+])  # Ground-truth labels — DO NOT use in training
+
+df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+feature_cols = ['avg_order_value', 'purchase_frequency',
+                'account_tenure_months', 'days_since_last_purchase',
+                'num_categories_purchased']
+X = df[feature_cols].values
+
+print(f"Dataset shape: {df.shape}")
+print(f"\nSegment distribution:")
+print(df['segment_gt'].value_counts().sort_index())
+print(f"\nFirst 5 rows:")
+df[feature_cols].head()</code></pre>
+        </section>
+
+        <!-- Section 4: EDA -->
+        <section class="content-section text-content">
+            <h2>4. Step 1 — Exploratory Data Analysis</h2>
+            <div class="step-indicator">STEP 1 OF 8 &bull; Know Your Data</div>
+
+            <h3>4.1 Feature Distributions</h3>
+            <pre><code class="language-python"># ============================================================
+# VISUALIZE FEATURE DISTRIBUTIONS
+# Understanding the range and shape of each feature before
+# clustering is critical — outliers and scale differences
+# will dominate K-Means distance calculations.
+# ============================================================
+
+fig, axes = plt.subplots(2, 3, figsize=(16, 9))
+colors = ['#3b82f6', '#8b5cf6', '#f59e0b', '#4ade80', '#ef4444']
+
+for ax, col, color in zip(axes.flatten(), feature_cols, colors):
+    ax.hist(df[col], bins=40, color=color, alpha=0.8, edgecolor='white')
+    ax.set_title(col.replace('_', ' ').title())
+    ax.set_xlabel('Value')
+    ax.set_ylabel('Count')
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+axes[1, 2].set_visible(False)  # hide unused subplot
+
+plt.suptitle('Customer Feature Distributions', fontsize=14, fontweight='bold')
+plt.tight_layout()
+plt.savefig('customer_distributions.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <h3>4.2 Correlation Heatmap</h3>
+            <pre><code class="language-python"># ============================================================
+# CORRELATION HEATMAP
+# Highly correlated features carry redundant information.
+# PCA will absorb these correlations into principal components.
+# ============================================================
+
+corr = df[feature_cols].corr()
+
+fig, ax = plt.subplots(figsize=(8, 6))
+im = ax.imshow(corr, cmap='coolwarm', vmin=-1, vmax=1)
+plt.colorbar(im, ax=ax)
+
+labels = [c.replace('_', '\n') for c in feature_cols]
+ax.set_xticks(range(len(feature_cols)))
+ax.set_yticks(range(len(feature_cols)))
+ax.set_xticklabels(labels, fontsize=8)
+ax.set_yticklabels(labels, fontsize=8)
+
+for i in range(len(feature_cols)):
+    for j in range(len(feature_cols)):
+        ax.text(j, i, f'{corr.iloc[i, j]:.2f}',
+                ha='center', va='center', fontsize=8)
+
+ax.set_title('Feature Correlation Matrix')
+plt.tight_layout()
+plt.savefig('correlation_matrix.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <div class="note-box">
+                <strong>Discussion:</strong> Which features are most correlated? For example, <code>account_tenure_months</code> and <code>purchase_frequency</code> may be negatively correlated (newer customers might buy less frequently). Does this make business sense?
+            </div>
+        </section>
+
+        <!-- Section 5: Preprocessing -->
+        <section class="content-section text-content">
+            <h2>5. Step 2 — Preprocessing: Standardization &amp; PCA</h2>
+            <div class="step-indicator">STEP 2 OF 8 &bull; Scale and Compress</div>
+
+            <h3>5.1 Why Standardize?</h3>
+            <p>K-Means uses Euclidean distance. Without standardization, features with large scales (e.g., <code>days_since_last_purchase</code>, range 1–365) dominate over small-scale features (<code>num_categories_purchased</code>, range 1–15).</p>
+
+            <pre><code class="language-python"># ============================================================
+# STANDARDIZE FEATURES
+# After scaling: mean = 0, std = 1 for every feature.
+# This ensures no single feature dominates distance calculations.
+# ============================================================
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+print("Before scaling:")
+print(f"  avg_order_value:          mean={X[:, 0].mean():.1f}, std={X[:, 0].std():.1f}")
+print(f"  days_since_last_purchase: mean={X[:, 3].mean():.1f}, std={X[:, 3].std():.1f}")
+print("\nAfter scaling:")
+print(f"  avg_order_value:          mean={X_scaled[:, 0].mean():.1f}, std={X_scaled[:, 0].std():.1f}")
+print(f"  days_since_last_purchase: mean={X_scaled[:, 3].mean():.1f}, std={X_scaled[:, 3].std():.1f}")</code></pre>
+
+            <h3>5.2 PCA — Variance Analysis</h3>
+            <pre><code class="language-python"># ============================================================
+# PCA VARIANCE ANALYSIS
+# How many components do we need to retain 95% of information?
+# The scree plot shows individual component variance.
+# The cumulative plot helps select the right number.
+# ============================================================
+
+pca_full = PCA()
+pca_full.fit(X_scaled)
+
+cumvar = np.cumsum(pca_full.explained_variance_ratio_)
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Plot 1: Individual variance explained
+axes[0].bar(range(1, len(pca_full.explained_variance_ratio_) + 1),
+            pca_full.explained_variance_ratio_, color='#3b82f6', alpha=0.8)
+axes[0].set_xlabel('Principal Component')
+axes[0].set_ylabel('Variance Explained')
+axes[0].set_title('Variance Explained per Component')
+
+# Plot 2: Cumulative variance explained
+axes[1].plot(range(1, len(cumvar) + 1), cumvar, 'bo-', markersize=8)
+axes[1].axhline(y=0.95, color='red', linestyle='--', label='95% threshold')
+axes[1].set_xlabel('Number of Components')
+axes[1].set_ylabel('Cumulative Variance Explained')
+axes[1].set_title('Cumulative Variance Explained')
+axes[1].legend()
+axes[1].set_ylim(0, 1.05)
+
+plt.suptitle('PCA Variance Analysis', fontsize=14, fontweight='bold')
+plt.tight_layout()
+plt.savefig('pca_variance.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+n_for_95 = np.argmax(cumvar >= 0.95) + 1
+print(f"Components needed for 95% variance: {n_for_95}")
+print(f"Per-component variance: {pca_full.explained_variance_ratio_.round(3)}")</code></pre>
+
+            <pre><code class="language-python"># ============================================================
+# REDUCE TO 2D FOR CLUSTERING AND VISUALIZATION
+# 2 components allow us to plot every point on a scatter chart.
+# We check how much variance is retained.
+# ============================================================
+
+pca_2d = PCA(n_components=2)
+X_pca = pca_2d.fit_transform(X_scaled)
+
+print(f"Original dimensions: {X_scaled.shape[1]}")
+print(f"Reduced dimensions:  {X_pca.shape[1]}")
+print(f"Total variance retained: {pca_2d.explained_variance_ratio_.sum():.2%}")</code></pre>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Always fit the scaler and PCA on training data only, then transform test data. Here we have no predefined train/test split (unsupervised), so we fit on the full dataset — which is standard practice for clustering.
+            </div>
+        </section>
+
+        <!-- Section 6: Finding Optimal K -->
+        <section class="content-section text-content">
+            <h2>6. Step 3 — Finding the Optimal K</h2>
+            <div class="step-indicator">STEP 3 OF 8 &bull; Elbow Method + Silhouette</div>
+
+            <h3>6.1 Elbow Method</h3>
+            <pre><code class="language-python"># ============================================================
+# ELBOW METHOD
+# We run K-Means for K=1 to K=10 and plot WCSS (inertia).
+# The "elbow" is where inertia stops dropping sharply.
+# This is a heuristic — a tool to narrow down candidates.
+# ============================================================
+
+inertias = []
+K_range = range(1, 11)
+
+for k in K_range:
+    km = KMeans(n_clusters=k, init='k-means++',
+                n_init=10, max_iter=300, random_state=42)
+    km.fit(X_pca)
+    inertias.append(km.inertia_)
+
+plt.figure(figsize=(9, 5))
+plt.plot(K_range, inertias, 'bo-', markersize=9, linewidth=2)
+for k, inertia in zip(K_range, inertias):
+    plt.annotate(f'{inertia:.0f}', (k, inertia),
+                 textcoords='offset points', xytext=(8, 5), fontsize=8)
+plt.xlabel('Number of Clusters K')
+plt.ylabel('Inertia (WCSS)')
+plt.title('Elbow Method for Optimal K')
+plt.xticks(K_range)
+plt.tight_layout()
+plt.savefig('elbow_method.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <h3>6.2 Silhouette Analysis</h3>
+            <pre><code class="language-python"># ============================================================
+# SILHOUETTE ANALYSIS
+# For each K, silhouette_score measures how well-separated
+# the clusters are. Higher = better.
+# s(i) = (b(i) - a(i)) / max(a(i), b(i))
+#   a(i) = avg intra-cluster distance
+#   b(i) = avg distance to nearest other cluster
+# ============================================================
+
+silhouette_scores = []
+
+for k in range(2, 11):
+    km = KMeans(n_clusters=k, init='k-means++', n_init=10, random_state=42)
+    labels = km.fit_predict(X_pca)
+    score = silhouette_score(X_pca, labels)
+    silhouette_scores.append(score)
+    print(f"K={k:2d}: Silhouette Score = {score:.4f}")
+
+# Select the K with highest silhouette score
+best_k = np.argmax(silhouette_scores) + 2   # +2 because range started at K=2
+
+plt.figure(figsize=(9, 5))
+plt.plot(range(2, 11), silhouette_scores, 'go-', markersize=9, linewidth=2)
+plt.axvline(x=best_k, color='red', linestyle='--', label=f'Best K={best_k}')
+plt.xlabel('Number of Clusters K')
+plt.ylabel('Silhouette Score')
+plt.title('Silhouette Score vs. K')
+plt.legend()
+plt.xticks(range(2, 11))
+plt.tight_layout()
+plt.savefig('silhouette_scores.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+print(f"\n✓ Optimal K by Silhouette: {best_k}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Elbow vs. Silhouette:</strong> The elbow is visual and subjective. The silhouette score is quantitative. Use the elbow to narrow down candidates (e.g., K=3 to K=5), then use the silhouette score to make the final decision.
+            </div>
+        </section>
+
+        <!-- Section 7: K-Means -->
+        <section class="content-section text-content">
+            <h2>7. Step 4 — Train K-Means</h2>
+            <div class="step-indicator">STEP 4 OF 8 &bull; Fit &amp; Visualize Clusters</div>
+
+            <h3>7.1 Fit the Final K-Means Model</h3>
+            <pre><code class="language-python"># ============================================================
+# FIT FINAL K-MEANS MODEL
+# n_init=10: run 10 times with different centroid seeds,
+#            keep the result with the lowest inertia.
+# ============================================================
+
+km_final = KMeans(n_clusters=best_k, init='k-means++',
+                  n_init=10, random_state=42)
+cluster_labels = km_final.fit_predict(X_pca)
+
+print(f"K-Means fitted with K={best_k}")
+print(f"Inertia: {km_final.inertia_:.2f}")
+print(f"Silhouette Score: {silhouette_score(X_pca, cluster_labels):.4f}")
+print(f"\nCluster sizes:")
+for k in range(best_k):
+    count = (cluster_labels == k).sum()
+    print(f"  Cluster {k}: {count} customers ({count/n:.1%})")</code></pre>
+
+            <h3>7.2 Visualize K-Means Clusters</h3>
+            <pre><code class="language-python"># ============================================================
+# PLOT K-MEANS CLUSTERS ON PCA 2D PROJECTION
+# Each point is colored by its cluster assignment.
+# Black X markers show the cluster centroids.
+# ============================================================
+
+colors = ['#3b82f6', '#ef4444', '#4ade80', '#f59e0b', '#8b5cf6', '#06b6d4']
+
+fig, ax = plt.subplots(figsize=(11, 7))
+
+for k in range(best_k):
+    mask = cluster_labels == k
+    ax.scatter(X_pca[mask, 0], X_pca[mask, 1],
+               c=colors[k], label=f'Cluster {k}',
+               alpha=0.6, s=40, edgecolors='white', linewidth=0.3)
+
+# Plot centroids
+centroids_pca = km_final.cluster_centers_
+ax.scatter(centroids_pca[:, 0], centroids_pca[:, 1],
+           c='black', marker='X', s=200, zorder=5, label='Centroids')
+
+for k, (cx, cy) in enumerate(centroids_pca):
+    ax.annotate(f'C{k}', (cx, cy),
+                textcoords='offset points', xytext=(8, 8),
+                fontsize=12, fontweight='bold')
+
+ax.set_xlabel(f"PC1 ({pca_2d.explained_variance_ratio_[0]:.1%} variance)", fontsize=11)
+ax.set_ylabel(f"PC2 ({pca_2d.explained_variance_ratio_[1]:.1%} variance)", fontsize=11)
+ax.set_title(f'K-Means Customer Clusters (K={best_k}) — PCA 2D Projection', fontsize=13)
+ax.legend(fontsize=10)
+plt.tight_layout()
+plt.savefig('kmeans_clusters.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <h3>7.3 Deep Silhouette Plot</h3>
+            <pre><code class="language-python"># ============================================================
+# SILHOUETTE PLOT — Per-Cluster Quality Visualization
+# Each horizontal bar shows the silhouette coefficient for
+# one data point. Bars extending left of zero (red dashed line)
+# are likely misclassified. All bars should be similar in width
+# for a well-balanced clustering.
+# ============================================================
+
+from sklearn.metrics import silhouette_samples
+import matplotlib.cm as cm
+
+fig, ax = plt.subplots(figsize=(10, 7))
+sample_silhouette_values = silhouette_samples(X_pca, cluster_labels)
+
+y_lower = 10
+for k in range(best_k):
+    ith_values = sample_silhouette_values[cluster_labels == k]
+    ith_values.sort()
+    size_k = ith_values.shape[0]
+    y_upper = y_lower + size_k
+
+    color = cm.nipy_spectral(float(k) / best_k)
+    ax.fill_betweenx(np.arange(y_lower, y_upper), 0, ith_values,
+                     facecolor=color, edgecolor=color, alpha=0.7)
+    ax.text(-0.05, y_lower + 0.5 * size_k, str(k))
+    y_lower = y_upper + 10
+
+avg_score = silhouette_score(X_pca, cluster_labels)
+ax.axvline(x=avg_score, color="red", linestyle="--",
+           label=f'Mean: {avg_score:.3f}')
+ax.set_xlabel("Silhouette Coefficient")
+ax.set_ylabel("Cluster")
+ax.set_title(f"Silhouette Plot for K={best_k}")
+ax.legend()
+plt.tight_layout()
+plt.savefig('silhouette_plot.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 8: DBSCAN -->
+        <section class="content-section text-content">
+            <h2>8. Step 5 — DBSCAN Clustering</h2>
+            <div class="step-indicator">STEP 5 OF 8 &bull; Density-Based Alternative</div>
+
+            <pre><code class="language-python"># ============================================================
+# DBSCAN — DENSITY-BASED CLUSTERING
+# DBSCAN does not require K. It finds clusters as dense regions.
+# Points that don't belong to any dense region are labeled -1
+# (noise). These are our outlier customers.
+#
+# Tuning guide:
+#   eps:         start around 0.3-0.8 on PCA-reduced data
+#   min_samples: rule of thumb → 2 * n_features
+# ============================================================
+
+dbscan = DBSCAN(eps=0.5, min_samples=10)
+labels_db = dbscan.fit_predict(X_pca)
+
+n_clusters_db = len(set(labels_db)) - (1 if -1 in labels_db else 0)
+n_noise_db    = (labels_db == -1).sum()
+
+print(f"DBSCAN Results:")
+print(f"  Estimated clusters: {n_clusters_db}")
+print(f"  Noise points:       {n_noise_db} ({n_noise_db/n:.1%})")
+
+if n_clusters_db >= 2:
+    db_mask = labels_db != -1
+    db_score = silhouette_score(X_pca[db_mask], labels_db[db_mask])
+    print(f"  Silhouette (excl. noise): {db_score:.4f}")</code></pre>
+
+            <pre><code class="language-python"># ============================================================
+# COMPARE K-MEANS vs. DBSCAN SIDE BY SIDE
+# Left: K-Means clean spherical clusters
+# Right: DBSCAN with noise points marked as black X
+# ============================================================
+
+fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+
+# Left: K-Means
+for k in range(best_k):
+    mask = cluster_labels == k
+    axes[0].scatter(X_pca[mask, 0], X_pca[mask, 1],
+                    c=colors[k % len(colors)], label=f'Cluster {k}',
+                    alpha=0.6, s=30)
+axes[0].set_title(f'K-Means (K={best_k})', fontsize=12)
+axes[0].set_xlabel('PC1')
+axes[0].set_ylabel('PC2')
+axes[0].legend(fontsize=9)
+
+# Right: DBSCAN
+for label in sorted(set(labels_db)):
+    mask = labels_db == label
+    if label == -1:
+        axes[1].scatter(X_pca[mask, 0], X_pca[mask, 1],
+                        c='black', marker='x', s=30,
+                        label='Noise', alpha=0.5)
+    else:
+        axes[1].scatter(X_pca[mask, 0], X_pca[mask, 1],
+                        c=colors[label % len(colors)],
+                        label=f'Cluster {label}', alpha=0.6, s=30)
+
+axes[1].set_title(
+    f'DBSCAN (eps=0.5, min_samples=10)\n{n_clusters_db} clusters, {n_noise_db} noise',
+    fontsize=12)
+axes[1].set_xlabel('PC1')
+axes[1].set_ylabel('PC2')
+axes[1].legend(fontsize=9)
+
+plt.suptitle('K-Means vs. DBSCAN Comparison', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('clustering_comparison.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <div class="note-box">
+                <strong>Discussion:</strong> How do the cluster shapes differ? Which points did DBSCAN label as noise? Are these customers on the boundaries between segments? Try changing <code>eps</code> to 0.3, 0.8, 1.2 and observe how the number of noise points and clusters changes.
+            </div>
+        </section>
+
+        <!-- Section 9: Anomaly Detection -->
+        <section class="content-section text-content">
+            <h2>9. Step 6 — Anomaly Detection with Isolation Forest</h2>
+            <div class="step-indicator">STEP 6 OF 8 &bull; Find the Outliers</div>
+
+            <pre><code class="language-python"># ============================================================
+# ISOLATION FOREST — ANOMALY DETECTION
+# Anomalies are easier to isolate: they need fewer random splits
+# to separate from the rest of the data.
+# contamination: the expected fraction of anomalies in the dataset
+# ============================================================
+
+iso_forest = IsolationForest(
+    n_estimators=200,
+    contamination=0.03,   # expect ~3% unusual customers
+    random_state=42
+)
+anomaly_labels = iso_forest.fit_predict(X_scaled)   # fit on original scaled space
+anomaly_scores = iso_forest.score_samples(X_scaled) # lower = more anomalous
+
+n_anomalies = (anomaly_labels == -1).sum()
+print(f"Isolation Forest — Anomaly Detection")
+print(f"  Total customers:    {n}")
+print(f"  Anomalies detected: {n_anomalies} ({n_anomalies/n:.1%})")</code></pre>
+
+            <pre><code class="language-python"># ============================================================
+# VISUALIZE ANOMALIES ON PCA 2D PROJECTION
+# Normal customers: blue dots
+# Anomalous customers: red stars — investigate these!
+# ============================================================
+
+fig, ax = plt.subplots(figsize=(11, 7))
+
+normal_mask  = anomaly_labels == 1
+anomaly_mask = anomaly_labels == -1
+
+ax.scatter(X_pca[normal_mask, 0], X_pca[normal_mask, 1],
+           c='#3b82f6', alpha=0.5, s=30,
+           label='Normal', edgecolors='none')
+ax.scatter(X_pca[anomaly_mask, 0], X_pca[anomaly_mask, 1],
+           c='#ef4444', marker='*', s=150,
+           label=f'Anomaly ({n_anomalies})',
+           edgecolors='black', linewidth=0.5, zorder=5)
+
+ax.set_xlabel(f"PC1 ({pca_2d.explained_variance_ratio_[0]:.1%} variance)")
+ax.set_ylabel(f"PC2 ({pca_2d.explained_variance_ratio_[1]:.1%} variance)")
+ax.set_title('Isolation Forest — Anomaly Detection on Customer Data')
+ax.legend(fontsize=11)
+plt.tight_layout()
+plt.savefig('anomaly_detection.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+# Profile anomalies vs. normal customers
+df_anom   = df[feature_cols][anomaly_mask]
+df_normal = df[feature_cols][normal_mask]
+
+print("\nAnomaly vs. Normal profile:")
+comparison = pd.DataFrame({
+    'Normal Mean':  df_normal.mean(),
+    'Anomaly Mean': df_anom.mean(),
+}).round(2)
+print(comparison)</code></pre>
+
+            <div class="insight-box">
+                <strong>Business interpretation:</strong> Anomalous customers may represent accounts to investigate (potential bots, data errors, or genuinely unusual customers worth personal outreach). Their feature profile tells you <em>why</em> they're anomalous.
+            </div>
+        </section>
+
+        <!-- Section 10: Profiling -->
+        <section class="content-section text-content">
+            <h2>10. Step 7 — Cluster Profiling &amp; Business Insights</h2>
+            <div class="step-indicator">STEP 7 OF 8 &bull; Turn Numbers into Strategy</div>
+
+            <p>This is the most important step: turning cluster labels into <strong>actionable business knowledge</strong>.</p>
+
+            <pre><code class="language-python"># ============================================================
+# CLUSTER PROFILE TABLE
+# For each cluster, compute the mean of each original feature.
+# This tells you: "What does a typical customer in Cluster 0 look like?"
+# ============================================================
+
+df['cluster'] = cluster_labels
+
+cluster_profiles = df.groupby('cluster')[feature_cols].mean().round(2)
+print("=" * 70)
+print("CLUSTER PROFILES — Mean Feature Values per Cluster")
+print("=" * 70)
+print(cluster_profiles.to_string())</code></pre>
+
+            <pre><code class="language-python"># ============================================================
+# CLUSTER PROFILE BAR CHARTS
+# Normalize each feature to [0,1] for visual comparison.
+# A high bar = this cluster has a high value for this feature.
+# ============================================================
+
+fig, axes = plt.subplots(1, best_k, figsize=(5 * best_k, 5), sharey=False)
+
+profile_normalized = (
+    (cluster_profiles - cluster_profiles.min()) /
+    (cluster_profiles.max() - cluster_profiles.min())
+)
+
+for k, ax in enumerate(axes.flatten()):
+    values = profile_normalized.loc[k]
+    bars = ax.barh(feature_cols, values,
+                   color=colors[k % len(colors)], alpha=0.8)
+    ax.set_xlim(0, 1.1)
+    ax.set_xlabel('Normalized Value')
+    count = (df['cluster'] == k).sum()
+    ax.set_title(f'Cluster {k}\n(n={count})', fontsize=11, fontweight='bold')
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    for bar, val in zip(bars, cluster_profiles.loc[k]):
+        ax.text(bar.get_width() + 0.02,
+                bar.get_y() + bar.get_height() / 2,
+                f'{val:.0f}', va='center', fontsize=8)
+
+plt.suptitle('Customer Cluster Profiles (Normalized)', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('cluster_profiles.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <pre><code class="language-python"># ============================================================
+# BUSINESS INTERPRETATION
+# Use the mean feature values to assign a human-readable label
+# to each cluster. This is the deliverable for stakeholders.
+# ============================================================
+
+print("\n" + "=" * 60)
+print("CLUSTER BUSINESS INTERPRETATION")
+print("=" * 60)
+
+for k in range(best_k):
+    p    = cluster_profiles.loc[k]
+    size = (df['cluster'] == k).sum()
+    print(f"\n--- Cluster {k} ({size} customers, {size/n:.1%}) ---")
+    print(f"  Avg Order Value:          {p['avg_order_value']:.1f}")
+    print(f"  Purchase Frequency/month: {p['purchase_frequency']:.1f}")
+    print(f"  Account Tenure (months):  {p['account_tenure_months']:.1f}")
+    print(f"  Days Since Last Purchase: {p['days_since_last_purchase']:.1f}")
+    print(f"  Categories Purchased:     {p['num_categories_purchased']:.1f}")
+
+    # Rule-based labeling — adjust thresholds based on actual results
+    if p['avg_order_value'] > 150 and p['purchase_frequency'] > 8:
+        tag = "🏆 High-Value Loyals — Reward & Upsell"
+    elif p['days_since_last_purchase'] > 120:
+        tag = "⚠️  Dormant At-Risk — Re-engagement Campaign"
+    elif p['avg_order_value'] < 70 and p['purchase_frequency'] > 10:
+        tag = "💰 Bargain Hunters — Promotions & Cross-sell"
+    elif p['avg_order_value'] > 150 and p['account_tenure_months'] < 15:
+        tag = "🚀 New High-Spenders — Nurture & Retain"
+    else:
+        tag = "📊 Mixed Segment — Investigate Further"
+
+    print(f"  → Business Tag: {tag}")</code></pre>
+        </section>
+
+        <!-- Section 11: Summary -->
+        <section class="content-section text-content">
+            <h2>11. Step 8 — Full Pipeline Summary</h2>
+            <div class="step-indicator">STEP 8 OF 8 &bull; Review What We Built</div>
+
+            <pre><code class="language-python"># ============================================================
+# CONSOLIDATED PIPELINE SUMMARY
+# ============================================================
+
+print("=" * 60)
+print("FULL UNSUPERVISED PIPELINE SUMMARY")
+print("=" * 60)
+
+summary = {
+    "Dataset Size":                n,
+    "Features Used":               len(feature_cols),
+    "Scaling":                    "StandardScaler",
+    "Dim Reduction":              f"PCA 2D ({pca_2d.explained_variance_ratio_.sum():.1%} variance retained)",
+    "Optimal K (Silhouette)":      best_k,
+    "K-Means Inertia":            f"{km_final.inertia_:.2f}",
+    "Silhouette Score":           f"{silhouette_score(X_pca, cluster_labels):.4f}",
+    "DBSCAN Clusters Found":       n_clusters_db,
+    "DBSCAN Noise Points":         n_noise_db,
+    "Anomalies (IsoForest)":       n_anomalies,
+}
+
+for key, val in summary.items():
+    print(f"  {key:<40} {val}")</code></pre>
+
+            <div class="pipeline-flow">
+                Raw Data (2000 × 5) → StandardScaler → PCA 2D → Elbow + Silhouette<br>
+                → K-Means (best_k) → Cluster Labels → Profile → Business Insights<br>
+                ↘ DBSCAN → Noise Detection ↗<br>
+                ↘ Isolation Forest → Anomaly Detection ↗
+            </div>
+        </section>
+
+        <!-- Section 12: Experiment Ideas -->
+        <section class="content-section text-content">
+            <h2>12. Experiment Ideas</h2>
+
+            <div class="note-box">
+                <h4>Extend Your Analysis</h4>
+                <ul>
+                    <li><strong>Experiment A:</strong> Skip the PCA step and run K-Means directly on <code>X_scaled</code>. Does the silhouette score improve or worsen? Do the cluster shapes change in the 2D plot?</li>
+                    <li><strong>Experiment B:</strong> Tune DBSCAN's <code>eps</code> parameter: try 0.3, 0.5, 0.8, 1.2. How does the number of clusters and noise points change? Plot all 4 results side-by-side.</li>
+                    <li><strong>Experiment C:</strong> Add a 6th synthetic feature: <code>total_lifetime_value = avg_order_value * purchase_frequency</code>. Re-run the pipeline. Does this new feature change the cluster assignments?</li>
+                    <li><strong>Experiment D:</strong> Download the UCI Online Retail dataset from Kaggle (real purchase history data). Apply this same pipeline and discover real customer segments. Compare to classic RFM (Recency, Frequency, Monetary) analysis.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 13: Assignment -->
+        <section class="content-section text-content">
+            <h2>13. Assignment for Next Week</h2>
+
+            <div class="assignment-card">
+                <h3><i data-lucide="clipboard-list"></i> Deliverables</h3>
+                <ul>
+                    <li><strong>Coding:</strong> Submit a Jupyter Notebook that:
+                        <ol style="margin-top: 0.5rem;">
+                            <li>Loads and preprocesses a dataset of your choice (UCI Online Retail, Mall Customer Segmentation from Kaggle, or our synthetic data).</li>
+                            <li>Standardizes features and applies PCA, reporting the variance retained.</li>
+                            <li>Uses <strong>both</strong> the elbow method and silhouette score to justify the choice of \(K\).</li>
+                            <li>Trains K-Means and DBSCAN, comparing their results visually and with the silhouette score.</li>
+                            <li>Applies Isolation Forest to detect anomalies and profiles the anomalous points.</li>
+                            <li>Produces a <strong>cluster profile table</strong> with a written business interpretation for each cluster (3–5 sentences per cluster).</li>
+                        </ol>
+                    </li>
+                    <li><strong>Report:</strong> Write a paragraph (4–6 sentences) explaining why you cannot use accuracy to evaluate clustering, and what metrics you use instead. Include the silhouette score formula.</li>
+                    <li><strong>Bonus:</strong> Implement K-Means from scratch using only NumPy — no Scikit-learn <code>KMeans</code>. Compare your results to Scikit-learn's implementation on the same data. How many iterations until convergence?</li>
+                </ul>
+            </div>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">Without labels, data doesn't shout — it whispers.</p>
+                <a href="lecture_7.html" class="btn btn-primary"
+                    style="display:inline-flex;margin:1rem auto 0 auto;">
+                    <i data-lucide="arrow-left"></i> Back to Lecture 7
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering &amp; InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        // Add copy buttons to all code blocks
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>
