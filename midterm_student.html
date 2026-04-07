@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Midterm Exam – Introduction to AI (Student Copy)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #2c3e50;
+      padding: 40px 20px;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 50px 60px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+
+    /* ── Header ── */
+    .exam-header {
+      text-align: center;
+      border-bottom: 3px solid #3498db;
+      padding-bottom: 28px;
+      margin-bottom: 36px;
+    }
+    .exam-header h1 {
+      font-size: 1.9rem;
+      color: #2980b9;
+      letter-spacing: 0.5px;
+    }
+    .exam-header .subtitle {
+      font-size: 1.05rem;
+      color: #555;
+      margin-top: 6px;
+    }
+    .exam-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
+      font-size: 0.93rem;
+      color: #444;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .exam-meta span { font-weight: 600; }
+
+    /* ── Student info ── */
+    .student-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      background: #eaf3fb;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 36px;
+    }
+    .info-field { display: flex; flex-direction: column; gap: 4px; font-size: 0.92rem; }
+    .info-field label { font-weight: 600; color: #2980b9; }
+    .info-field .field-line {
+      border-bottom: 1.5px solid #7fb3d3;
+      height: 26px;
+    }
+
+    /* ── Instructions ── */
+    .instructions {
+      background: #fff8e1;
+      border-left: 5px solid #f39c12;
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-bottom: 36px;
+      font-size: 0.93rem;
+      line-height: 1.7;
+    }
+    .instructions h3 { color: #e67e22; margin-bottom: 8px; font-size: 1rem; }
+    .instructions ul { padding-left: 20px; }
+
+    /* ── Marking scheme box ── */
+    .marks-overview {
+      background: #f0f9f0;
+      border: 1px solid #a8d5a2;
+      border-radius: 8px;
+      padding: 16px 22px;
+      margin-bottom: 40px;
+      font-size: 0.92rem;
+    }
+    .marks-overview h3 { color: #27ae60; margin-bottom: 10px; }
+    .marks-table { width: 100%; border-collapse: collapse; }
+    .marks-table th, .marks-table td {
+      padding: 7px 12px;
+      text-align: left;
+      border-bottom: 1px solid #c8e6c9;
+      font-size: 0.91rem;
+    }
+    .marks-table th { background: #d4edda; font-weight: 700; }
+    .marks-table tr:last-child td { font-weight: 700; border-top: 2px solid #27ae60; }
+
+    /* ── Section headings ── */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #2980b9;
+      color: #fff;
+      border-radius: 8px 8px 0 0;
+      padding: 12px 20px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 44px;
+    }
+    .section-title .section-marks {
+      margin-left: auto;
+      background: rgba(255,255,255,0.22);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.88rem;
+    }
+
+    /* ── Question blocks ── */
+    .section-body {
+      border: 1px solid #d0e4f7;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 24px 28px;
+      background: #fafdff;
+    }
+
+    .question {
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px dashed #cce0f5;
+    }
+    .question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    .question-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .q-number {
+      background: #2980b9;
+      color: #fff;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .q-text { font-size: 0.97rem; line-height: 1.6; flex: 1; }
+    .q-marks {
+      font-size: 0.8rem;
+      color: #888;
+      flex-shrink: 0;
+      padding-top: 4px;
+    }
+
+    /* Multiple choice options */
+    .options { list-style: none; padding-left: 36px; margin-top: 10px; }
+    .options li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      font-size: 0.93rem;
+      line-height: 1.5;
+      transition: background 0.15s;
+    }
+    .options li:hover { background: #eaf3fb; }
+    .option-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid #7fb3d3;
+      flex-shrink: 0;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #2980b9;
+    }
+
+    /* Open-ended answer box */
+    .answer-area {
+      margin-top: 14px;
+      border: 1.5px dashed #a0c4e8;
+      border-radius: 6px;
+      background: #fafcff;
+      padding: 10px;
+    }
+    .answer-label { font-size: 0.78rem; color: #999; margin-bottom: 6px; }
+    .answer-lines { padding-left: 36px; }
+    .answer-lines .line {
+      border-bottom: 1px solid #d4e8f8;
+      height: 30px;
+      margin-bottom: 2px;
+    }
+
+    /* Code snippet */
+    .code-block {
+      background: #1e2a38;
+      color: #a8d8ea;
+      border-radius: 6px;
+      padding: 14px 18px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.87rem;
+      line-height: 1.6;
+      margin: 12px 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .highlight { color: #f9ca24; }
+    .kw { color: #e056fd; }
+    .cm { color: #686de0; font-style: italic; }
+
+    /* Hint tag */
+    .hint {
+      display: inline-block;
+      background: #fdf3e7;
+      border: 1px solid #f0a500;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.78rem;
+      color: #c47a00;
+      margin-top: 6px;
+    }
+
+    /* True/false */
+    .tf-options { display: flex; gap: 16px; margin-top: 10px; padding-left: 36px; }
+    .tf-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid #7fb3d3;
+      border-radius: 6px;
+      padding: 6px 20px;
+      font-size: 0.93rem;
+      cursor: default;
+    }
+    .tf-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid #7fb3d3;
+    }
+
+    /* Footer */
+    .exam-footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 2px solid #d0e4f7;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; padding: 30px 40px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══════════════════════ HEADER ══════════════════════ -->
+  <div class="exam-header">
+    <h1>Introduction to Artificial Intelligence</h1>
+    <div class="subtitle">Midterm Examination — Weeks 1–4</div>
+    <div class="exam-meta">
+      <div>Course: <span>AI Foundations</span></div>
+      <div>Total Marks: <span>100</span></div>
+      <div>Time Allowed: <span>90 minutes</span></div>
+      <div>Date: <span>________________</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ STUDENT INFO ══════════════════════ -->
+  <div class="student-info">
+    <div class="info-field">
+      <label>Student Name</label>
+      <div class="field-line"></div>
+    </div>
+    <div class="info-field">
+      <label>Student ID</label>
+      <div class="field-line"></div>
+    </div>
+    <div class="info-field">
+      <label>Section / Group</label>
+      <div class="field-line"></div>
+    </div>
+    <div class="info-field">
+      <label>Instructor</label>
+      <div class="field-line"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ INSTRUCTIONS ══════════════════════ -->
+  <div class="instructions">
+    <h3>Instructions</h3>
+    <ul>
+      <li>Read each question carefully before answering.</li>
+      <li>For multiple-choice questions, <strong>circle the letter</strong> of the best answer. Only one answer is correct.</li>
+      <li>For open-ended questions, write your answers in the lines provided. Be concise and clear.</li>
+      <li>No calculators are needed — all calculations are simple.</li>
+      <li>Partial credit may be awarded for open-ended questions.</li>
+    </ul>
+  </div>
+
+  <!-- ══════════════════════ MARKING SCHEME ══════════════════════ -->
+  <div class="marks-overview">
+    <h3>Marking Scheme Overview</h3>
+    <table class="marks-table">
+      <thead>
+        <tr>
+          <th>Section</th>
+          <th>Type</th>
+          <th>Questions</th>
+          <th>Marks Each</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A — Optimization &amp; Gradient Descent (Week 1)</td>
+          <td>Multiple Choice</td>
+          <td>6</td>
+          <td>4</td>
+          <td>24</td>
+        </tr>
+        <tr>
+          <td>B — Game Theory &amp; Minimax (Week 2)</td>
+          <td>Multiple Choice</td>
+          <td>6</td>
+          <td>4</td>
+          <td>24</td>
+        </tr>
+        <tr>
+          <td>C — Data Engineering (Week 3)</td>
+          <td>Multiple Choice</td>
+          <td>6</td>
+          <td>4</td>
+          <td>24</td>
+        </tr>
+        <tr>
+          <td>D — Regression Analysis (Week 4)</td>
+          <td>Multiple Choice</td>
+          <td>3</td>
+          <td>4</td>
+          <td>12</td>
+        </tr>
+        <tr>
+          <td>E — Open-Ended Questions</td>
+          <td>Written</td>
+          <td>2</td>
+          <td>8 / 8</td>
+          <td>16</td>
+        </tr>
+        <tr>
+          <td colspan="4"><strong>Grand Total</strong></td>
+          <td><strong>100</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION A — OPTIMIZATION & GRADIENT DESCENT
+  ══════════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    Section A — Optimization &amp; Gradient Descent
+    <span class="section-marks">24 marks</span>
+  </div>
+  <div class="section-body">
+
+    <!-- Q1 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">1</div>
+        <div class="q-text">
+          In machine learning, the goal of training is to find parameters θ that:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Maximize the loss function L(θ)</li>
+        <li><span class="option-letter">B</span> Minimize the loss function L(θ)</li>
+        <li><span class="option-letter">C</span> Keep the loss function at exactly zero</li>
+        <li><span class="option-letter">D</span> Maximize the number of training examples</li>
+      </ul>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">2</div>
+        <div class="q-text">
+          Given the function f(x) = x² − 4x + 6, the gradient descent update rule says:
+          <div class="code-block">x <span class="highlight">←</span> x <span class="highlight">-</span> η <span class="highlight">×</span> f'(x)</div>
+          If the current value is x = 5 and the learning rate η = 0.1, what is the next value of x?
+          <br><span class="hint">Hint: f'(x) = 2x − 4</span>
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> x = 5.6</li>
+        <li><span class="option-letter">B</span> x = 4.6</li>
+        <li><span class="option-letter">C</span> x = 4.4</li>
+        <li><span class="option-letter">D</span> x = 3.0</li>
+      </ul>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">3</div>
+        <div class="q-text">
+          What happens if the learning rate η is set too large?
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> The algorithm converges slowly but always finds the minimum</li>
+        <li><span class="option-letter">B</span> The algorithm may overshoot the minimum and diverge</li>
+        <li><span class="option-letter">C</span> The algorithm ignores the gradient entirely</li>
+        <li><span class="option-letter">D</span> The learning rate does not affect convergence</li>
+      </ul>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">4</div>
+        <div class="q-text">
+          A <strong>convex</strong> loss function is desirable in machine learning because:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> It has many local minima, giving more options</li>
+        <li><span class="option-letter">B</span> It has a single global minimum, so gradient descent is guaranteed to find it</li>
+        <li><span class="option-letter">C</span> It makes the learning rate irrelevant</li>
+        <li><span class="option-letter">D</span> It requires no derivative to minimize</li>
+      </ul>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">5</div>
+        <div class="q-text">
+          Mean Squared Error (MSE) is defined as:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> The sum of all prediction errors</li>
+        <li><span class="option-letter">B</span> The absolute difference between predicted and actual values</li>
+        <li><span class="option-letter">C</span> The average of the squared differences between predicted and actual values</li>
+        <li><span class="option-letter">D</span> The maximum prediction error in the dataset</li>
+      </ul>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">6</div>
+        <div class="q-text">
+          Which search strategy tests every possible combination of parameters within a defined range?
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Hill Climbing</li>
+        <li><span class="option-letter">B</span> Gradient Descent</li>
+        <li><span class="option-letter">C</span> Grid Search</li>
+        <li><span class="option-letter">D</span> Alpha-Beta Pruning</li>
+      </ul>
+    </div>
+
+  </div><!-- /section-body A -->
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION B — GAME THEORY & MINIMAX
+  ══════════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    Section B — Game Theory &amp; Minimax
+    <span class="section-marks">24 marks</span>
+  </div>
+  <div class="section-body">
+
+    <!-- Q7 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">7</div>
+        <div class="q-text">
+          In the Minimax algorithm, the MAX player always tries to:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Choose the move with the lowest value</li>
+        <li><span class="option-letter">B</span> Choose the move with the highest value</li>
+        <li><span class="option-letter">C</span> Choose a random move</li>
+        <li><span class="option-letter">D</span> Skip its turn to save computation</li>
+      </ul>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">8</div>
+        <div class="q-text">
+          Consider a game tree where the terminal node values are shown below. What value does the root node (MAX level) return?
+          <div class="code-block">         [ROOT - MAX]
+          /           \
+      [MIN]          [MIN]
+      /   \          /   \
+    [3]  [7]      [2]   [5]</div>
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> 7</li>
+        <li><span class="option-letter">B</span> 2</li>
+        <li><span class="option-letter">C</span> 3</li>
+        <li><span class="option-letter">D</span> 5</li>
+      </ul>
+      <span class="hint">Hint: MIN picks lowest in each subtree; MAX picks the highest of those results.</span>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">9</div>
+        <div class="q-text">
+          Alpha-Beta Pruning improves the Minimax algorithm by:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Changing the final decision made by Minimax</li>
+        <li><span class="option-letter">B</span> Replacing the recursive algorithm with an iterative one</li>
+        <li><span class="option-letter">C</span> Skipping branches that cannot affect the final result, reducing computation</li>
+        <li><span class="option-letter">D</span> Randomly selecting which branches to explore</li>
+      </ul>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">10</div>
+        <div class="q-text">
+          The time complexity of the Minimax algorithm with branching factor <em>b</em> and depth <em>m</em> is:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> O(b + m)</li>
+        <li><span class="option-letter">B</span> O(b × m)</li>
+        <li><span class="option-letter">C</span> O(m<sup>b</sup>)</li>
+        <li><span class="option-letter">D</span> O(b<sup>m</sup>)</li>
+      </ul>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">11</div>
+        <div class="q-text">
+          Why is it impractical to run full Minimax on a real chess game?
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Chess has too many players</li>
+        <li><span class="option-letter">B</span> The utility function for chess is unknown</li>
+        <li><span class="option-letter">C</span> The number of nodes is astronomically large (~10<sup>120</sup>), making it computationally infeasible</li>
+        <li><span class="option-letter">D</span> Minimax cannot handle games with more than 10 moves</li>
+      </ul>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">12</div>
+        <div class="q-text">
+          In Alpha-Beta Pruning, pruning occurs when:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Alpha equals zero</li>
+        <li><span class="option-letter">B</span> Beta equals infinity</li>
+        <li><span class="option-letter">C</span> Beta ≤ Alpha (the current branch cannot improve the result)</li>
+        <li><span class="option-letter">D</span> The search depth reaches 100</li>
+      </ul>
+    </div>
+
+  </div><!-- /section-body B -->
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION C — DATA ENGINEERING
+  ══════════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    Section C — Data Engineering &amp; Preprocessing
+    <span class="section-marks">24 marks</span>
+  </div>
+  <div class="section-body">
+
+    <!-- Q13 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">13</div>
+        <div class="q-text">
+          Using Bayes' Theorem, if 1% of people have a disease (P(D) = 0.01), a test is 95% accurate for people with the disease, and has a 5% false positive rate — what is approximately the probability that a person actually has the disease given a positive test?
+          <br><span class="hint">Hint: P(D|+) = P(+|D) × P(D) / P(+)</span>
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> 95%</li>
+        <li><span class="option-letter">B</span> 50%</li>
+        <li><span class="option-letter">C</span> 5%</li>
+        <li><span class="option-letter">D</span> ~16%</li>
+      </ul>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">14</div>
+        <div class="q-text">
+          Which type of data has ordered categories but no precise numeric meaning?
+          <br>Example: Rating a movie as "Poor", "Fair", "Good", or "Excellent"
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Nominal</li>
+        <li><span class="option-letter">B</span> Continuous</li>
+        <li><span class="option-letter">C</span> Ordinal</li>
+        <li><span class="option-letter">D</span> Discrete</li>
+      </ul>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">15</div>
+        <div class="q-text">
+          You have a dataset with 1000 rows. One column has 600 missing values (60%). What is the most appropriate strategy?
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Fill all missing values with the mean</li>
+        <li><span class="option-letter">B</span> Drop all 600 rows that have missing values</li>
+        <li><span class="option-letter">C</span> Drop the entire column — it has too many missing values to be reliable</li>
+        <li><span class="option-letter">D</span> Replace missing values with 0</li>
+      </ul>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">16</div>
+        <div class="q-text">
+          Min-Max Normalization scales a value x to the range [0, 1] using the formula:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> x_new = (x − mean) / std</li>
+        <li><span class="option-letter">B</span> x_new = x / max</li>
+        <li><span class="option-letter">C</span> x_new = x − min</li>
+        <li><span class="option-letter">D</span> x_new = (x − min) / (max − min)</li>
+      </ul>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">17</div>
+        <div class="q-text">
+          The "Dummy Variable Trap" occurs in One-Hot Encoding when:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> You encode ordinal features as numbers</li>
+        <li><span class="option-letter">B</span> You create a binary column for every category, causing redundancy (multicollinearity)</li>
+        <li><span class="option-letter">C</span> You use the wrong data type</li>
+        <li><span class="option-letter">D</span> You forget to scale the encoded columns</li>
+      </ul>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">18</div>
+        <div class="q-text">
+          A feature has values: [10, 20, 30, 40, 1000]. What is the best reason to use <strong>standardization (Z-score)</strong> instead of min-max normalization for this column?
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Z-score always gives values between 0 and 1</li>
+        <li><span class="option-letter">B</span> Min-max normalization requires more memory</li>
+        <li><span class="option-letter">C</span> The value 1000 is an outlier; min-max would compress most values into a tiny range, while Z-score handles it better</li>
+        <li><span class="option-letter">D</span> Standardization is always better than normalization</li>
+      </ul>
+    </div>
+
+  </div><!-- /section-body C -->
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION D — REGRESSION ANALYSIS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    Section D — Regression Analysis
+    <span class="section-marks">12 marks</span>
+  </div>
+  <div class="section-body">
+
+    <!-- Q19 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">19</div>
+        <div class="q-text">
+          A linear regression model has learned the equation: ŷ = 150 × sqft + 20000 × bedrooms − 2000 × age + 50000.
+          <br>How much does the predicted house price change if the house has <strong>one extra bedroom</strong>?
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> It decreases by $2000</li>
+        <li><span class="option-letter">B</span> It increases by $150</li>
+        <li><span class="option-letter">C</span> It increases by $20,000</li>
+        <li><span class="option-letter">D</span> It increases by $50,000</li>
+      </ul>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">20</div>
+        <div class="q-text">
+          An R² score of <strong>0.85</strong> means:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> The model made 85 correct predictions</li>
+        <li><span class="option-letter">B</span> The model has 85% accuracy on the training set</li>
+        <li><span class="option-letter">C</span> The model explains 85% of the variance in the target variable</li>
+        <li><span class="option-letter">D</span> 85% of the training data was used for fitting</li>
+      </ul>
+    </div>
+
+    <!-- Q21 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">21</div>
+        <div class="q-text">
+          A model has very low error on the training set but very high error on the test set. This is a sign of:
+        </div>
+        <div class="q-marks">(4 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Underfitting</li>
+        <li><span class="option-letter">B</span> Overfitting</li>
+        <li><span class="option-letter">C</span> A perfectly calibrated model</li>
+        <li><span class="option-letter">D</span> A data leakage problem</li>
+      </ul>
+    </div>
+
+  </div><!-- /section-body D -->
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECTION E — OPEN-ENDED QUESTIONS
+  ══════════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    Section E — Open-Ended Questions
+    <span class="section-marks">16 marks</span>
+  </div>
+  <div class="section-body">
+
+    <!-- OE1 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">OE1</div>
+        <div class="q-text">
+          <strong>Gradient Descent — Step by Step</strong> &nbsp;<em>(8 marks)</em>
+          <br><br>
+          You are trying to minimize the function <strong>f(x) = x² − 6x + 10</strong>.
+          <ol style="padding-left:20px; margin-top:10px; line-height:2;">
+            <li>What is the derivative f'(x)? <em style="color:#888;">(2 marks)</em></li>
+            <li>If you start at x = 8 and use a learning rate η = 0.1, compute the value of x after <strong>one</strong> gradient descent step. <em style="color:#888;">(3 marks)</em></li>
+            <li>What is the true minimum of f(x) (i.e., where does f'(x) = 0)? <em style="color:#888;">(2 marks)</em></li>
+            <li>Is f(x) convex or non-convex? Explain in one sentence. <em style="color:#888;">(1 mark)</em></li>
+          </ol>
+        </div>
+        <div class="q-marks">(8 pts)</div>
+      </div>
+      <div class="answer-area">
+        <div class="answer-label">Your Answer:</div>
+        <div class="answer-lines">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OE2 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">OE2</div>
+        <div class="q-text">
+          <strong>Data Preprocessing — Decision Making</strong> &nbsp;<em>(8 marks)</em>
+          <br><br>
+          You receive the following small dataset about students:
+
+          <table style="margin: 12px 0 12px 20px; border-collapse: collapse; font-size: 0.88rem;">
+            <thead>
+              <tr style="background:#eaf3fb;">
+                <th style="border:1px solid #b0cfe8; padding:6px 12px;">Name</th>
+                <th style="border:1px solid #b0cfe8; padding:6px 12px;">Grade (1–5)</th>
+                <th style="border:1px solid #b0cfe8; padding:6px 12px;">Study Hours</th>
+                <th style="border:1px solid #b0cfe8; padding:6px 12px;">City</th>
+                <th style="border:1px solid #b0cfe8; padding:6px 12px;">Passed?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="border:1px solid #cde; padding:5px 12px;">Alice</td><td style="border:1px solid #cde; padding:5px 12px;">4</td><td style="border:1px solid #cde; padding:5px 12px;">8</td><td style="border:1px solid #cde; padding:5px 12px;">Baku</td><td style="border:1px solid #cde; padding:5px 12px;">Yes</td></tr>
+              <tr><td style="border:1px solid #cde; padding:5px 12px;">Bob</td><td style="border:1px solid #cde; padding:5px 12px;"><strong style="color:red;">NaN</strong></td><td style="border:1px solid #cde; padding:5px 12px;">5</td><td style="border:1px solid #cde; padding:5px 12px;">Ganja</td><td style="border:1px solid #cde; padding:5px 12px;">No</td></tr>
+              <tr><td style="border:1px solid #cde; padding:5px 12px;">Carol</td><td style="border:1px solid #cde; padding:5px 12px;">2</td><td style="border:1px solid #cde; padding:5px 12px;">3</td><td style="border:1px solid #cde; padding:5px 12px;">Baku</td><td style="border:1px solid #cde; padding:5px 12px;">No</td></tr>
+              <tr><td style="border:1px solid #cde; padding:5px 12px;">Dave</td><td style="border:1px solid #cde; padding:5px 12px;">5</td><td style="border:1px solid #cde; padding:5px 12px;"><strong style="color:red;">NaN</strong></td><td style="border:1px solid #cde; padding:5px 12px;">Sumqayit</td><td style="border:1px solid #cde; padding:5px 12px;">Yes</td></tr>
+            </tbody>
+          </table>
+
+          Answer the following:
+          <ol style="padding-left:20px; margin-top:8px; line-height:2.1;">
+            <li>What data type is the "Grade (1–5)" column — nominal, ordinal, continuous, or discrete? <em style="color:#888;">(1 mark)</em></li>
+            <li>What data type is the "City" column? <em style="color:#888;">(1 mark)</em></li>
+            <li>Bob's Grade is missing (NaN). What is a sensible strategy to fill it? Give one specific method and why. <em style="color:#888;">(2 marks)</em></li>
+            <li>You want to use "City" as a feature in a model. How would you encode it? Name the technique and briefly explain. <em style="color:#888;">(2 marks)</em></li>
+            <li>Should you scale the "Study Hours" column before training? Which scaling method would you choose? <em style="color:#888;">(2 marks)</em></li>
+          </ol>
+        </div>
+        <div class="q-marks">(8 pts)</div>
+      </div>
+      <div class="answer-area">
+        <div class="answer-label">Your Answer:</div>
+        <div class="answer-lines">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /section-body E -->
+
+  <!-- ══════════════════════ FOOTER ══════════════════════ -->
+  <div class="exam-footer">
+    <p>— End of Examination —</p>
+    <p style="margin-top:6px;">Good luck to all students!</p>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
