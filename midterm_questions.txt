@@ -1,0 +1,259 @@
+INTRODUCTION TO ARTIFICIAL INTELLIGENCE
+Midterm Examination — Weeks 1–4
+Total Marks: 100 | Time: 90 minutes
+================================================================
+
+
+MARKING SCHEME
+--------------
+Section A — Multiple Choice (mixed topics)    : 16 x 5  = 80 marks
+Section B — Open-Ended Questions              :  2 x 10 = 20 marks
+                                        TOTAL :          100 marks
+
+
+================================================================
+SECTION A — MULTIPLE CHOICE QUESTIONS (80 marks)
+================================================================
+
+Q1. (5 pts)
+What happens if the learning rate η is set too large?
+  A) The algorithm converges slowly but always finds the minimum
+  B) The algorithm may overshoot the minimum and diverge
+  C) The algorithm ignores the gradient entirely
+  D) The learning rate does not affect convergence
+
+----------------------------------------------------------------
+
+Q2. (5 pts)
+Which type of data has ordered categories but no precise numeric meaning?
+Example: Rating a movie as "Poor", "Fair", "Good", or "Excellent"
+  A) Nominal
+  B) Continuous
+  C) Ordinal
+  D) Discrete
+
+----------------------------------------------------------------
+
+Q3. (5 pts)
+Consider the game tree below. What value does the root node (MAX level) return?
+
+         [ROOT - MAX]
+          /           \
+      [MIN]          [MIN]
+      /   \          /   \
+    [3]  [7]      [2]   [5]
+
+[Hint: MIN picks the lowest in each subtree; MAX picks the highest of those.]
+  A) 7
+  B) 2
+  C) 3
+  D) 5
+
+----------------------------------------------------------------
+
+Q4. (5 pts)
+A model has very low error on the training set but very high error
+on the test set. This is a sign of:
+  A) Underfitting
+  B) Overfitting
+  C) A perfectly calibrated model
+  D) A data leakage problem
+
+----------------------------------------------------------------
+
+Q5. (5 pts)
+Mean Squared Error (MSE) is defined as:
+  A) The sum of all prediction errors
+  B) The absolute difference between predicted and actual values
+  C) The average of the squared differences between predicted and actual values
+  D) The maximum prediction error in the dataset
+
+----------------------------------------------------------------
+
+Q6. (5 pts)
+Why is it impractical to run full Minimax on a real chess game?
+  A) Chess has too many players
+  B) The utility function for chess is unknown
+  C) The number of nodes is astronomically large (~10^120), making it computationally infeasible
+  D) Minimax cannot handle games with more than 10 moves
+
+----------------------------------------------------------------
+
+Q7. (5 pts)
+You have a dataset with 1000 rows. One column has 600 missing values (60%).
+What is the most appropriate strategy?
+  A) Fill all missing values with the mean
+  B) Drop all 600 rows that have missing values
+  C) Drop the entire column — it has too many missing values to be reliable
+  D) Replace missing values with 0
+
+----------------------------------------------------------------
+
+Q8. (5 pts)
+In machine learning, the goal of training is to find parameters θ that:
+  A) Maximize the loss function L(θ)
+  B) Minimize the loss function L(θ)
+  C) Keep the loss function at exactly zero
+  D) Maximize the number of training examples
+
+----------------------------------------------------------------
+
+Q9. (5 pts)
+Alpha-Beta Pruning improves the Minimax algorithm by:
+  A) Changing the final decision made by Minimax
+  B) Replacing the recursive algorithm with an iterative one
+  C) Skipping branches that cannot affect the final result, reducing computation
+  D) Randomly selecting which branches to explore
+
+----------------------------------------------------------------
+
+Q10. (5 pts)
+Min-Max Normalization scales a value x to the range [0, 1] using the formula:
+  A) x_new = (x - mean) / std
+  B) x_new = x / max
+  C) x_new = x - min
+  D) x_new = (x - min) / (max - min)
+
+----------------------------------------------------------------
+
+Q11. (5 pts)
+A convex loss function is desirable in machine learning because:
+  A) It has many local minima, giving more options
+  B) It has a single global minimum, so gradient descent is guaranteed to find it
+  C) It makes the learning rate irrelevant
+  D) It requires no derivative to minimize
+
+----------------------------------------------------------------
+
+Q12. (5 pts)
+In the Minimax algorithm, the MAX player always tries to:
+  A) Choose the move with the lowest value
+  B) Choose the move with the highest value
+  C) Choose a random move
+  D) Skip its turn to save computation
+
+----------------------------------------------------------------
+
+Q13. (5 pts)
+A feature has values: [10, 20, 30, 40, 1000].
+What is the best reason to use standardization (Z-score) instead of
+min-max normalization for this column?
+  A) Z-score always gives values between 0 and 1
+  B) Min-max normalization requires more memory
+  C) The value 1000 is an outlier; min-max would compress most values into
+     a tiny range, while Z-score handles it better
+  D) Standardization is always better than normalization
+
+----------------------------------------------------------------
+
+Q14. (5 pts)
+Given the function f(x) = x² − 4x + 6, the gradient descent update rule says:
+  x ← x - η × f'(x)
+If the current value is x = 5 and the learning rate η = 0.1,
+what is the next value of x?
+[Hint: f'(x) = 2x − 4]
+  A) x = 5.6
+  B) x = 4.6
+  C) x = 4.4
+  D) x = 3.0
+
+----------------------------------------------------------------
+
+Q15. (5 pts)
+In Alpha-Beta Pruning, pruning occurs when:
+  A) Alpha equals zero
+  B) Beta equals infinity
+  C) Beta <= Alpha (the current branch cannot improve the result)
+  D) The search depth reaches 100
+
+----------------------------------------------------------------
+
+Q16. (5 pts)
+A linear regression model has learned the equation:
+  y_hat = 150 × sqft + 20000 × bedrooms − 2000 × age + 50000
+How much does the predicted house price change if the house has
+one extra bedroom?
+  A) It decreases by $2,000
+  B) It increases by $150
+  C) It increases by $20,000
+  D) It increases by $50,000
+
+
+================================================================
+SECTION B — OPEN-ENDED QUESTIONS (20 marks)
+================================================================
+
+OE1. Gradient Descent — Step by Step (10 marks)
+------------------------------------------------
+You are trying to minimize the function f(x) = x² − 6x + 10.
+
+1. What is the derivative f'(x)?                                   (2 marks)
+
+2. If you start at x = 8 and use a learning rate η = 0.1,
+   compute the value of x after ONE gradient descent step.         (3 marks)
+
+3. What is the true minimum of f(x)?
+   (i.e., where does f'(x) = 0?)                                   (2 marks)
+
+4. Is f(x) convex or non-convex? Explain in one sentence.          (3 marks)
+
+Answer:
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+
+----------------------------------------------------------------
+
+OE2. Data Preprocessing — Decision Making (10 marks)
+-----------------------------------------------------
+You receive the following small dataset about students:
+
++-------+---------------+-------------+-----------+---------+
+| Name  | Grade (1–5)   | Study Hours | City      | Passed? |
++-------+---------------+-------------+-----------+---------+
+| Alice | 4             | 8           | Baku      | Yes     |
+| Bob   | NaN           | 5           | Ganja     | No      |
+| Carol | 2             | 3           | Baku      | No      |
+| Dave  | 5             | NaN         | Sumqayit  | Yes     |
++-------+---------------+-------------+-----------+---------+
+
+Answer the following:
+
+1. What data type is the "Grade (1–5)" column —
+   nominal, ordinal, continuous, or discrete?                      (2 marks)
+
+2. What data type is the "City" column?                            (2 marks)
+
+3. Bob's Grade is missing (NaN). What is a sensible strategy
+   to fill it? Give one specific method and explain why.           (2 marks)
+
+4. You want to use "City" as a feature in a model.
+   How would you encode it? Name the technique and briefly explain.(2 marks)
+
+5. Should you scale the "Study Hours" column before training?
+   Which scaling method would you choose?                          (2 marks)
+
+Answer:
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+___________________________________________________________________________
+
+================================================================
+— End of Examination —
+================================================================

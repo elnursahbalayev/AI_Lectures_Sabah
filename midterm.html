@@ -335,39 +335,18 @@
       </thead>
       <tbody>
         <tr>
-          <td>A — Optimization &amp; Gradient Descent (Week 1)</td>
+          <td>Q1 – Q16 (Multiple Choice, mixed topics)</td>
           <td>Multiple Choice</td>
-          <td>6</td>
-          <td>4</td>
-          <td>24</td>
-        </tr>
-        <tr>
-          <td>B — Game Theory &amp; Minimax (Week 2)</td>
-          <td>Multiple Choice</td>
-          <td>6</td>
-          <td>4</td>
-          <td>24</td>
-        </tr>
-        <tr>
-          <td>C — Data Engineering (Week 3)</td>
-          <td>Multiple Choice</td>
-          <td>6</td>
-          <td>4</td>
-          <td>24</td>
-        </tr>
-        <tr>
-          <td>D — Regression Analysis (Week 4)</td>
-          <td>Multiple Choice</td>
-          <td>3</td>
-          <td>4</td>
-          <td>12</td>
+          <td>16</td>
+          <td>5</td>
+          <td>80</td>
         </tr>
         <tr>
           <td>E — Open-Ended Questions</td>
           <td>Written</td>
           <td>2</td>
-          <td>8 / 8</td>
-          <td>16</td>
+          <td>10 / 10</td>
+          <td>20</td>
         </tr>
         <tr>
           <td colspan="4"><strong>Grand Total</strong></td>
@@ -378,11 +357,11 @@
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
-       SECTION A — OPTIMIZATION & GRADIENT DESCENT
+       SECTION A — MULTIPLE CHOICE QUESTIONS
   ══════════════════════════════════════════════════════════ -->
   <div class="section-title">
-    Section A — Optimization &amp; Gradient Descent
-    <span class="section-marks">24 marks</span>
+    Section A — Multiple Choice Questions
+    <span class="section-marks">80 marks</span>
   </div>
   <div class="section-body">
 
@@ -391,46 +370,9 @@
       <div class="question-header">
         <div class="q-number">1</div>
         <div class="q-text">
-          In machine learning, the goal of training is to find parameters θ that:
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> Maximize the loss function L(θ)</li>
-        <li><span class="option-letter">B</span> <strong>Minimize the loss function L(θ)</strong></li>
-        <li><span class="option-letter">C</span> Keep the loss function at exactly zero</li>
-        <li><span class="option-letter">D</span> Maximize the number of training examples</li>
-      </ul>
-    </div>
-
-    <!-- Q2 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">2</div>
-        <div class="q-text">
-          Given the function f(x) = x² − 4x + 6, the gradient descent update rule says:
-          <div class="code-block">x <span class="highlight">←</span> x <span class="highlight">-</span> η <span class="highlight">×</span> f'(x)</div>
-          If the current value is x = 5 and the learning rate η = 0.1, what is the next value of x?
-          <br><span class="hint">Hint: f'(x) = 2x − 4</span>
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> x = 5.6</li>
-        <li><span class="option-letter">B</span> x = 4.6</li>
-        <li><span class="option-letter">C</span> <strong>x = 4.4</strong></li>
-        <li><span class="option-letter">D</span> x = 3.0</li>
-      </ul>
-    </div>
-
-    <!-- Q3 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">3</div>
-        <div class="q-text">
           What happens if the learning rate η is set too large?
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
         <li><span class="option-letter">A</span> The algorithm converges slowly but always finds the minimum</li>
@@ -440,20 +382,61 @@
       </ul>
     </div>
 
+    <!-- Q2 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">2</div>
+        <div class="q-text">
+          Which type of data has ordered categories but no precise numeric meaning?
+          <br>Example: Rating a movie as "Poor", "Fair", "Good", or "Excellent"
+        </div>
+        <div class="q-marks">(5 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Nominal</li>
+        <li><span class="option-letter">B</span> Continuous</li>
+        <li><span class="option-letter">C</span> <strong>Ordinal</strong></li>
+        <li><span class="option-letter">D</span> Discrete</li>
+      </ul>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">3</div>
+        <div class="q-text">
+          Consider a game tree where the terminal node values are shown below. What value does the root node (MAX level) return?
+          <div class="code-block">         [ROOT - MAX]
+          /           \
+      [MIN]          [MIN]
+      /   \          /   \
+    [3]  [7]      [2]   [5]</div>
+        </div>
+        <div class="q-marks">(5 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> 7</li>
+        <li><span class="option-letter">B</span> 2</li>
+        <li><span class="option-letter">C</span> <strong>3</strong></li>
+        <li><span class="option-letter">D</span> 5</li>
+      </ul>
+      <span class="hint">Hint: MIN picks lowest in each subtree; MAX picks the highest of those results.</span>
+    </div>
+
     <!-- Q4 -->
     <div class="question">
       <div class="question-header">
         <div class="q-number">4</div>
         <div class="q-text">
-          A <strong>convex</strong> loss function is desirable in machine learning because:
+          A model has very low error on the training set but very high error on the test set. This is a sign of:
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
-        <li><span class="option-letter">A</span> It has many local minima, giving more options</li>
-        <li><span class="option-letter">B</span> <strong>It has a single global minimum, so gradient descent is guaranteed to find it</strong></li>
-        <li><span class="option-letter">C</span> It makes the learning rate irrelevant</li>
-        <li><span class="option-letter">D</span> It requires no derivative to minimize</li>
+        <li><span class="option-letter">A</span> Underfitting</li>
+        <li><span class="option-letter">B</span> <strong>Overfitting</strong></li>
+        <li><span class="option-letter">C</span> A perfectly calibrated model</li>
+        <li><span class="option-letter">D</span> A data leakage problem</li>
       </ul>
     </div>
 
@@ -464,7 +447,7 @@
         <div class="q-text">
           Mean Squared Error (MSE) is defined as:
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
         <li><span class="option-letter">A</span> The sum of all prediction errors</li>
@@ -479,44 +462,32 @@
       <div class="question-header">
         <div class="q-number">6</div>
         <div class="q-text">
-          Which search strategy tests every possible combination of parameters within a defined range?
+          Why is it impractical to run full Minimax on a real chess game?
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
-        <li><span class="option-letter">A</span> Hill Climbing</li>
-        <li><span class="option-letter">B</span> Gradient Descent</li>
-        <li><span class="option-letter">C</span> <strong>Grid Search</strong></li>
-        <li><span class="option-letter">D</span> Alpha-Beta Pruning</li>
+        <li><span class="option-letter">A</span> Chess has too many players</li>
+        <li><span class="option-letter">B</span> The utility function for chess is unknown</li>
+        <li><span class="option-letter">C</span> <strong>The number of nodes is astronomically large (~10<sup>120</sup>), making it computationally infeasible</strong></li>
+        <li><span class="option-letter">D</span> Minimax cannot handle games with more than 10 moves</li>
       </ul>
     </div>
-
-  </div><!-- /section-body A -->
-
-
-  <!-- ══════════════════════════════════════════════════════════
-       SECTION B — GAME THEORY & MINIMAX
-  ══════════════════════════════════════════════════════════ -->
-  <div class="section-title">
-    Section B — Game Theory &amp; Minimax
-    <span class="section-marks">24 marks</span>
-  </div>
-  <div class="section-body">
 
     <!-- Q7 -->
     <div class="question">
       <div class="question-header">
         <div class="q-number">7</div>
         <div class="q-text">
-          In the Minimax algorithm, the MAX player always tries to:
+          You have a dataset with 1000 rows. One column has 600 missing values (60%). What is the most appropriate strategy?
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
-        <li><span class="option-letter">A</span> Choose the move with the lowest value</li>
-        <li><span class="option-letter">B</span> <strong>Choose the move with the highest value</strong></li>
-        <li><span class="option-letter">C</span> Choose a random move</li>
-        <li><span class="option-letter">D</span> Skip its turn to save computation</li>
+        <li><span class="option-letter">A</span> Fill all missing values with the mean</li>
+        <li><span class="option-letter">B</span> Drop all 600 rows that have missing values</li>
+        <li><span class="option-letter">C</span> <strong>Drop the entire column — it has too many missing values to be reliable</strong></li>
+        <li><span class="option-letter">D</span> Replace missing values with 0</li>
       </ul>
     </div>
 
@@ -525,22 +496,16 @@
       <div class="question-header">
         <div class="q-number">8</div>
         <div class="q-text">
-          Consider a game tree where the terminal node values are shown below. What value does the root node (MAX level) return?
-          <div class="code-block">         [ROOT - MAX]
-          /           \
-      [MIN]          [MIN]
-      /   \          /   \
-    [3]  [7]      [2]   [5]</div>
+          In machine learning, the goal of training is to find parameters θ that:
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
-        <li><span class="option-letter">A</span> 7</li>
-        <li><span class="option-letter">B</span> 2</li>
-        <li><span class="option-letter">C</span> <strong>3</strong></li>
-        <li><span class="option-letter">D</span> 5</li>
+        <li><span class="option-letter">A</span> Maximize the loss function L(θ)</li>
+        <li><span class="option-letter">B</span> <strong>Minimize the loss function L(θ)</strong></li>
+        <li><span class="option-letter">C</span> Keep the loss function at exactly zero</li>
+        <li><span class="option-letter">D</span> Maximize the number of training examples</li>
       </ul>
-      <span class="hint">Hint: MIN picks lowest in each subtree; MAX picks the highest of those results.</span>
     </div>
 
     <!-- Q9 -->
@@ -550,7 +515,7 @@
         <div class="q-text">
           Alpha-Beta Pruning improves the Minimax algorithm by:
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
         <li><span class="option-letter">A</span> Changing the final decision made by Minimax</li>
@@ -565,125 +530,9 @@
       <div class="question-header">
         <div class="q-number">10</div>
         <div class="q-text">
-          The time complexity of the Minimax algorithm with branching factor <em>b</em> and depth <em>m</em> is:
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> O(b + m)</li>
-        <li><span class="option-letter">B</span> O(b × m)</li>
-        <li><span class="option-letter">C</span> O(m<sup>b</sup>)</li>
-        <li><span class="option-letter">D</span> <strong>O(b<sup>m</sup>)</strong></li>
-      </ul>
-    </div>
-
-    <!-- Q11 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">11</div>
-        <div class="q-text">
-          Why is it impractical to run full Minimax on a real chess game?
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> Chess has too many players</li>
-        <li><span class="option-letter">B</span> The utility function for chess is unknown</li>
-        <li><span class="option-letter">C</span> <strong>The number of nodes is astronomically large (~10<sup>120</sup>), making it computationally infeasible</strong></li>
-        <li><span class="option-letter">D</span> Minimax cannot handle games with more than 10 moves</li>
-      </ul>
-    </div>
-
-    <!-- Q12 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">12</div>
-        <div class="q-text">
-          In Alpha-Beta Pruning, pruning occurs when:
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> Alpha equals zero</li>
-        <li><span class="option-letter">B</span> Beta equals infinity</li>
-        <li><span class="option-letter">C</span> <strong>Beta ≤ Alpha (the current branch cannot improve the result)</strong></li>
-        <li><span class="option-letter">D</span> The search depth reaches 100</li>
-      </ul>
-    </div>
-
-  </div><!-- /section-body B -->
-
-
-  <!-- ══════════════════════════════════════════════════════════
-       SECTION C — DATA ENGINEERING
-  ══════════════════════════════════════════════════════════ -->
-  <div class="section-title">
-    Section C — Data Engineering &amp; Preprocessing
-    <span class="section-marks">24 marks</span>
-  </div>
-  <div class="section-body">
-
-    <!-- Q13 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">13</div>
-        <div class="q-text">
-          Using Bayes' Theorem, if 1% of people have a disease (P(D) = 0.01), a test is 95% accurate for people with the disease, and has a 5% false positive rate — what is approximately the probability that a person actually has the disease given a positive test?
-          <br><span class="hint">Hint: P(D|+) = P(+|D) × P(D) / P(+)</span>
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> 95%</li>
-        <li><span class="option-letter">B</span> 50%</li>
-        <li><span class="option-letter">C</span> 5%</li>
-        <li><span class="option-letter">D</span> <strong>~16%</strong></li>
-      </ul>
-    </div>
-
-    <!-- Q14 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">14</div>
-        <div class="q-text">
-          Which type of data has ordered categories but no precise numeric meaning?
-          <br>Example: Rating a movie as "Poor", "Fair", "Good", or "Excellent"
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> Nominal</li>
-        <li><span class="option-letter">B</span> Continuous</li>
-        <li><span class="option-letter">C</span> <strong>Ordinal</strong></li>
-        <li><span class="option-letter">D</span> Discrete</li>
-      </ul>
-    </div>
-
-    <!-- Q15 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">15</div>
-        <div class="q-text">
-          You have a dataset with 1000 rows. One column has 600 missing values (60%). What is the most appropriate strategy?
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> Fill all missing values with the mean</li>
-        <li><span class="option-letter">B</span> Drop all 600 rows that have missing values</li>
-        <li><span class="option-letter">C</span> <strong>Drop the entire column — it has too many missing values to be reliable</strong></li>
-        <li><span class="option-letter">D</span> Replace missing values with 0</li>
-      </ul>
-    </div>
-
-    <!-- Q16 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">16</div>
-        <div class="q-text">
           Min-Max Normalization scales a value x to the range [0, 1] using the formula:
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
         <li><span class="option-letter">A</span> x_new = (x − mean) / std</li>
@@ -693,31 +542,48 @@
       </ul>
     </div>
 
-    <!-- Q17 -->
+    <!-- Q11 -->
     <div class="question">
       <div class="question-header">
-        <div class="q-number">17</div>
+        <div class="q-number">11</div>
         <div class="q-text">
-          The "Dummy Variable Trap" occurs in One-Hot Encoding when:
+          A <strong>convex</strong> loss function is desirable in machine learning because:
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
-        <li><span class="option-letter">A</span> You encode ordinal features as numbers</li>
-        <li><span class="option-letter">B</span> <strong>You create a binary column for every category, causing redundancy (multicollinearity)</strong></li>
-        <li><span class="option-letter">C</span> You use the wrong data type</li>
-        <li><span class="option-letter">D</span> You forget to scale the encoded columns</li>
+        <li><span class="option-letter">A</span> It has many local minima, giving more options</li>
+        <li><span class="option-letter">B</span> <strong>It has a single global minimum, so gradient descent is guaranteed to find it</strong></li>
+        <li><span class="option-letter">C</span> It makes the learning rate irrelevant</li>
+        <li><span class="option-letter">D</span> It requires no derivative to minimize</li>
       </ul>
     </div>
 
-    <!-- Q18 -->
+    <!-- Q12 -->
     <div class="question">
       <div class="question-header">
-        <div class="q-number">18</div>
+        <div class="q-number">12</div>
+        <div class="q-text">
+          In the Minimax algorithm, the MAX player always tries to:
+        </div>
+        <div class="q-marks">(5 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Choose the move with the lowest value</li>
+        <li><span class="option-letter">B</span> <strong>Choose the move with the highest value</strong></li>
+        <li><span class="option-letter">C</span> Choose a random move</li>
+        <li><span class="option-letter">D</span> Skip its turn to save computation</li>
+      </ul>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">13</div>
         <div class="q-text">
           A feature has values: [10, 20, 30, 40, 1000]. What is the best reason to use <strong>standardization (Z-score)</strong> instead of min-max normalization for this column?
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
         <li><span class="option-letter">A</span> Z-score always gives values between 0 and 1</li>
@@ -727,27 +593,52 @@
       </ul>
     </div>
 
-  </div><!-- /section-body C -->
-
-
-  <!-- ══════════════════════════════════════════════════════════
-       SECTION D — REGRESSION ANALYSIS
-  ══════════════════════════════════════════════════════════ -->
-  <div class="section-title">
-    Section D — Regression Analysis
-    <span class="section-marks">12 marks</span>
-  </div>
-  <div class="section-body">
-
-    <!-- Q19 -->
+    <!-- Q14 -->
     <div class="question">
       <div class="question-header">
-        <div class="q-number">19</div>
+        <div class="q-number">14</div>
+        <div class="q-text">
+          Given the function f(x) = x² − 4x + 6, the gradient descent update rule says:
+          <div class="code-block">x <span class="highlight">←</span> x <span class="highlight">-</span> η <span class="highlight">×</span> f'(x)</div>
+          If the current value is x = 5 and the learning rate η = 0.1, what is the next value of x?
+          <br><span class="hint">Hint: f'(x) = 2x − 4</span>
+        </div>
+        <div class="q-marks">(5 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> x = 5.6</li>
+        <li><span class="option-letter">B</span> x = 4.6</li>
+        <li><span class="option-letter">C</span> <strong>x = 4.4</strong></li>
+        <li><span class="option-letter">D</span> x = 3.0</li>
+      </ul>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">15</div>
+        <div class="q-text">
+          In Alpha-Beta Pruning, pruning occurs when:
+        </div>
+        <div class="q-marks">(5 pts)</div>
+      </div>
+      <ul class="options">
+        <li><span class="option-letter">A</span> Alpha equals zero</li>
+        <li><span class="option-letter">B</span> Beta equals infinity</li>
+        <li><span class="option-letter">C</span> <strong>Beta ≤ Alpha (the current branch cannot improve the result)</strong></li>
+        <li><span class="option-letter">D</span> The search depth reaches 100</li>
+      </ul>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question">
+      <div class="question-header">
+        <div class="q-number">16</div>
         <div class="q-text">
           A linear regression model has learned the equation: ŷ = 150 × sqft + 20000 × bedrooms − 2000 × age + 50000.
           <br>How much does the predicted house price change if the house has <strong>one extra bedroom</strong>?
         </div>
-        <div class="q-marks">(4 pts)</div>
+        <div class="q-marks">(5 pts)</div>
       </div>
       <ul class="options">
         <li><span class="option-letter">A</span> It decreases by $2000</li>
@@ -757,49 +648,15 @@
       </ul>
     </div>
 
-    <!-- Q20 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">20</div>
-        <div class="q-text">
-          An R² score of <strong>0.85</strong> means:
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> The model made 85 correct predictions</li>
-        <li><span class="option-letter">B</span> The model has 85% accuracy on the training set</li>
-        <li><span class="option-letter">C</span> <strong>The model explains 85% of the variance in the target variable</strong></li>
-        <li><span class="option-letter">D</span> 85% of the training data was used for fitting</li>
-      </ul>
-    </div>
-
-    <!-- Q21 -->
-    <div class="question">
-      <div class="question-header">
-        <div class="q-number">21</div>
-        <div class="q-text">
-          A model has very low error on the training set but very high error on the test set. This is a sign of:
-        </div>
-        <div class="q-marks">(4 pts)</div>
-      </div>
-      <ul class="options">
-        <li><span class="option-letter">A</span> Underfitting</li>
-        <li><span class="option-letter">B</span> <strong>Overfitting</strong></li>
-        <li><span class="option-letter">C</span> A perfectly calibrated model</li>
-        <li><span class="option-letter">D</span> A data leakage problem</li>
-      </ul>
-    </div>
-
-  </div><!-- /section-body D -->
+  </div><!-- /section-body A -->
 
 
   <!-- ══════════════════════════════════════════════════════════
-       SECTION E — OPEN-ENDED QUESTIONS
+       SECTION B — OPEN-ENDED QUESTIONS
   ══════════════════════════════════════════════════════════ -->
   <div class="section-title">
-    Section E — Open-Ended Questions
-    <span class="section-marks">16 marks</span>
+    Section B — Open-Ended Questions
+    <span class="section-marks">20 marks</span>
   </div>
   <div class="section-body">
 
@@ -808,17 +665,17 @@
       <div class="question-header">
         <div class="q-number">OE1</div>
         <div class="q-text">
-          <strong>Gradient Descent — Step by Step</strong> &nbsp;<em>(8 marks)</em>
+          <strong>Gradient Descent — Step by Step</strong> &nbsp;<em>(10 marks)</em>
           <br><br>
           You are trying to minimize the function <strong>f(x) = x² − 6x + 10</strong>.
           <ol style="padding-left:20px; margin-top:10px; line-height:2;">
             <li>What is the derivative f'(x)? <em style="color:#888;">(2 marks)</em></li>
             <li>If you start at x = 8 and use a learning rate η = 0.1, compute the value of x after <strong>one</strong> gradient descent step. <em style="color:#888;">(3 marks)</em></li>
             <li>What is the true minimum of f(x) (i.e., where does f'(x) = 0)? <em style="color:#888;">(2 marks)</em></li>
-            <li>Is f(x) convex or non-convex? Explain in one sentence. <em style="color:#888;">(1 mark)</em></li>
+            <li>Is f(x) convex or non-convex? Explain in one sentence. <em style="color:#888;">(3 marks)</em></li>
           </ol>
         </div>
-        <div class="q-marks">(8 pts)</div>
+        <div class="q-marks">(10 pts)</div>
       </div>
       <div class="answer-area">
         <div class="answer-label">Your Answer:</div>
@@ -842,7 +699,7 @@
       <div class="question-header">
         <div class="q-number">OE2</div>
         <div class="q-text">
-          <strong>Data Preprocessing — Decision Making</strong> &nbsp;<em>(8 marks)</em>
+          <strong>Data Preprocessing — Decision Making</strong> &nbsp;<em>(10 marks)</em>
           <br><br>
           You receive the following small dataset about students:
 
@@ -866,14 +723,14 @@
 
           Answer the following:
           <ol style="padding-left:20px; margin-top:8px; line-height:2.1;">
-            <li>What data type is the "Grade (1–5)" column — nominal, ordinal, continuous, or discrete? <em style="color:#888;">(1 mark)</em></li>
-            <li>What data type is the "City" column? <em style="color:#888;">(1 mark)</em></li>
+            <li>What data type is the "Grade (1–5)" column — nominal, ordinal, continuous, or discrete? <em style="color:#888;">(2 marks)</em></li>
+            <li>What data type is the "City" column? <em style="color:#888;">(2 marks)</em></li>
             <li>Bob's Grade is missing (NaN). What is a sensible strategy to fill it? Give one specific method and why. <em style="color:#888;">(2 marks)</em></li>
             <li>You want to use "City" as a feature in a model. How would you encode it? Name the technique and briefly explain. <em style="color:#888;">(2 marks)</em></li>
             <li>Should you scale the "Study Hours" column before training? Which scaling method would you choose? <em style="color:#888;">(2 marks)</em></li>
           </ol>
         </div>
-        <div class="q-marks">(8 pts)</div>
+        <div class="q-marks">(10 pts)</div>
       </div>
       <div class="answer-area">
         <div class="answer-label">Your Answer:</div>
@@ -894,7 +751,7 @@
       </div>
     </div>
 
-  </div><!-- /section-body E -->
+  </div><!-- /section-body B -->
 
   <!-- ══════════════════════ FOOTER ══════════════════════ -->
   <div class="exam-footer">
