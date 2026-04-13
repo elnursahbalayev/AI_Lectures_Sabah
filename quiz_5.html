@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz 5 – Classification Algorithms (Answer Key)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #2c3e50;
+      padding: 40px 20px;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 50px 60px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+
+    /* ── Header ── */
+    .exam-header {
+      text-align: center;
+      border-bottom: 3px solid #27ae60;
+      padding-bottom: 28px;
+      margin-bottom: 36px;
+    }
+    .exam-header h1 {
+      font-size: 1.9rem;
+      color: #27ae60;
+      letter-spacing: 0.5px;
+    }
+    .exam-header .subtitle {
+      font-size: 1.05rem;
+      color: #555;
+      margin-top: 6px;
+    }
+    .exam-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 18px;
+      font-size: 0.93rem;
+      color: #444;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .exam-meta span { font-weight: 600; }
+
+    /* ── Answer key banner ── */
+    .answer-key-banner {
+      background: #fff3cd;
+      border: 2px solid #f39c12;
+      border-radius: 8px;
+      padding: 12px 18px;
+      margin-bottom: 28px;
+      text-align: center;
+      font-weight: 700;
+      color: #856404;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Marking scheme ── */
+    .marking-scheme {
+      background: #eafaf1;
+      border: 1px solid #a9dfbf;
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 36px;
+    }
+    .marking-scheme h3 {
+      font-size: 0.95rem;
+      color: #1e8449;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .marking-scheme table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .marking-scheme th, .marking-scheme td {
+      padding: 7px 12px;
+      text-align: left;
+      border-bottom: 1px solid #d5f5e3;
+    }
+    .marking-scheme th { font-weight: 700; color: #1e8449; }
+    .marking-scheme tr:last-child td { border-bottom: none; font-weight: 700; }
+
+    /* ── Section header ── */
+    .section-header {
+      background: #27ae60;
+      color: white;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin: 32px 0 20px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Question block ── */
+    .question {
+      border: 1px solid #dde3ea;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+      background: #fafbfc;
+    }
+    .question-number {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #27ae60;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+    }
+    .question-text {
+      font-size: 1rem;
+      line-height: 1.65;
+      margin-bottom: 14px;
+      color: #2c3e50;
+    }
+    .options { list-style: none; }
+    .options li {
+      padding: 7px 12px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #34495e;
+    }
+    .options li.correct {
+      background: #d5f5e3;
+      border-left: 4px solid #27ae60;
+      font-weight: 700;
+      color: #1a5c31;
+    }
+    .options li:not(.correct) {
+      background: #f8f9fa;
+      border-left: 4px solid transparent;
+    }
+
+    /* ── Footer ── */
+    .exam-footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 18px;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="exam-header">
+    <h1>INTRODUCTION TO ARTIFICIAL INTELLIGENCE</h1>
+    <div class="subtitle">Quiz — Week 5: Classification Algorithms</div>
+    <div class="exam-meta">
+      <div>Total Marks: <span>5</span></div>
+      <div>Time: <span>15 minutes</span></div>
+      <div>Questions: <span>10 MCQ × 0.5 pts</span></div>
+    </div>
+  </div>
+
+  <!-- Answer key banner -->
+  <div class="answer-key-banner">ANSWER KEY — FOR INSTRUCTOR USE ONLY</div>
+
+  <!-- Marking scheme -->
+  <div class="marking-scheme">
+    <h3>Marking Scheme</h3>
+    <table>
+      <tr><th>Section</th><th>Questions</th><th>Marks Each</th><th>Total</th></tr>
+      <tr><td>Multiple Choice</td><td>10</td><td>0.5 pts</td><td>5 pts</td></tr>
+      <tr><td colspan="3">TOTAL</td><td>5 pts</td></tr>
+    </table>
+  </div>
+
+  <!-- Section A -->
+  <div class="section-header">Section A — Multiple Choice Questions (5 marks)</div>
+
+  <!-- Q1 -->
+  <div class="question">
+    <div class="question-number">Q1 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      What is the main reason we cannot use linear regression for classification tasks?
+    </div>
+    <ul class="options">
+      <li>A) Linear regression is too slow to train</li>
+      <li>B) Linear regression requires more data than classification</li>
+      <li class="correct">C) Linear regression output is unbounded and can go above 1 or below 0, making it unsuitable as a probability</li>
+      <li>D) Linear regression cannot be optimized with gradient descent</li>
+    </ul>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question">
+    <div class="question-number">Q2 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      The sigmoid function σ(z) = 1 / (1 + e<sup>−z</sup>) always outputs values in the range:
+    </div>
+    <ul class="options">
+      <li>A) (−∞, +∞)</li>
+      <li>B) [−1, 1]</li>
+      <li class="correct">C) (0, 1)</li>
+      <li>D) [0, 100]</li>
+    </ul>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question">
+    <div class="question-number">Q3 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      A logistic regression model outputs ŷ = 0.73 for a student.
+      Using a threshold of 0.5, what does the model predict?
+    </div>
+    <ul class="options">
+      <li class="correct">A) Class 1 (e.g., Pass), because 0.73 ≥ 0.5</li>
+      <li>B) Class 0 (e.g., Fail), because 0.73 is closer to 1 than to 0</li>
+      <li>C) Class 0, because the threshold must be exactly 0.73</li>
+      <li>D) Cannot determine — more information is needed</li>
+    </ul>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question">
+    <div class="question-number">Q4 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      Why is Binary Cross-Entropy used as the loss function for logistic regression instead of MSE?
+    </div>
+    <ul class="options">
+      <li>A) Binary Cross-Entropy is easier to compute than MSE</li>
+      <li class="correct">B) MSE creates a non-convex loss surface for classification, making gradient descent unreliable; Binary Cross-Entropy is convex</li>
+      <li>C) MSE cannot be used with probabilities at all</li>
+      <li>D) Binary Cross-Entropy always gives a lower error value than MSE</li>
+    </ul>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question">
+    <div class="question-number">Q5 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      The decision boundary in logistic regression is the line where:
+    </div>
+    <ul class="options">
+      <li>A) The loss is at its maximum</li>
+      <li>B) ŷ = 1.0 exactly</li>
+      <li class="correct">C) wx + b = 0, giving ŷ = 0.5</li>
+      <li>D) The gradient equals zero</li>
+    </ul>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question">
+    <div class="question-number">Q6 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      In an SVM, the term "support vectors" refers to:
+    </div>
+    <ul class="options">
+      <li>A) All training data points used during optimization</li>
+      <li>B) The weights (w) learned by the model</li>
+      <li class="correct">C) The training points closest to the decision boundary that define the margin</li>
+      <li>D) The bias terms in the model equation</li>
+    </ul>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question">
+    <div class="question-number">Q7 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      In SVM, what is the effect of setting the hyperparameter C to a very large value?
+    </div>
+    <ul class="options">
+      <li>A) The model allows more misclassifications, giving a wider margin</li>
+      <li>B) The model ignores the training data entirely</li>
+      <li class="correct">C) The model tries to classify all training points correctly, resulting in a narrow margin that may overfit</li>
+      <li>D) The kernel function is disabled</li>
+    </ul>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question">
+    <div class="question-number">Q8 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      A dataset has 98 "Not Fraud" samples and 2 "Fraud" samples.
+      A model always predicts "Not Fraud" and achieves 98% accuracy.
+      Which metric would best expose this model's failure?
+    </div>
+    <ul class="options">
+      <li>A) Accuracy</li>
+      <li>B) Training loss</li>
+      <li class="correct">C) Recall (sensitivity)</li>
+      <li>D) Model size</li>
+    </ul>
+  </div>
+
+  <!-- Q9 -->
+  <div class="question">
+    <div class="question-number">Q9 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      Consider a spam filter. A false positive here means a legitimate email was marked as spam.
+      Which metric should the filter prioritize to minimize this mistake?
+    </div>
+    <ul class="options">
+      <li>A) Recall — to catch as many spam emails as possible</li>
+      <li class="correct">B) Precision — to ensure predicted spam is truly spam</li>
+      <li>C) Accuracy — to be right most of the time overall</li>
+      <li>D) F1-score — to balance both errors equally</li>
+    </ul>
+  </div>
+
+  <!-- Q10 -->
+  <div class="question">
+    <div class="question-number">Q10 &nbsp;·&nbsp; 0.5 pts</div>
+    <div class="question-text">
+      In the confusion matrix below, what is the Recall (sensitivity)?
+      <br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;TP = 40 &nbsp;&nbsp; FP = 10<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;FN = 8 &nbsp;&nbsp;&nbsp; TN = 42
+    </div>
+    <ul class="options">
+      <li>A) 40 / (40 + 10) = 0.80</li>
+      <li class="correct">B) 40 / (40 + 8) ≈ 0.83</li>
+      <li>C) 40 / (40 + 42) ≈ 0.49</li>
+      <li>D) (40 + 42) / (40 + 10 + 8 + 42) = 0.82</li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="exam-footer">
+    Introduction to Artificial Intelligence &nbsp;|&nbsp; Quiz 5 — Classification Algorithms &nbsp;|&nbsp; Answer Key
+  </div>
+
+</div>
+</body>
+</html>
