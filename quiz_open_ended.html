@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open-Ended Quiz — Weeks 3–5 (Answer Key)</title>
+  <style>
+    /* ── Reset ── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Print-first layout ── */
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: #fff;
+      color: #111;
+      font-size: 11pt;
+      line-height: 1.5;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 30px 40px;
+    }
+
+    /* ── Header ── */
+    .exam-header {
+      text-align: center;
+      border-bottom: 2.5px solid #111;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .exam-header h1 {
+      font-size: 14pt;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .exam-header .subtitle {
+      font-size: 11pt;
+      margin-top: 4px;
+    }
+    .exam-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 10pt;
+    }
+
+    /* ── Answer key banner ── */
+    .answer-key-banner {
+      border: 2px solid #111;
+      padding: 6px 12px;
+      margin: 12px 0;
+      text-align: center;
+      font-weight: bold;
+      font-size: 10pt;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── Marking scheme ── */
+    .marking-scheme {
+      border: 1px solid #bbb;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      font-size: 10pt;
+    }
+    .marking-scheme h3 {
+      font-size: 10pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    .marking-scheme table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10pt;
+    }
+    .marking-scheme th, .marking-scheme td {
+      padding: 4px 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .marking-scheme th { font-weight: bold; }
+    .marking-scheme tr:last-child td { border-bottom: none; font-weight: bold; }
+
+    /* ── Question block ── */
+    .question {
+      margin-bottom: 24px;
+      page-break-inside: avoid;
+    }
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid #999;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .question-label {
+      font-weight: bold;
+      font-size: 11pt;
+    }
+    .question-meta {
+      font-size: 9.5pt;
+      color: #444;
+    }
+    .difficulty-badge {
+      font-size: 9pt;
+      font-style: italic;
+      color: #555;
+    }
+    .question-text {
+      font-size: 11pt;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    /* ── Answer area ── */
+    .answer-area {
+      margin-top: 6px;
+    }
+    .answer-lines .line {
+      border-bottom: 1px solid #aaa;
+      height: 22px;
+      margin-bottom: 2px;
+    }
+
+    /* ── Model answer ── */
+    .model-answer {
+      background: #f0f7ee;
+      border-left: 4px solid #27ae60;
+      padding: 10px 14px;
+      margin-top: 8px;
+      font-size: 10pt;
+      line-height: 1.6;
+    }
+    .model-answer strong {
+      display: block;
+      font-size: 9.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+      color: #1a5c31;
+    }
+
+    /* ── Section divider ── */
+    .section-divider {
+      font-size: 9.5pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555;
+      border-top: 1px solid #ccc;
+      padding-top: 8px;
+      margin: 20px 0 14px;
+    }
+
+    /* ── Footer ── */
+    .exam-footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 9pt;
+      color: #666;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+    }
+
+    /* ── Print overrides ── */
+    @media print {
+      body { background: #fff; }
+      .page { padding: 15mm 18mm; max-width: none; }
+      .answer-key-banner { border-color: #000; }
+      .model-answer { background: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { margin: 15mm; size: A4; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="exam-header">
+    <h1>Introduction to Artificial Intelligence</h1>
+    <div class="subtitle">Open-Ended Quiz — Weeks 3, 4 &amp; 5</div>
+    <div class="exam-meta">
+      <span>Total Marks: <strong>20</strong></span>
+      <span>Time: <strong>25 minutes</strong></span>
+      <span>Questions: <strong>10</strong></span>
+    </div>
+  </div>
+
+  <div class="answer-key-banner">&#9654; Answer Key — Instructor Copy Only &#9664;</div>
+
+  <!-- Marking scheme -->
+  <div class="marking-scheme">
+    <h3>Marking Scheme</h3>
+    <table>
+      <tr><th>Difficulty</th><th>Questions</th><th>Marks Each</th><th>Total</th></tr>
+      <tr><td>Easy</td><td>Q1, Q2, Q3, Q4</td><td>1 pt</td><td>4 pts</td></tr>
+      <tr><td>Medium</td><td>Q5, Q6, Q7, Q8</td><td>2 pts</td><td>8 pts</td></tr>
+      <tr><td>Hard</td><td>Q9, Q10</td><td>4 pts</td><td>8 pts</td></tr>
+      <tr><td colspan="3">TOTAL</td><td>20 pts</td></tr>
+    </table>
+  </div>
+
+  <!-- ══ EASY QUESTIONS ══════════════════════════════════════════ -->
+  <div class="section-divider">Easy Questions — 1 pt each</div>
+
+  <!-- Q1 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q1</span>
+      <span class="question-meta"><span class="difficulty-badge">Easy</span> &nbsp;·&nbsp; 1 pt &nbsp;·&nbsp; Week 5</span>
+    </div>
+    <div class="question-text">
+      What range of values does the sigmoid function output? Why is this useful for classification?
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        The sigmoid outputs values in (0, 1). This is useful because the output can be interpreted as a probability — e.g., 0.85 means 85% chance of being class 1. Values are then thresholded (usually at 0.5) to make a final class prediction.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q2</span>
+      <span class="question-meta"><span class="difficulty-badge">Easy</span> &nbsp;·&nbsp; 1 pt &nbsp;·&nbsp; Week 3</span>
+    </div>
+    <div class="question-text">
+      Name the four types of data and give one example of each.
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        <strong>Nominal</strong> — categories with no order (e.g., City: Baku, Ganja).<br>
+        <strong>Ordinal</strong> — ordered categories, no precise numeric gap (e.g., Grade: Poor / Fair / Good).<br>
+        <strong>Discrete</strong> — countable integers (e.g., number of students in a class).<br>
+        <strong>Continuous</strong> — any real number within a range (e.g., temperature: 36.6°C).
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q3</span>
+      <span class="question-meta"><span class="difficulty-badge">Easy</span> &nbsp;·&nbsp; 1 pt &nbsp;·&nbsp; Week 4</span>
+    </div>
+    <div class="question-text">
+      What is Mean Squared Error (MSE)? Write the formula and explain in one sentence what it measures.
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        MSE = (1/n) × Σ(yᵢ − ŷᵢ)². It measures the average squared difference between the true values and the model's predictions — larger errors are penalized more heavily due to squaring.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q4</span>
+      <span class="question-meta"><span class="difficulty-badge">Easy</span> &nbsp;·&nbsp; 1 pt &nbsp;·&nbsp; Week 5</span>
+    </div>
+    <div class="question-text">
+      What are "support vectors" in an SVM, and what role do they play?
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        Support vectors are the training data points closest to the decision boundary. They define the margin — the gap between the two classes. Only these points matter for determining the boundary; removing any other point does not change the model.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MEDIUM QUESTIONS ════════════════════════════════════════ -->
+  <div class="section-divider">Medium Questions — 2 pts each</div>
+
+  <!-- Q5 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q5</span>
+      <span class="question-meta"><span class="difficulty-badge">Medium</span> &nbsp;·&nbsp; 2 pts &nbsp;·&nbsp; Week 3</span>
+    </div>
+    <div class="question-text">
+      A dataset has a column "Membership Level" with values: Bronze, Silver, Gold, Platinum.
+      <br>(a) What data type is this column?
+      <br>(b) Can you apply One-Hot Encoding to it? Should you? Explain.
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        (a) Ordinal — the categories have a meaningful order (Bronze &lt; Silver &lt; Gold &lt; Platinum).<br>
+        (b) You <em>can</em> apply One-Hot Encoding, but you <em>should not</em>, because it would destroy the order information. A better approach is ordinal encoding (e.g., Bronze=1, Silver=2, Gold=3, Platinum=4), which preserves the ranking the model can learn from.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q6</span>
+      <span class="question-meta"><span class="difficulty-badge">Medium</span> &nbsp;·&nbsp; 2 pts &nbsp;·&nbsp; Week 4</span>
+    </div>
+    <div class="question-text">
+      Explain the difference between overfitting and underfitting.
+      For each, describe what you would observe in training vs. test error, and give one way to fix it.
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        <strong>Overfitting:</strong> The model learns the training data too well, including noise. Training error is very low, test error is much higher. Fix: use more training data, simplify the model, or add regularization.<br>
+        <strong>Underfitting:</strong> The model is too simple to capture the pattern. Both training and test errors are high. Fix: use a more complex model or add more relevant features.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q7</span>
+      <span class="question-meta"><span class="difficulty-badge">Medium</span> &nbsp;·&nbsp; 2 pts &nbsp;·&nbsp; Week 5</span>
+    </div>
+    <div class="question-text">
+      A cancer detection model achieves 99% accuracy on a dataset where 99% of samples are healthy.
+      <br>(a) Is this model useful? Explain.
+      <br>(b) Which metric should be used instead, and why?
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        (a) No — a model that always predicts "healthy" would also get 99% accuracy without detecting a single cancer case. The accuracy is misleading on this imbalanced dataset.<br>
+        (b) Recall should be prioritized. Recall = TP / (TP + FN) measures how many actual cancer cases the model catches. Missing a cancer case (false negative) is far more dangerous than a false alarm.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q8</span>
+      <span class="question-meta"><span class="difficulty-badge">Medium</span> &nbsp;·&nbsp; 2 pts &nbsp;·&nbsp; Week 3 &amp; 4</span>
+    </div>
+    <div class="question-text">
+      A column "Age" has values [22, 25, 30, 28, NaN, 24].
+      <br>(a) Describe two different strategies to handle the missing value.
+      <br>(b) Which one would you choose and why?
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        (a) Strategy 1: <strong>Drop the row</strong> — remove the record with the missing value. Strategy 2: <strong>Mean imputation</strong> — replace NaN with the mean age ((22+25+30+28+24)/5 = 25.8).<br>
+        (b) Mean imputation is better here because: the dataset is small (dropping a row loses 20% of data), and age values are close together so the mean is a reasonable estimate.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HARD QUESTIONS ══════════════════════════════════════════ -->
+  <div class="section-divider">Hard Questions — 4 pts each</div>
+
+  <!-- Q9 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q9</span>
+      <span class="question-meta"><span class="difficulty-badge">Hard</span> &nbsp;·&nbsp; 4 pts &nbsp;·&nbsp; Week 4 &amp; 5</span>
+    </div>
+    <div class="question-text">
+      A linear regression model is trained to predict house prices and gives R² = 0.92 on training data but R² = 0.43 on test data.
+      <br>(a) What problem does this indicate?
+      <br>(b) The team proposes switching to a polynomial regression of degree 10. Will this help? Justify your answer.
+      <br>(c) Suggest a better solution.
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        (a) Overfitting — the model fits training data very well but fails to generalize.<br>
+        (b) No — degree-10 polynomial adds far more complexity, which will increase overfitting and make the test performance even worse. High-degree polynomials memorize noise rather than learning the pattern.<br>
+        (c) Better solutions: use a simpler model (lower-degree polynomial or regularization), gather more training data, or apply feature selection to remove irrelevant predictors.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="question">
+    <div class="question-header">
+      <span class="question-label">Q10</span>
+      <span class="question-meta"><span class="difficulty-badge">Hard</span> &nbsp;·&nbsp; 4 pts &nbsp;·&nbsp; Week 3, 4 &amp; 5</span>
+    </div>
+    <div class="question-text">
+      You are building a model to classify emails as Spam / Not Spam.
+      Your raw dataset has the following issues:
+      <ul style="margin: 6px 0 0 18px; line-height: 1.7;">
+        <li>Column "Category" — values: Work, Personal, Promotions, Social</li>
+        <li>Column "Subject Length" — values range from 2 to 300 characters</li>
+        <li>Column "Sender Reputation Score" — ranges from 0 to 1000, with some values at 5000 (outliers)</li>
+        <li>Column "Days Since Last Email" — 35% values missing</li>
+      </ul>
+      For each column, state what preprocessing step you would apply and briefly explain why.
+    </div>
+    <div class="answer-area">
+      <div class="answer-lines">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+      </div>
+      <div class="model-answer">
+        <strong>Model Answer</strong>
+        <strong>Category:</strong> One-Hot Encoding — it is nominal (no order), so encode each value as a binary column. Avoid ordinal encoding which would impose a false order.<br>
+        <strong>Subject Length:</strong> Min-Max Normalization — values are bounded and no major outliers. Scale to [0, 1] so the feature doesn't dominate gradient-based training.<br>
+        <strong>Sender Reputation Score:</strong> Z-Score Standardization — the outliers (5000) would compress all other values into a tiny range with min-max. Z-score handles outliers more gracefully.<br>
+        <strong>Days Since Last Email:</strong> Impute with median (robust to skew) or mean, since 35% is significant but not high enough to drop the entire column. Optionally add an indicator column (is_missing = 1/0) to let the model learn from the fact that the value was absent.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="exam-footer">
+    Introduction to Artificial Intelligence &nbsp;|&nbsp; Open-Ended Quiz — Weeks 3–5 &nbsp;|&nbsp; Answer Key
+  </div>
+
+</div>
+</body>
+</html>
