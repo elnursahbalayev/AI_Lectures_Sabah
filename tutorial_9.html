@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 9 Tutorial: Neural Networks from Scratch | AI Lectures</title>
+    <meta name="description" content="Week 9 Tutorial: Build a Multi-Layer Perceptron from scratch in NumPy to classify MNIST handwritten digits — forward pass, backpropagation, mini-batch training.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .step-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .assignment-card {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .assignment-card h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-card {
+            background: rgba(24, 24, 27, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+
+        .metric-card .metric-label {
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .metric-card .metric-name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .metric-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 700px) {
+            .metric-grid { grid-template-columns: 1fr; }
+            .article-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="lecture_9.html">Lecture 9</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 09 Tutorial</span>
+            <h1>Neural Networks<br>from Scratch</h1>
+            <p class="subtitle">Build a Multi-Layer Perceptron in pure NumPy — forward pass, backpropagation, mini-batch training — and classify MNIST handwritten digits without a single line of PyTorch.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1: Introduction -->
+        <section class="content-section text-content">
+            <h2>1. Introduction</h2>
+            <blockquote>If you use a framework without understanding backpropagation, you are a mechanic who can only fix cars by replacing the engine. Build it once from scratch — then you can debug anything.</blockquote>
+
+            <p>Today we implement a complete neural network using only NumPy. No PyTorch, no TensorFlow, no Scikit-learn. Every matrix multiply, every gradient, every weight update is written by you. By the end of this session, your handcrafted network will classify handwritten digits with over 95% accuracy.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="target"></i> Today's Goal</h4>
+                <ul>
+                    <li>Load and explore the <strong>MNIST dataset</strong> — 70,000 grayscale digit images.</li>
+                    <li>Preprocess: flatten, normalize, and one-hot encode.</li>
+                    <li>Implement <code>relu()</code>, <code>softmax()</code>, and <code>cross_entropy_loss()</code> from scratch.</li>
+                    <li>Build <code>forward()</code> using matrix operations for a [784 → 256 → 128 → 10] MLP.</li>
+                    <li>Derive and implement <code>backward()</code> using the Chain Rule.</li>
+                    <li>Train with mini-batch gradient descent and track loss / accuracy.</li>
+                    <li>Visualize training curves and a confusion matrix over 10 digit classes.</li>
+                    <li>Inspect misclassified examples and understand where the model fails.</li>
+                </ul>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Architecture</div>
+                    <div class="metric-name">784 → 256 → 128 → 10</div>
+                    <div class="metric-desc">He-initialized MLP with ReLU hidden layers and Softmax output.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Dataset</div>
+                    <div class="metric-name">MNIST (60k train / 10k test)</div>
+                    <div class="metric-desc">28×28 grayscale digit images. 10 classes (0–9). Benchmark for introductory deep learning.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Optimizer</div>
+                    <div class="metric-name">Mini-Batch SGD</div>
+                    <div class="metric-desc">Batch size 128, learning rate 0.1, 30 epochs. No momentum or adaptive rates.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Target</div>
+                    <div class="metric-name">&gt;95% Test Accuracy</div>
+                    <div class="metric-desc">Achievable with a correctly implemented 2-hidden-layer MLP in ~30 epochs.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Setup -->
+        <section class="content-section text-content">
+            <h2>2. Environment Setup</h2>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from sklearn.datasets import fetch_openml
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, classification_report
+import warnings
+warnings.filterwarnings('ignore')
+
+np.random.seed(42)
+
+print("NumPy version:", np.__version__)
+print("All dependencies loaded — no PyTorch or TensorFlow used in this tutorial.")</code></pre>
+
+            <div class="warning-box">
+                <strong>No deep learning frameworks allowed.</strong> The entire neural network — weights, forward pass, backpropagation, and parameter updates — must be implemented using only NumPy array operations. This constraint is intentional: it forces you to understand every single step.
+            </div>
+        </section>
+
+        <!-- Section 3: Dataset -->
+        <section class="content-section text-content">
+            <h2>3. Step 1 — Load and Explore MNIST</h2>
+            <div class="step-indicator">STEP 1 OF 10 &bull; Know Your Data</div>
+
+            <pre><code class="language-python"># Fetch MNIST from OpenML (downloaded once, cached locally)
+print("Loading MNIST... (this may take ~30 seconds on first run)")
+mnist = fetch_openml('mnist_784', version=1, as_frame=False, parser='auto')
+
+X_full = mnist.data.astype(np.float32)    # (70000, 784)
+y_full = mnist.target.astype(np.int32)    # (70000,)
+
+print(f"X shape: {X_full.shape}  — {X_full.shape[0]} images, each {X_full.shape[1]} pixels (28×28 flattened)")
+print(f"y shape: {y_full.shape}")
+print(f"Pixel range: [{X_full.min():.0f}, {X_full.max():.0f}]")
+print(f"Classes: {np.unique(y_full)}  ({len(np.unique(y_full))} digit classes)")
+print(f"\nClass distribution:")
+for d in range(10):
+    count = (y_full == d).sum()
+    bar = '█' * (count // 500)
+    print(f"  {d}: {count:5d}  {bar}")</code></pre>
+
+            <h3>3.1 Visualize Sample Digits</h3>
+            <pre><code class="language-python">fig, axes = plt.subplots(2, 10, figsize=(16, 4))
+for digit in range(10):
+    idx = np.where(y_full == digit)[0][0]
+    img = X_full[idx].reshape(28, 28)
+    axes[0, digit].imshow(img, cmap='gray_r')
+    axes[0, digit].set_title(f'Label: {digit}', fontsize=9)
+    axes[0, digit].axis('off')
+
+    # Show a second example
+    idx2 = np.where(y_full == digit)[0][5]
+    img2 = X_full[idx2].reshape(28, 28)
+    axes[1, digit].imshow(img2, cmap='gray_r')
+    axes[1, digit].axis('off')
+
+plt.suptitle('MNIST Sample Images — Two Examples per Digit Class', fontsize=12, fontweight='bold')
+plt.tight_layout()
+plt.savefig('mnist_samples.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+        </section>
+
+        <!-- Section 4: Preprocessing -->
+        <section class="content-section text-content">
+            <h2>4. Step 2 — Preprocessing</h2>
+            <div class="step-indicator">STEP 2 OF 10 &bull; Normalize and Split</div>
+
+            <pre><code class="language-python"># --- Normalize pixel values to [0, 1] ---
+X_full = X_full / 255.0
+
+print(f"After normalization — pixel range: [{X_full.min():.2f}, {X_full.max():.2f}]")
+
+# --- Train / Test split (standard: 60k train / 10k test) ---
+X_train, X_test, y_train, y_test = train_test_split(
+    X_full, y_full,
+    test_size=10000,
+    random_state=42,
+    stratify=y_full
+)
+
+print(f"\nSplit summary:")
+print(f"  Training:  {X_train.shape[0]:6d} samples  ({X_train.shape[0]/len(X_full):.1%})")
+print(f"  Test:      {X_test.shape[0]:6d} samples  ({X_test.shape[0]/len(X_full):.1%})")
+print(f"\nClass balance check (train):")
+for d in range(10):
+    print(f"  {d}: {(y_train==d).sum()}")</code></pre>
+
+            <div class="note-box">
+                <strong>Why normalize to [0, 1]?</strong> Raw pixel values are 0–255. Dividing by 255 brings all inputs to the same scale, which prevents any single pixel dimension from dominating the gradient and leads to significantly faster, more stable training.
+            </div>
+        </section>
+
+        <!-- Section 5: Building Blocks -->
+        <section class="content-section text-content">
+            <h2>5. Step 3 — Implement Activation Functions and Loss</h2>
+            <div class="step-indicator">STEP 3 OF 10 &bull; Core Math Functions</div>
+
+            <pre><code class="language-python">def relu(z):
+    """Rectified Linear Unit activation."""
+    return np.maximum(0, z)
+
+def relu_derivative(z):
+    """Derivative of ReLU: 1 where z > 0, 0 elsewhere."""
+    return (z > 0).astype(float)
+
+def softmax(z):
+    """
+    Numerically stable softmax over the last axis.
+    z: (batch_size, n_classes)
+    """
+    z_shifted = z - z.max(axis=1, keepdims=True)   # subtract row-wise max
+    exp_z = np.exp(z_shifted)
+    return exp_z / exp_z.sum(axis=1, keepdims=True)
+
+def cross_entropy_loss(y_hat, y_true):
+    """
+    Categorical cross-entropy loss.
+    y_hat:  (n, K) — softmax probabilities
+    y_true: (n,)   — integer class labels
+    """
+    n = len(y_true)
+    log_probs = -np.log(y_hat[np.arange(n), y_true] + 1e-9)
+    return log_probs.mean()
+
+def accuracy(y_hat, y_true):
+    """Fraction of correct predictions."""
+    return (np.argmax(y_hat, axis=1) == y_true).mean()
+
+# --- Quick tests ---
+z_test = np.array([[2.0, 1.0, 0.1]])
+print("Softmax test:", softmax(z_test).round(4))
+print("Sum to 1?    ", softmax(z_test).sum().round(6))
+
+z_relu = np.array([-3, -1, 0, 1, 3], dtype=float)
+print("\nReLU test:", relu(z_relu))
+print("ReLU grad: ", relu_derivative(z_relu))</code></pre>
+        </section>
+
+        <!-- Section 6: Initialization -->
+        <section class="content-section text-content">
+            <h2>6. Step 4 — Weight Initialization</h2>
+            <div class="step-indicator">STEP 4 OF 10 &bull; He Initialization</div>
+
+            <pre><code class="language-python">def initialize_weights(layer_sizes):
+    """
+    He initialization for a network with ReLU activations.
+    layer_sizes: list of layer widths, e.g. [784, 256, 128, 10]
+    Returns a dict of weight matrices and bias vectors.
+    """
+    params = {}
+    L = len(layer_sizes) - 1
+
+    for l in range(1, L + 1):
+        n_in  = layer_sizes[l - 1]
+        n_out = layer_sizes[l]
+
+        params[f'W{l}'] = np.random.randn(n_out, n_in) * np.sqrt(2.0 / n_in)
+        params[f'b{l}'] = np.zeros((n_out, 1))
+
+    return params
+
+# --- Define our MLP architecture ---
+LAYER_SIZES = [784, 256, 128, 10]
+
+params = initialize_weights(LAYER_SIZES)
+
+total_params = 0
+for l in range(1, len(LAYER_SIZES)):
+    W_shape = params[f'W{l}'].shape
+    b_shape = params[f'b{l}'].shape
+    n = W_shape[0] * W_shape[1] + b_shape[0]
+    total_params += n
+    print(f"Layer {l}: W{l} {W_shape}  b{l} {b_shape}  → {n:,} parameters")
+
+print(f"\nTotal trainable parameters: {total_params:,}")</code></pre>
+
+            <div class="insight-box">
+                <strong>He initialization prevents vanishing/exploding activations.</strong> If weights are too small, activations shrink to zero through layers. If too large, they explode. He scaling (\(\sqrt{2/n_{in}}\)) is calibrated so ReLU activations maintain unit variance across depth.
+            </div>
+        </section>
+
+        <!-- Section 7: Forward Pass -->
+        <section class="content-section text-content">
+            <h2>7. Step 5 — The Forward Pass</h2>
+            <div class="step-indicator">STEP 5 OF 10 &bull; Input → Prediction</div>
+
+            <pre><code class="language-python">def forward_pass(X, params):
+    """
+    Full forward pass for [784 → 256 → 128 → 10] MLP.
+    X: (batch_size, 784) — input batch
+    Returns: y_hat (n, 10), cache dict for backprop
+    """
+    cache = {}
+    cache['A0'] = X                                 # (n, 784)
+
+    # Hidden layer 1: ReLU
+    Z1 = cache['A0'] @ params['W1'].T + params['b1'].T
+    A1 = relu(Z1)
+    cache['Z1'], cache['A1'] = Z1, A1               # (n, 256)
+
+    # Hidden layer 2: ReLU
+    Z2 = A1 @ params['W2'].T + params['b2'].T
+    A2 = relu(Z2)
+    cache['Z2'], cache['A2'] = Z2, A2               # (n, 128)
+
+    # Output layer: Softmax
+    Z3 = A2 @ params['W3'].T + params['b3'].T
+    Y_hat = softmax(Z3)
+    cache['Z3'], cache['Y_hat'] = Z3, Y_hat         # (n, 10)
+
+    return Y_hat, cache
+
+# --- Test forward pass with one batch ---
+X_batch = X_train[:64]
+y_hat_test, cache_test = forward_pass(X_batch, params)
+
+print(f"Input shape:  {X_batch.shape}")
+print(f"Output shape: {y_hat_test.shape}")
+print(f"Sample output (first image): {y_hat_test[0].round(4)}")
+print(f"Sum to 1?     {y_hat_test[0].sum():.6f}")
+print(f"Initial loss (should be ~ln(10) ≈ 2.303): {cross_entropy_loss(y_hat_test, y_train[:64]):.4f}")</code></pre>
+
+            <div class="note-box">
+                <strong>Sanity check:</strong> With random weights and 10 equally likely classes, the initial loss should be close to \(\ln(10) \approx 2.303\). If it is significantly different, there is a bug in your initialization or forward pass.
+            </div>
+        </section>
+
+        <!-- Section 8: Backward Pass -->
+        <section class="content-section text-content">
+            <h2>8. Step 6 — Backpropagation</h2>
+            <div class="step-indicator">STEP 6 OF 10 &bull; Chain Rule Layer by Layer</div>
+
+            <p>We now implement the backward pass — computing gradients \(\partial \mathcal{L}/\partial W\) for every layer using the Chain Rule. Work backwards from the output layer to the input.</p>
+
+            <pre><code class="language-python">def backward_pass(y_true, cache, params):
+    """
+    Backward pass: compute gradients for all parameters.
+    y_true: (n,) integer labels
+    Returns: grads dict with dW1, db1, ..., dW3, db3
+    """
+    n = len(y_true)
+    grads = {}
+
+    Y_hat = cache['Y_hat']      # (n, 10)
+    A2    = cache['A2']         # (n, 128)
+    A1    = cache['A1']         # (n, 256)
+    A0    = cache['A0']         # (n, 784)
+    Z2    = cache['Z2']         # (n, 128)
+    Z1    = cache['Z1']         # (n, 256)
+
+    # One-hot encode ground truth
+    Y_onehot = np.zeros_like(Y_hat)            # (n, 10)
+    Y_onehot[np.arange(n), y_true] = 1.0
+
+    # --- Output layer (softmax + cross-entropy gradient) ---
+    dZ3 = (Y_hat - Y_onehot) / n              # (n, 10)  — prediction error
+
+    grads['dW3'] = dZ3.T @ A2                 # (10, 128)
+    grads['db3'] = dZ3.sum(axis=0, keepdims=True).T   # (10, 1)
+
+    # --- Hidden layer 2 (ReLU) ---
+    dA2 = dZ3 @ params['W3']                  # (n, 128)
+    dZ2 = dA2 * relu_derivative(Z2)           # (n, 128)
+
+    grads['dW2'] = dZ2.T @ A1                 # (128, 256)
+    grads['db2'] = dZ2.sum(axis=0, keepdims=True).T   # (128, 1)
+
+    # --- Hidden layer 1 (ReLU) ---
+    dA1 = dZ2 @ params['W2']                  # (n, 256)
+    dZ1 = dA1 * relu_derivative(Z1)           # (n, 256)
+
+    grads['dW1'] = dZ1.T @ A0                 # (256, 784)
+    grads['db1'] = dZ1.sum(axis=0, keepdims=True).T   # (256, 1)
+
+    return grads
+
+def update_params(params, grads, lr):
+    """SGD parameter update: W = W - lr * dW"""
+    updated = {}
+    for l in range(1, len(LAYER_SIZES)):
+        updated[f'W{l}'] = params[f'W{l}'] - lr * grads[f'dW{l}']
+        updated[f'b{l}'] = params[f'b{l}'] - lr * grads[f'db{l}']
+    return updated
+
+# --- Gradient check: verify backward pass is correct ---
+y_hat_b, cache_b = forward_pass(X_train[:64], params)
+grads_b = backward_pass(y_train[:64], cache_b, params)
+print("Gradient shapes:")
+for k, v in grads_b.items():
+    print(f"  {k}: {v.shape}")</code></pre>
+
+            <div class="insight-box">
+                <strong>The output layer gradient is prediction error.</strong> The formula \(\partial\mathcal{L}/\partial Z_3 = (\hat{Y} - Y)/n\) is the combined gradient of softmax + cross-entropy. Cells where the network is most wrong receive the largest gradient signal, driving the biggest weight update.
+            </div>
+        </section>
+
+        <!-- Section 9: Training Loop -->
+        <section class="content-section text-content">
+            <h2>9. Step 7 — Training Loop</h2>
+            <div class="step-indicator">STEP 7 OF 10 &bull; Mini-Batch SGD</div>
+
+            <pre><code class="language-python">def train_network(X_train, y_train, X_val, y_val, params,
+                  lr=0.1, epochs=30, batch_size=128):
+    """
+    Mini-batch SGD training loop.
+    Returns: trained params, training history
+    """
+    n = len(y_train)
+    history = {'train_loss': [], 'val_loss': [],
+               'train_acc': [],  'val_acc': []}
+
+    for epoch in range(1, epochs + 1):
+        # Shuffle training data
+        idx = np.random.permutation(n)
+        X_shuffled = X_train[idx]
+        y_shuffled = y_train[idx]
+
+        epoch_loss = 0.0
+        n_batches = 0
+
+        for start in range(0, n, batch_size):
+            X_batch = X_shuffled[start:start + batch_size]
+            y_batch = y_shuffled[start:start + batch_size]
+
+            # Forward
+            y_hat, cache = forward_pass(X_batch, params)
+
+            # Loss
+            loss = cross_entropy_loss(y_hat, y_batch)
+            epoch_loss += loss
+            n_batches += 1
+
+            # Backward
+            grads = backward_pass(y_batch, cache, params)
+
+            # Update
+            params = update_params(params, grads, lr)
+
+        # --- Record epoch metrics ---
+        y_hat_train, _ = forward_pass(X_train, params)
+        y_hat_val,   _ = forward_pass(X_val, params)
+
+        train_loss = cross_entropy_loss(y_hat_train, y_train)
+        val_loss   = cross_entropy_loss(y_hat_val,   y_val)
+        train_acc  = accuracy(y_hat_train, y_train)
+        val_acc    = accuracy(y_hat_val,   y_val)
+
+        history['train_loss'].append(train_loss)
+        history['val_loss'].append(val_loss)
+        history['train_acc'].append(train_acc)
+        history['val_acc'].append(val_acc)
+
+        if epoch % 5 == 0 or epoch == 1:
+            print(f"Epoch {epoch:3d}/{epochs} | "
+                  f"Train Loss: {train_loss:.4f}  Acc: {train_acc:.1%} | "
+                  f"Val Loss:   {val_loss:.4f}  Acc: {val_acc:.1%}")
+
+    return params, history
+
+# --- Run training ---
+params = initialize_weights(LAYER_SIZES)
+
+print("Training [784 → 256 → 128 → 10] MLP on MNIST...")
+print("=" * 75)
+params, history = train_network(
+    X_train, y_train,
+    X_test,  y_test,
+    params,
+    lr=0.1,
+    epochs=30,
+    batch_size=128
+)</code></pre>
+
+            <div class="warning-box">
+                <strong>Expected output:</strong> You should see training accuracy start around 10% (random guessing with 10 classes) and rise above 95% by epoch 30. If accuracy stays stuck near 10%, there is likely a sign error in your gradient implementation — re-check the output layer gradient formula.
+            </div>
+        </section>
+
+        <!-- Section 10: Visualize Training -->
+        <section class="content-section text-content">
+            <h2>10. Step 8 — Visualize Training Curves</h2>
+            <div class="step-indicator">STEP 8 OF 10 &bull; Diagnose Learning</div>
+
+            <pre><code class="language-python">fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+epochs_range = range(1, len(history['train_loss']) + 1)
+
+# Loss curves
+axes[0].plot(epochs_range, history['train_loss'], 'b-o', markersize=4,
+             linewidth=2, label='Train Loss')
+axes[0].plot(epochs_range, history['val_loss'],   'r-o', markersize=4,
+             linewidth=2, label='Validation Loss', linestyle='--')
+axes[0].set_xlabel('Epoch')
+axes[0].set_ylabel('Cross-Entropy Loss')
+axes[0].set_title('Training vs. Validation Loss', fontsize=12, fontweight='bold')
+axes[0].legend()
+axes[0].spines['top'].set_visible(False)
+axes[0].spines['right'].set_visible(False)
+
+# Accuracy curves
+axes[1].plot(epochs_range, [a * 100 for a in history['train_acc']], 'b-o',
+             markersize=4, linewidth=2, label='Train Accuracy')
+axes[1].plot(epochs_range, [a * 100 for a in history['val_acc']],   'r-o',
+             markersize=4, linewidth=2, label='Validation Accuracy', linestyle='--')
+axes[1].axhline(y=95, color='green', linestyle=':', linewidth=1, label='95% target')
+axes[1].set_xlabel('Epoch')
+axes[1].set_ylabel('Accuracy (%)')
+axes[1].set_title('Training vs. Validation Accuracy', fontsize=12, fontweight='bold')
+axes[1].legend()
+axes[1].spines['top'].set_visible(False)
+axes[1].spines['right'].set_visible(False)
+axes[1].set_ylim(0, 102)
+
+plt.suptitle('NumPy MLP Training on MNIST', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('training_curves.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+final_train_acc = history['train_acc'][-1]
+final_val_acc   = history['val_acc'][-1]
+print(f"Final Train Accuracy: {final_train_acc:.2%}")
+print(f"Final Test  Accuracy: {final_val_acc:.2%}")
+print(f"Generalization Gap:   {final_train_acc - final_val_acc:+.2%}")</code></pre>
+        </section>
+
+        <!-- Section 11: Confusion Matrix -->
+        <section class="content-section text-content">
+            <h2>11. Step 9 — Confusion Matrix and Classification Report</h2>
+            <div class="step-indicator">STEP 9 OF 10 &bull; Per-Class Analysis</div>
+
+            <pre><code class="language-python">y_hat_final, _ = forward_pass(X_test, params)
+y_pred = np.argmax(y_hat_final, axis=1)
+
+# Per-class accuracy
+print("Classification Report:")
+print(classification_report(y_test, y_pred,
+                              target_names=[str(d) for d in range(10)],
+                              digits=4))
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+cm_norm = cm.astype(float) / cm.sum(axis=1, keepdims=True)
+
+fig, ax = plt.subplots(figsize=(10, 8))
+im = ax.imshow(cm_norm, cmap='Blues', vmin=0, vmax=1, interpolation='nearest')
+plt.colorbar(im, ax=ax, fraction=0.04)
+
+for i in range(10):
+    for j in range(10):
+        color = 'white' if cm_norm[i, j] > 0.5 else 'black'
+        ax.text(j, i, f'{cm[i,j]}', ha='center', va='center',
+                fontsize=8, color=color, fontweight='bold')
+
+ax.set_xticks(range(10))
+ax.set_yticks(range(10))
+ax.set_xticklabels(range(10))
+ax.set_yticklabels(range(10))
+ax.set_xlabel('Predicted Digit', fontsize=12)
+ax.set_ylabel('Actual Digit', fontsize=12)
+ax.set_title('Confusion Matrix — NumPy MLP on MNIST (Normalized)', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('confusion_matrix_mnist.png', dpi=100, bbox_inches='tight')
+plt.show()
+
+# Most confused pairs
+errors = []
+for i in range(10):
+    for j in range(10):
+        if i != j and cm[i, j] > 0:
+            errors.append((cm[i, j], i, j))
+errors.sort(reverse=True)
+print("\nTop 10 most confused digit pairs (actual → predicted):")
+for count, actual, pred in errors[:10]:
+    print(f"  {actual} → {pred}: {count} errors")</code></pre>
+        </section>
+
+        <!-- Section 12: Misclassified Examples -->
+        <section class="content-section text-content">
+            <h2>12. Step 10 — Inspect Misclassified Digits</h2>
+            <div class="step-indicator">STEP 10 OF 10 &bull; Error Analysis</div>
+
+            <pre><code class="language-python">wrong_idx = np.where(y_pred != y_test)[0]
+print(f"Total misclassified: {len(wrong_idx)} / {len(y_test)} ({len(wrong_idx)/len(y_test):.1%})")
+
+# Pick 20 random wrong predictions
+sample_wrong = np.random.choice(wrong_idx, size=20, replace=False)
+
+fig, axes = plt.subplots(4, 5, figsize=(14, 12))
+for ax, idx in zip(axes.flat, sample_wrong):
+    img = X_test[idx].reshape(28, 28)
+    ax.imshow(img, cmap='gray_r')
+
+    true_label  = y_test[idx]
+    pred_label  = y_pred[idx]
+    confidence  = y_hat_final[idx][pred_label]
+
+    ax.set_title(
+        f'True: {true_label}  Pred: {pred_label}\nConf: {confidence:.1%}',
+        fontsize=8,
+        color='red' if pred_label != true_label else 'green'
+    )
+    ax.axis('off')
+
+plt.suptitle('Misclassified MNIST Digits — Model Errors', fontsize=13, fontweight='bold')
+plt.tight_layout()
+plt.savefig('misclassified.png', dpi=100, bbox_inches='tight')
+plt.show()</code></pre>
+
+            <pre><code class="language-python"># --- Per-digit accuracy breakdown ---
+print("\nPer-digit accuracy breakdown:")
+print(f"{'Digit':<8} {'Correct':<10} {'Total':<10} {'Accuracy'}")
+print("-" * 40)
+for d in range(10):
+    mask = (y_test == d)
+    total   = mask.sum()
+    correct = (y_pred[mask] == d).sum()
+    acc     = correct / total
+    bar = '█' * int(acc * 20)
+    print(f"  {d}      {correct:5d}      {total:5d}      {acc:.1%}  {bar}")</code></pre>
+
+            <div class="insight-box">
+                <strong>Common MNIST confusions to look for:</strong>
+                <ul>
+                    <li><strong>4 vs. 9</strong> — Similar top-loop shape; ambiguous in some handwriting styles.</li>
+                    <li><strong>3 vs. 8</strong> — The open right side of 3 can resemble the lower half of 8.</li>
+                    <li><strong>5 vs. 6</strong> — The hook of 5 and the loop of 6 overlap in sloppy handwriting.</li>
+                    <li><strong>7 vs. 1</strong> — European 7s with a horizontal slash are regularly misread as 1.</li>
+                </ul>
+                These errors are <em>human errors too</em> — they reveal the fundamental ambiguity in the data, not just model failure.
+            </div>
+        </section>
+
+        <!-- Section 13: Bonus — Gradient Check -->
+        <section class="content-section text-content">
+            <h2>13. Bonus — Numerical Gradient Check</h2>
+
+            <p>A gradient check verifies that your analytical backprop is correct by comparing it against numerically estimated gradients using finite differences. If your implementation is correct, the relative error should be below \(10^{-5}\).</p>
+
+            <pre><code class="language-python">def numerical_gradient(X, y, params, layer='W1', eps=1e-5):
+    """Estimate gradient of W using finite differences (slow — use only for checking)."""
+    W = params[layer].copy()
+    grad_num = np.zeros_like(W)
+
+    it = np.nditer(W, flags=['multi_index'])
+    while not it.finished:
+        idx = it.multi_index
+
+        # Loss at W + eps
+        params[layer][idx] += eps
+        y_hat_plus, _ = forward_pass(X, params)
+        loss_plus = cross_entropy_loss(y_hat_plus, y)
+
+        # Loss at W - eps
+        params[layer][idx] -= 2 * eps
+        y_hat_minus, _ = forward_pass(X, params)
+        loss_minus = cross_entropy_loss(y_hat_minus, y)
+
+        # Restore
+        params[layer][idx] += eps
+
+        grad_num[idx] = (loss_plus - loss_minus) / (2 * eps)
+        it.iternext()
+
+    return grad_num
+
+# Check on a tiny subset (numerical check is slow)
+X_check = X_train[:8]
+y_check = y_train[:8]
+params_check = initialize_weights([784, 4, 4, 10])   # tiny net for speed
+
+y_hat_c, cache_c = forward_pass(X_check, params_check)
+grads_c = backward_pass(y_check, cache_c, params_check)
+
+grad_analytical = grads_c['dW1']
+grad_numerical  = numerical_gradient(X_check, y_check, params_check, 'W1')
+
+rel_error = (np.abs(grad_analytical - grad_numerical) /
+             (np.abs(grad_analytical) + np.abs(grad_numerical) + 1e-10)).max()
+
+print(f"Maximum relative error between analytical and numerical gradient: {rel_error:.2e}")
+print("Status:", "PASS ✓" if rel_error < 1e-4 else "FAIL ✗ — check your backward pass")</code></pre>
+
+            <div class="success-box">
+                <strong>A relative error below 1e-5 confirms your backpropagation is correct.</strong> This test is the gold standard for verifying custom gradient implementations. PyTorch and JAX use automated versions of this check internally.
+            </div>
+        </section>
+
+        <!-- Section 14: Experiments -->
+        <section class="content-section text-content">
+            <h2>14. Experiment Ideas</h2>
+
+            <div class="note-box">
+                <h4><i data-lucide="flask-conical"></i> Extend Your Implementation</h4>
+                <ul>
+                    <li><strong>Experiment A — Depth:</strong> Add a third hidden layer (e.g., [784 → 512 → 256 → 128 → 10]). Does accuracy improve? How does training time change? Where does the gradient vanish first?</li>
+                    <li><strong>Experiment B — Activation Function:</strong> Replace ReLU with Sigmoid in the hidden layers. Compare training curves. Observe how quickly accuracy rises compared to ReLU and document the vanishing gradient effect.</li>
+                    <li><strong>Experiment C — Learning Rate Schedule:</strong> Multiply the learning rate by 0.5 every 10 epochs. Does this smooth the loss curve and improve final accuracy compared to a fixed learning rate?</li>
+                    <li><strong>Experiment D — Dropout (Manual):</strong> During training, randomly set 20% of hidden layer activations to zero and scale the remaining by 1/0.8. Do <strong>not</strong> apply dropout at test time. Does test accuracy improve?</li>
+                    <li><strong>Experiment E — Momentum:</strong> Implement SGD with momentum: \(v \leftarrow \beta v - \eta \nabla W\), \(W \leftarrow W + v\). Use \(\beta = 0.9\). How many fewer epochs are needed to reach 95%?</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 15: Assignment -->
+        <section class="content-section text-content">
+            <h2>15. Assignment for Next Week</h2>
+
+            <div class="assignment-card">
+                <h3><i data-lucide="clipboard-list"></i> Weekly Assignment</h3>
+                <p><strong>Coding:</strong> Submit a Jupyter Notebook that:</p>
+                <ol>
+                    <li>Loads MNIST and implements the full [784 → 256 → 128 → 10] MLP in NumPy — <strong>no deep learning frameworks</strong>.</li>
+                    <li>Includes a working <code>forward_pass()</code> and <code>backward_pass()</code> verified by a numerical gradient check (relative error &lt; 1e-4).</li>
+                    <li>Trains to at least <strong>95% test accuracy</strong> using mini-batch SGD and plots the training/validation loss and accuracy curves.</li>
+                    <li>Produces a full <strong>confusion matrix</strong> and per-digit accuracy table, identifying the two most-confused digit pairs and explaining <em>why</em> those errors occur.</li>
+                    <li>Visualizes at least <strong>15 misclassified examples</strong> with true label, predicted label, and confidence.</li>
+                    <li>Implements one of the Experiments A–E above and reports the result with a plot.</li>
+                </ol>
+                <p><strong>Report:</strong> Write a 5-sentence paragraph answering: <em>"Why is backpropagation equivalent to the Chain Rule, and why does the output layer gradient simplify to \(\hat{y} - y\) when using softmax with cross-entropy loss?"</em></p>
+                <p><strong>Bonus:</strong> Add L2 weight regularization (weight decay) to the loss function: \(\mathcal{L}_{\text{reg}} = \mathcal{L}_{\text{CE}} + \frac{\lambda}{2n}\sum_\ell \|W^{(\ell)}\|_F^2\). Show that it reduces the train-test accuracy gap.</p>
+            </div>
+
+            <p style="text-align: center; font-size: 1.1rem; color: var(--text-muted); margin-top: 3rem;">
+                <em><strong>You have now built a neural network from first principles. Next week, we add convolutions.</strong></em>
+            </p>
+
+            <a href="lecture_9.html" class="btn btn-primary"
+                style="display:inline-flex;margin:1rem auto 0 auto;">
+                <i data-lucide="arrow-left"></i> Back to Lecture 9
+            </a>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering &amp; InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

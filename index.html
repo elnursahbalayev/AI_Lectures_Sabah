@@ -271,16 +271,38 @@
                     <h3>Module 3: Deep Learning & Neural Networks</h3>
                     <span>Weeks 9-13</span>
                 </div>
-                <div class="week-card glass">
+                <div class="week-card glass" data-week="9">
                     <div class="week-header">
                         <span class="week-number">Week 09</span>
                         <h4>Neural Networks Intuition (MLP, Backprop)</h4>
+                        <div class="week-actions">
+                            <a href="lecture_9.html" class="btn-sm active">Lecture</a>
+                            <a href="tutorial_9.html" class="btn-sm active">Tutorial</a>
+                        </div>
+                    </div>
+                    <div class="week-content">
+                        <p><strong>Key Concepts:</strong> Multi-Layer Perceptron (MLP), Activation Functions (ReLU, Softmax, Sigmoid), Forward Pass, Cross-Entropy Loss, Gradient Descent, Backpropagation, Chain Rule, He Initialization.</p>
+                        <div class="lab-box">
+                            <i data-lucide="cpu"></i>
+                            <span><strong>Lab:</strong> NumPy Only — Build a [784 → 256 → 128 → 10] MLP from scratch to classify MNIST handwritten digits, including forward pass, backpropagation, and numerical gradient verification.</span>
+                        </div>
                     </div>
                 </div>
-                <div class="week-card glass">
+                <div class="week-card glass" data-week="10">
                     <div class="week-header">
                         <span class="week-number">Week 10</span>
                         <h4>Computer Vision (CNNs, ResNet)</h4>
+                        <div class="week-actions">
+                            <a href="lecture_10.html" class="btn-sm active">Lecture</a>
+                            <a href="tutorial_10.html" class="btn-sm active">Tutorial</a>
+                        </div>
+                    </div>
+                    <div class="week-content">
+                        <p><strong>Key Concepts:</strong> Convolutions, Kernels, Padding, Stride, Pooling, BatchNorm, CNN Architectures (LeNet, AlexNet, VGG, ResNet), Residual Connections, Transfer Learning, Fine-Tuning, Grad-CAM.</p>
+                        <div class="lab-box">
+                            <i data-lucide="image"></i>
+                            <span><strong>Lab:</strong> Image Classifier — Build a custom CNN from scratch, then fine-tune a pretrained ResNet-18 for Cars vs. Bikes classification and visualize predictions with Grad-CAM.</span>
+                        </div>
                     </div>
                 </div>
                 <div class="week-card glass">
@@ -331,21 +353,31 @@
             <h2>Grading</h2>
             <div class="line"></div>
         </div>
-        <div class="grid-3">
+        <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
             <div class="stat-card glass">
-                <div class="percentage">40%</div>
-                <h4>Lab Assignments</h4>
-                <p>Weekly/Bi-weekly coding tasks (Python/Jupyter).</p>
+                <div class="percentage">50%</div>
+                <h4>Final Exam</h4>
+                <p>Comprehensive end-of-term exam covering all modules.</p>
             </div>
             <div class="stat-card glass">
-                <div class="percentage">25%</div>
+                <div class="percentage">20%</div>
+                <h4>Assignments</h4>
+                <p>Weekly coding tasks and lab submissions (Python/Jupyter).</p>
+            </div>
+            <div class="stat-card glass">
+                <div class="percentage">15%</div>
                 <h4>Midterm Exam</h4>
                 <p>Theory validation: Gradient Descent math, Probability, Search Trees.</p>
             </div>
             <div class="stat-card glass">
-                <div class="percentage">35%</div>
-                <h4>Final Project</h4>
-                <p>Comprehensive group project: Full ML pipeline (Data to Deploy).</p>
+                <div class="percentage">10%</div>
+                <h4>Quizzes</h4>
+                <p>Short in-class quizzes testing key concepts from recent lectures.</p>
+            </div>
+            <div class="stat-card glass">
+                <div class="percentage">5%</div>
+                <h4>Attendance &amp; Activity</h4>
+                <p>Class participation, presence, and in-session engagement.</p>
             </div>
         </div>
     </section>

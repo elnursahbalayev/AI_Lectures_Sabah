@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 9 Lecture: Neural Networks Intuition | AI Lectures</title>
+    <meta name="description" content="Week 9: Neural Networks Intuition — Multi-Layer Perceptron, Activation Functions (ReLU, Softmax), Forward Pass, Backpropagation, and the Chain Rule.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section {
+            margin-bottom: 5rem;
+        }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul,
+        .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .math-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 0.95rem;
+        }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .compare-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .compare-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .neuron-diagram {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+            color: #d4d4d8;
+        }
+
+        .activation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .activation-card {
+            background: rgba(24, 24, 27, 0.8);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .activation-card .act-name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+            color: var(--primary);
+        }
+
+        .activation-card .act-formula {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #a78bfa;
+            margin-bottom: 0.5rem;
+        }
+
+        .activation-card .act-use {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 700px) {
+            .compare-grid, .activation-grid { grid-template-columns: 1fr; }
+            .article-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tutorial_9.html">Tutorial 9</a></li>
+            <li><a href="lecture_8.html">Lecture 8</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 09 Lecture</span>
+            <h1>Neural Networks Intuition:<br>How Machines Actually Learn</h1>
+            <p class="subtitle">The Multi-Layer Perceptron, Activation Functions, the Forward Pass, Backpropagation, and the Chain Rule — from scratch, with math.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 0: Roadmap -->
+        <section class="content-section text-content">
+            <h2>0. Lecture Roadmap</h2>
+            <blockquote>Every modern AI system — from image classifiers to ChatGPT — is built on a surprisingly simple idea: stack layers of weighted sums and nonlinear squashing functions, then use calculus to adjust the weights until the output is correct. Understanding this mechanism is the most important conceptual step in the entire course.</blockquote>
+
+            <p>In Weeks 1–8, we built classical ML models that are powerful but limited — they cannot automatically learn hierarchical features from raw data like pixels or text. Neural networks change that. Today we build the mathematical and conceptual foundation for everything in Module 3.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="map"></i> Today's Topics</h4>
+                <ol>
+                    <li>The Biological Analogy — and Why It Only Goes So Far</li>
+                    <li>The Artificial Neuron — Weighted Sum + Activation</li>
+                    <li>The Multi-Layer Perceptron (MLP) Architecture</li>
+                    <li>Activation Functions — Sigmoid, Tanh, ReLU, Softmax</li>
+                    <li>The Forward Pass — Matrix Form</li>
+                    <li>Loss Functions — MSE and Cross-Entropy</li>
+                    <li>Gradient Descent — The Optimization Loop</li>
+                    <li>Backpropagation — The Chain Rule Applied</li>
+                    <li>The Complete Training Loop</li>
+                    <li>Practical Considerations — Initialization, Learning Rate, Epochs</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 1: The Neuron -->
+        <section class="content-section text-content">
+            <h2>1. The Biological Analogy</h2>
+
+            <p>A biological neuron fires an electrical signal if the total input from connected neurons exceeds a threshold. An artificial neuron is a mathematical abstraction of this idea:</p>
+
+            <div class="neuron-diagram">
+                x₁ ——[w₁]——┐<br>
+                x₂ ——[w₂]——┤→  z = w₁x₁ + w₂x₂ + w₃x₃ + b  →  a = σ(z)<br>
+                x₃ ——[w₃]——┘
+            </div>
+
+            <p>Where:</p>
+            <ul>
+                <li>\(x_i\) — input features</li>
+                <li>\(w_i\) — weights (learned during training)</li>
+                <li>\(b\) — bias (a learned offset, like the intercept in linear regression)</li>
+                <li>\(z\) — the <strong>pre-activation</strong> (linear combination)</li>
+                <li>\(\sigma\) — the <strong>activation function</strong> (nonlinear squashing)</li>
+                <li>\(a\) — the <strong>activation output</strong> passed to the next layer</li>
+            </ul>
+
+            <div class="math-block">
+                $$z = \mathbf{w}^\top \mathbf{x} + b \qquad a = \sigma(z)$$
+            </div>
+
+            <div class="insight-box">
+                <strong>Key insight:</strong> Without the activation function \(\sigma\), stacking multiple layers is equivalent to a single linear transformation. The nonlinearity is what makes deep networks capable of learning complex, non-linear patterns.
+            </div>
+
+            <h3>1.1 From One Neuron to One Layer</h3>
+            <p>A layer contains multiple neurons processing the same input in parallel. If layer \(\ell\) has \(n\) neurons each receiving \(d\) inputs, we can express the entire layer as a single matrix operation:</p>
+
+            <div class="math-block">
+                $$\mathbf{z}^{(\ell)} = W^{(\ell)} \mathbf{a}^{(\ell-1)} + \mathbf{b}^{(\ell)}$$
+                $$\mathbf{a}^{(\ell)} = \sigma\!\left(\mathbf{z}^{(\ell)}\right)$$
+            </div>
+
+            <p>Where \(W^{(\ell)} \in \mathbb{R}^{n \times d}\) is the weight matrix for layer \(\ell\). This matrix-vector product simultaneously computes all \(n\) neurons' pre-activations in a single GPU-accelerated operation.</p>
+        </section>
+
+        <!-- Section 2: MLP Architecture -->
+        <section class="content-section text-content">
+            <h2>2. The Multi-Layer Perceptron (MLP)</h2>
+
+            <p>An MLP chains multiple layers together. Each layer transforms the output of the previous one:</p>
+
+            <div class="pipeline-flow">
+                Input Layer (raw features)<br>
+                ↓<br>
+                Hidden Layer 1 (learned features)<br>
+                ↓<br>
+                Hidden Layer 2 (more abstract features)<br>
+                ↓<br>
+                Output Layer (predictions)
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Role</th>
+                        <th>Typical Activation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Input Layer</strong></td>
+                        <td>Receives raw features — no computation, just passes data through</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hidden Layers</strong></td>
+                        <td>Learn intermediate representations; stacking gives depth</td>
+                        <td>ReLU (default)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Output Layer</strong></td>
+                        <td>Produces the final prediction — regression or classification</td>
+                        <td>Linear / Sigmoid / Softmax</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>2.1 Network Notation</h3>
+            <p>An MLP is fully described by its architecture: <strong>[784 → 256 → 128 → 10]</strong> means an input of 784 features, two hidden layers (256 and 128 neurons), and an output of 10 classes. The total parameter count is:</p>
+
+            <div class="math-block">
+                $$\text{Parameters} = \sum_{\ell=1}^{L} \left( n_{\ell} \times n_{\ell-1} + n_{\ell} \right)$$
+            </div>
+
+            <p>For [784 → 256 → 128 → 10]: (784×256 + 256) + (256×128 + 128) + (128×10 + 10) = <strong>234,826 parameters</strong>. All of these are learned by gradient descent.</p>
+
+            <div class="note-box">
+                <strong>Why "deep" learning?</strong> Depth (many layers) allows a network to learn <em>hierarchical</em> representations. A CNN trained on faces learns: edges → curves → eyes/nose → faces. Each layer builds on abstractions from the layer below. This hierarchy is impossible with a single layer.
+            </div>
+        </section>
+
+        <!-- Section 3: Activation Functions -->
+        <section class="content-section text-content">
+            <h2>3. Activation Functions</h2>
+
+            <p>The activation function is what separates a neural network from a stack of linear regressions. Without it, any depth collapses to a single matrix multiply.</p>
+
+            <div class="activation-grid">
+                <div class="activation-card">
+                    <div class="act-name">Sigmoid</div>
+                    <div class="act-formula">σ(z) = 1 / (1 + e⁻ᶻ)</div>
+                    <div class="act-use">Output: (0, 1). Binary classification output layer. Historically used in hidden layers, now largely replaced by ReLU.</div>
+                </div>
+                <div class="activation-card">
+                    <div class="act-name">Tanh</div>
+                    <div class="act-formula">tanh(z) = (eᶻ − e⁻ᶻ) / (eᶻ + e⁻ᶻ)</div>
+                    <div class="act-use">Output: (−1, 1). Zero-centered (better than sigmoid for hidden layers). Still suffers vanishing gradients at extremes.</div>
+                </div>
+                <div class="activation-card">
+                    <div class="act-name">ReLU</div>
+                    <div class="act-formula">ReLU(z) = max(0, z)</div>
+                    <div class="act-use">Default choice for hidden layers. Cheap to compute, avoids vanishing gradient for positive inputs. Risk: "dying ReLU" for large negative inputs.</div>
+                </div>
+                <div class="activation-card">
+                    <div class="act-name">Softmax</div>
+                    <div class="act-formula">softmax(zᵢ) = eᶻⁱ / Σⱼ eᶻʲ</div>
+                    <div class="act-use">Output: probability distribution over K classes. Always used in the output layer for multi-class classification. All outputs sum to 1.</div>
+                </div>
+            </div>
+
+            <h3>3.1 The Vanishing Gradient Problem</h3>
+            <p>Sigmoid and Tanh saturate: when \(|z|\) is large, the derivative \(\sigma'(z) \approx 0\). During backpropagation, gradients are multiplied through many layers. If each derivative is a small number, the product approaches zero — the gradient <em>vanishes</em> before reaching the early layers, which then receive essentially no learning signal.</p>
+
+            <div class="math-block">
+                $$\sigma'(z) = \sigma(z)(1 - \sigma(z)) \quad \text{max value: } 0.25 \text{ at } z=0$$
+            </div>
+
+            <div class="warning-box">
+                <strong>ReLU avoids this.</strong> Its derivative is exactly 1 for all positive inputs — gradients pass through unchanged. This is the primary reason ReLU became the default activation in deep networks after 2012.
+            </div>
+
+            <h3>3.2 Derivatives of Activation Functions</h3>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Function</th><th>Derivative</th><th>Range of Derivative</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Sigmoid \(\sigma\)</td><td>\(\sigma(z)(1-\sigma(z))\)</td><td>\([0, 0.25]\)</td></tr>
+                    <tr><td>Tanh</td><td>\(1 - \tanh^2(z)\)</td><td>\([0, 1]\)</td></tr>
+                    <tr><td>ReLU</td><td>\(1\) if \(z > 0\), else \(0\)</td><td>\(\{0, 1\}\)</td></tr>
+                    <tr><td>Softmax \(s_i\)</td><td>\(s_i(1 - s_i)\) (diagonal of Jacobian)</td><td>\([0, 0.25]\)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 4: Forward Pass -->
+        <section class="content-section text-content">
+            <h2>4. The Forward Pass</h2>
+
+            <p>The forward pass is the process of computing a prediction from an input. For a 3-layer MLP [input → hidden₁ → hidden₂ → output]:</p>
+
+            <div class="math-block">
+                $$\mathbf{a}^{(0)} = \mathbf{x}$$
+                $$\mathbf{z}^{(1)} = W^{(1)}\mathbf{a}^{(0)} + \mathbf{b}^{(1)}, \quad \mathbf{a}^{(1)} = \text{ReLU}(\mathbf{z}^{(1)})$$
+                $$\mathbf{z}^{(2)} = W^{(2)}\mathbf{a}^{(1)} + \mathbf{b}^{(2)}, \quad \mathbf{a}^{(2)} = \text{ReLU}(\mathbf{z}^{(2)})$$
+                $$\mathbf{z}^{(3)} = W^{(3)}\mathbf{a}^{(2)} + \mathbf{b}^{(3)}, \quad \hat{\mathbf{y}} = \text{softmax}(\mathbf{z}^{(3)})$$
+            </div>
+
+            <p>The output \(\hat{\mathbf{y}}\) is a probability vector over all classes. In NumPy, a single forward pass for one sample looks like:</p>
+
+            <pre><code class="language-python">import numpy as np
+
+def relu(z):
+    return np.maximum(0, z)
+
+def softmax(z):
+    exp_z = np.exp(z - z.max())   # subtract max for numerical stability
+    return exp_z / exp_z.sum()
+
+def forward(x, params):
+    W1, b1, W2, b2, W3, b3 = params
+
+    z1 = W1 @ x + b1
+    a1 = relu(z1)
+
+    z2 = W2 @ a1 + b2
+    a2 = relu(z2)
+
+    z3 = W3 @ a2 + b3
+    y_hat = softmax(z3)
+
+    # Cache for backprop
+    cache = (x, z1, a1, z2, a2, z3, y_hat)
+    return y_hat, cache</code></pre>
+
+            <div class="note-box">
+                <strong>Why subtract max in softmax?</strong> \(e^{z}\) overflows for large \(z\) (e.g., \(e^{1000} = \infty\) in float32). Subtracting the maximum value before exponentiation is mathematically equivalent but numerically safe — this is called the <em>log-sum-exp trick</em>.
+            </div>
+        </section>
+
+        <!-- Section 5: Loss Functions -->
+        <section class="content-section text-content">
+            <h2>5. Loss Functions</h2>
+
+            <p>A loss function quantifies how wrong the network's prediction is. Training is the process of minimizing this function by adjusting weights.</p>
+
+            <h3>5.1 Mean Squared Error (Regression)</h3>
+            <div class="math-block">
+                $$\mathcal{L}_{\text{MSE}} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+            </div>
+
+            <h3>5.2 Binary Cross-Entropy (Binary Classification)</h3>
+            <div class="math-block">
+                $$\mathcal{L}_{\text{BCE}} = -\frac{1}{n}\sum_{i=1}^{n}\left[y_i \log \hat{y}_i + (1-y_i)\log(1-\hat{y}_i)\right]$$
+            </div>
+
+            <h3>5.3 Categorical Cross-Entropy (Multi-class Classification)</h3>
+            <div class="math-block">
+                $$\mathcal{L}_{\text{CE}} = -\frac{1}{n}\sum_{i=1}^{n}\sum_{k=1}^{K} y_{ik} \log \hat{y}_{ik}$$
+            </div>
+
+            <p>Since only one class is correct per sample (\(y_{ik} = 1\) for the true class, 0 elsewhere), this simplifies to:</p>
+
+            <div class="math-block">
+                $$\mathcal{L}_{\text{CE}} = -\frac{1}{n}\sum_{i=1}^{n} \log \hat{y}_{i, \text{true}}$$
+            </div>
+
+            <pre><code class="language-python">def cross_entropy_loss(y_hat, y_true):
+    """
+    y_hat: (n, K) probability matrix from softmax
+    y_true: (n,) integer class labels
+    """
+    n = len(y_true)
+    # Pick the predicted probability for the correct class
+    correct_class_probs = y_hat[np.arange(n), y_true]
+    loss = -np.mean(np.log(correct_class_probs + 1e-9))   # 1e-9 avoids log(0)
+    return loss</code></pre>
+
+            <div class="insight-box">
+                <strong>Why cross-entropy for classification?</strong> Cross-entropy is derived from Maximum Likelihood Estimation applied to a categorical distribution. It penalizes confident wrong predictions extremely heavily (log(~0) → −∞), which drives the model to assign high probability to the correct class.
+            </div>
+        </section>
+
+        <!-- Section 6: Gradient Descent -->
+        <section class="content-section text-content">
+            <h2>6. Gradient Descent — The Optimization Loop</h2>
+
+            <p>Training a neural network is an optimization problem: find weights \(W\) that minimize \(\mathcal{L}(W)\). We do this with gradient descent — repeatedly step in the direction of steepest descent.</p>
+
+            <div class="math-block">
+                $$W \leftarrow W - \eta \cdot \frac{\partial \mathcal{L}}{\partial W}$$
+            </div>
+
+            <p>Where \(\eta\) is the <strong>learning rate</strong> — arguably the most important hyperparameter in deep learning.</p>
+
+            <table class="data-table">
+                <thead><tr><th>Variant</th><th>Update Uses</th><th>Trade-off</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Batch GD</strong></td>
+                        <td>All training samples</td>
+                        <td>Stable gradients, but slow on large datasets</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stochastic GD (SGD)</strong></td>
+                        <td>One sample at a time</td>
+                        <td>Fast updates, noisy gradients, can escape local minima</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mini-Batch GD</strong></td>
+                        <td>A batch (e.g., 32–256 samples)</td>
+                        <td>Best of both — standard practice in deep learning</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="insight-box">
+                <strong>Mini-batch is the standard.</strong> Batch sizes of 32–256 provide stable gradient estimates while being small enough for fast iteration. They also exploit GPU parallelism efficiently — a single matrix multiply on a batch of 256 samples is nearly as fast as one on a single sample.
+            </div>
+        </section>
+
+        <!-- Section 7: Backpropagation -->
+        <section class="content-section text-content">
+            <h2>7. Backpropagation — The Chain Rule Applied</h2>
+
+            <p>Backpropagation is the algorithm that computes \(\partial \mathcal{L} / \partial W^{(\ell)}\) for every layer efficiently. It is simply the Chain Rule from calculus applied systematically from output to input.</p>
+
+            <h3>7.1 The Chain Rule (Scalar Review)</h3>
+            <p>If \(y = f(g(x))\), then:</p>
+            <div class="math-block">
+                $$\frac{dy}{dx} = \frac{dy}{dg} \cdot \frac{dg}{dx}$$
+            </div>
+
+            <h3>7.2 One Layer — Deriving the Gradients</h3>
+            <p>Consider the output layer with softmax + cross-entropy. The gradient of the loss with respect to the pre-activation \(\mathbf{z}^{(L)}\) has an elegant closed form:</p>
+
+            <div class="math-block">
+                $$\frac{\partial \mathcal{L}}{\partial \mathbf{z}^{(L)}} = \hat{\mathbf{y}} - \mathbf{y} \qquad \text{(softmax + cross-entropy)}$$
+            </div>
+
+            <p>This is one of the most important results in deep learning: the gradient at the output layer is simply the <em>prediction error</em>. From here, we propagate backward through each layer:</p>
+
+            <div class="math-block">
+                $$\frac{\partial \mathcal{L}}{\partial W^{(\ell)}} = \frac{\partial \mathcal{L}}{\partial \mathbf{z}^{(\ell)}} \cdot \left(\mathbf{a}^{(\ell-1)}\right)^\top$$
+                $$\frac{\partial \mathcal{L}}{\partial \mathbf{b}^{(\ell)}} = \frac{\partial \mathcal{L}}{\partial \mathbf{z}^{(\ell)}}$$
+                $$\frac{\partial \mathcal{L}}{\partial \mathbf{a}^{(\ell-1)}} = \left(W^{(\ell)}\right)^\top \cdot \frac{\partial \mathcal{L}}{\partial \mathbf{z}^{(\ell)}}$$
+            </div>
+
+            <p>To propagate the gradient back through the ReLU activation:</p>
+
+            <div class="math-block">
+                $$\frac{\partial \mathcal{L}}{\partial \mathbf{z}^{(\ell)}} = \frac{\partial \mathcal{L}}{\partial \mathbf{a}^{(\ell)}} \odot \mathbf{1}\left[\mathbf{z}^{(\ell)} > 0\right]$$
+            </div>
+
+            <p>The symbol \(\odot\) denotes element-wise multiplication. The indicator \(\mathbf{1}[z > 0]\) is the derivative of ReLU — it simply zeros out gradients where the pre-activation was negative.</p>
+
+            <h3>7.3 Full Backpropagation in NumPy</h3>
+            <pre><code class="language-python">def backward(y_hat, y_true, cache, params):
+    x, z1, a1, z2, a2, z3, _ = cache
+    W1, b1, W2, b2, W3, b3 = params
+    n = len(y_true)
+
+    # One-hot encode true labels
+    Y = np.zeros_like(y_hat)
+    Y[np.arange(n), y_true] = 1
+
+    # --- Output layer gradient (softmax + cross-entropy) ---
+    dz3 = (y_hat - Y) / n           # (n, 10)
+
+    dW3 = a2.T @ dz3                # (128, 10)
+    db3 = dz3.sum(axis=0)           # (10,)
+
+    # --- Hidden layer 2 ---
+    da2 = dz3 @ W3.T                # (n, 128)
+    dz2 = da2 * (z2 > 0)            # ReLU derivative
+
+    dW2 = a1.T @ dz2                # (256, 128)
+    db2 = dz2.sum(axis=0)           # (128,)
+
+    # --- Hidden layer 1 ---
+    da1 = dz2 @ W2.T                # (n, 256)
+    dz1 = da1 * (z1 > 0)            # ReLU derivative
+
+    dW1 = x.T @ dz1                 # (784, 256)
+    db1 = dz1.sum(axis=0)           # (256,)
+
+    grads = (dW1, db1, dW2, db2, dW3, db3)
+    return grads</code></pre>
+
+            <div class="note-box">
+                <strong>Key observation:</strong> The gradient for each layer's weights is the outer product of the upstream error signal and the layer's input activations. Intuitively: a weight connecting a large activation to a large error gets a large gradient update.
+            </div>
+
+            <h3>7.4 The Weight Update Step</h3>
+            <pre><code class="language-python">def update_params(params, grads, learning_rate):
+    updated = []
+    for param, grad in zip(params, grads):
+        updated.append(param - learning_rate * grad)
+    return tuple(updated)</code></pre>
+        </section>
+
+        <!-- Section 8: Training Loop -->
+        <section class="content-section text-content">
+            <h2>8. The Complete Training Loop</h2>
+
+            <p>The full training loop puts all pieces together. Each <strong>epoch</strong> is one complete pass over the training data:</p>
+
+            <pre><code class="language-python">def train(X_train, y_train, params, learning_rate=0.01, epochs=50, batch_size=64):
+    n = len(y_train)
+    history = []
+
+    for epoch in range(epochs):
+        # Shuffle training data each epoch
+        idx = np.random.permutation(n)
+        X_train = X_train[idx]
+        y_train = y_train[idx]
+
+        epoch_loss = 0
+        n_batches = 0
+
+        # Mini-batch loop
+        for start in range(0, n, batch_size):
+            X_batch = X_train[start:start + batch_size]
+            y_batch = y_train[start:start + batch_size]
+
+            # Forward pass
+            y_hat, cache = forward(X_batch, params)
+
+            # Compute loss
+            loss = cross_entropy_loss(y_hat, y_batch)
+            epoch_loss += loss
+            n_batches += 1
+
+            # Backward pass
+            grads = backward(y_hat, y_batch, cache, params)
+
+            # Update weights
+            params = update_params(params, grads, learning_rate)
+
+        avg_loss = epoch_loss / n_batches
+        history.append(avg_loss)
+
+        if (epoch + 1) % 10 == 0:
+            acc = accuracy(X_train, y_train, params)
+            print(f"Epoch {epoch+1:3d}/{epochs} | Loss: {avg_loss:.4f} | Train Acc: {acc:.1%}")
+
+    return params, history</code></pre>
+
+            <div class="pipeline-flow">
+                For each epoch:<br>
+                &nbsp;&nbsp;Shuffle data → split into mini-batches<br>
+                &nbsp;&nbsp;For each mini-batch:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Forward Pass → compute ŷ<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Compute Loss L(ŷ, y)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Backward Pass → compute ∂L/∂W for all layers<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Update: W ← W − η · ∂L/∂W
+            </div>
+        </section>
+
+        <!-- Section 9: Initialization & Practical Tips -->
+        <section class="content-section text-content">
+            <h2>9. Practical Considerations</h2>
+
+            <h3>9.1 Weight Initialization</h3>
+            <p>Do not initialize all weights to zero — every neuron in a layer would compute the same gradient and update identically, a problem called <strong>symmetry breaking failure</strong>. Instead:</p>
+
+            <table class="data-table">
+                <thead><tr><th>Initializer</th><th>Formula</th><th>Best For</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Random Normal</strong></td>
+                        <td>\(\mathcal{N}(0, 0.01)\)</td>
+                        <td>Quick experiments, small networks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Xavier / Glorot</strong></td>
+                        <td>\(\mathcal{N}\!\left(0, \sqrt{\frac{2}{n_{in}+n_{out}}}\right)\)</td>
+                        <td>Sigmoid / Tanh activations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>He (Kaiming)</strong></td>
+                        <td>\(\mathcal{N}\!\left(0, \sqrt{\frac{2}{n_{in}}}\right)\)</td>
+                        <td>ReLU activations — default choice</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code class="language-python">def initialize_params(layer_sizes):
+    """He initialization for ReLU networks."""
+    params = []
+    for i in range(len(layer_sizes) - 1):
+        n_in  = layer_sizes[i]
+        n_out = layer_sizes[i + 1]
+        W = np.random.randn(n_out, n_in) * np.sqrt(2.0 / n_in)   # He init
+        b = np.zeros(n_out)
+        params.extend([W, b])
+    return tuple(params)</code></pre>
+
+            <h3>9.2 Learning Rate</h3>
+            <p>The learning rate \(\eta\) is the most sensitive hyperparameter:</p>
+            <ul>
+                <li><strong>Too large:</strong> loss oscillates or diverges — the update step overshoots the minimum.</li>
+                <li><strong>Too small:</strong> training is painfully slow — thousands of epochs for convergence.</li>
+                <li><strong>Just right:</strong> loss decreases smoothly and plateaus near a minimum.</li>
+            </ul>
+
+            <div class="note-box">
+                <strong>Rule of thumb:</strong> Start with \(\eta = 0.01\) for plain SGD. Use a learning rate schedule or optimizer (Adam, RMSProp) for production training — these adapt the learning rate automatically per parameter.
+            </div>
+
+            <h3>9.3 Common Hyperparameters to Tune</h3>
+            <table class="data-table">
+                <thead><tr><th>Hyperparameter</th><th>Typical Range</th><th>Effect</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Learning rate \(\eta\)</strong></td><td>1e-4 to 1e-1</td><td>Speed and stability of convergence</td></tr>
+                    <tr><td><strong>Batch size</strong></td><td>32 – 256</td><td>Gradient estimate quality vs. speed</td></tr>
+                    <tr><td><strong>Network depth</strong></td><td>2 – 10 hidden layers</td><td>Capacity to learn complex functions</td></tr>
+                    <tr><td><strong>Hidden units per layer</strong></td><td>64 – 1024</td><td>Width of representation at each step</td></tr>
+                    <tr><td><strong>Epochs</strong></td><td>10 – 500</td><td>How many passes over the training data</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 10: Key Equations -->
+        <section class="content-section text-content">
+            <h2>10. Key Equations — Quick Reference</h2>
+
+            <table class="data-table">
+                <thead><tr><th>Concept</th><th>Formula</th></tr></thead>
+                <tbody>
+                    <tr><td>Pre-activation</td><td>\(\mathbf{z}^{(\ell)} = W^{(\ell)}\mathbf{a}^{(\ell-1)} + \mathbf{b}^{(\ell)}\)</td></tr>
+                    <tr><td>ReLU</td><td>\(\text{ReLU}(z) = \max(0, z)\)</td></tr>
+                    <tr><td>Softmax</td><td>\(\hat{y}_k = e^{z_k} / \sum_j e^{z_j}\)</td></tr>
+                    <tr><td>Cross-Entropy Loss</td><td>\(\mathcal{L} = -\frac{1}{n}\sum_i \log \hat{y}_{i,\text{true}}\)</td></tr>
+                    <tr><td>Gradient Descent Update</td><td>\(W \leftarrow W - \eta \nabla_W \mathcal{L}\)</td></tr>
+                    <tr><td>Output layer gradient</td><td>\(\partial \mathcal{L}/\partial \mathbf{z}^{(L)} = \hat{\mathbf{y}} - \mathbf{y}\)</td></tr>
+                    <tr><td>Weight gradient</td><td>\(\partial \mathcal{L}/\partial W^{(\ell)} = \delta^{(\ell)} (\mathbf{a}^{(\ell-1)})^\top\)</td></tr>
+                    <tr><td>ReLU backward</td><td>\(\delta^{(\ell)} = \delta^{(\ell+1)} \odot \mathbf{1}[z^{(\ell)} > 0]\)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 11: Summary -->
+        <section class="content-section text-content">
+            <h2>11. Summary</h2>
+
+            <div class="success-box">
+                <ol>
+                    <li><strong>An artificial neuron</strong> computes a weighted sum of inputs plus a bias, then applies a nonlinear activation function.</li>
+                    <li><strong>An MLP</strong> stacks layers of neurons; depth enables hierarchical feature learning impossible with a single linear model.</li>
+                    <li><strong>Activation functions</strong> introduce nonlinearity. ReLU is the default for hidden layers; Softmax for multi-class output.</li>
+                    <li><strong>The Forward Pass</strong> propagates input through all layers using matrix multiplications and activation functions.</li>
+                    <li><strong>Cross-Entropy Loss</strong> measures prediction error for classification — derived from maximum likelihood, penalizes confident wrong predictions heavily.</li>
+                    <li><strong>Gradient Descent</strong> minimizes the loss by stepping in the negative gradient direction with step size \(\eta\).</li>
+                    <li><strong>Backpropagation</strong> is the Chain Rule applied layer-by-layer from output to input, computing \(\partial \mathcal{L}/\partial W\) for every layer.</li>
+                    <li><strong>The output layer gradient</strong> for softmax + cross-entropy is simply \(\hat{\mathbf{y}} - \mathbf{y}\) — the prediction error.</li>
+                    <li><strong>He initialization</strong> sets weights proportional to \(\sqrt{2/n_{in}}\) to prevent vanishing/exploding activations with ReLU.</li>
+                    <li><strong>Mini-batch gradient descent</strong> is the standard: batches of 32–256 balance gradient quality, training speed, and GPU utilization.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 12: Bridge to Tutorial -->
+        <section class="content-section text-content">
+            <h2>12. Bridge to the Tutorial</h2>
+            <p>In the tutorial session, you will implement everything from this lecture in raw NumPy — no PyTorch, no Scikit-learn. You will:</p>
+            <ul>
+                <li>Load and normalize the MNIST handwritten digits dataset (70,000 images, 10 classes).</li>
+                <li>Initialize a [784 → 256 → 128 → 10] MLP with He initialization.</li>
+                <li>Implement <code>relu()</code>, <code>softmax()</code>, and <code>cross_entropy_loss()</code> from scratch.</li>
+                <li>Write the complete <code>forward()</code> and <code>backward()</code> functions using only matrix operations.</li>
+                <li>Train the network using mini-batch gradient descent and watch the accuracy climb from ~10% (random) to >95%.</li>
+                <li>Visualize training loss and accuracy curves, and inspect which digits the network struggles with most.</li>
+            </ul>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">Understanding backprop from scratch is the single most important exercise in this course. Do not skip it.</p>
+                <a href="tutorial_9.html" class="btn btn-primary"
+                    style="display:inline-flex;margin:1rem auto 0 auto;">
+                    Continue to Tutorial 9 <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering &amp; InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>

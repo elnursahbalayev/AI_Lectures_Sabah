@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 10 Lecture: Computer Vision & CNNs | AI Lectures</title>
+    <meta name="description" content="Week 10: Computer Vision with CNNs — Convolutions, Kernels, Padding, Pooling, CNN Architectures (VGG, ResNet), and Transfer Learning.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            padding-top: 80px;
+        }
+
+        .article-container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .article-header h1 {
+            font-size: 2.8rem;
+            line-height: 1.15;
+            margin: 1rem 0;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .content-section { margin-bottom: 5rem; }
+
+        .content-section h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.3rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-main);
+        }
+
+        .text-content p {
+            margin-bottom: 1.4rem;
+            font-size: 1.05rem;
+            color: #d4d4d8;
+            line-height: 1.8;
+        }
+
+        .text-content ul, .text-content ol {
+            margin: 0 0 1.5rem 1.5rem;
+            color: #d4d4d8;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        .text-content li { margin-bottom: 0.4rem; }
+
+        .note-box {
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .insight-box {
+            background: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+        }
+
+        blockquote {
+            border-left: 3px solid #fff;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .math-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            color: white;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        pre code { background: transparent; padding: 0; font-size: 0.95rem; }
+
+        pre {
+            background: #282c34;
+            padding: 1.5rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d4d4d8;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover td { background: rgba(255, 255, 255, 0.03); }
+
+        .pipeline-flow {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 2.2;
+        }
+
+        .conv-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 3px;
+            max-width: 260px;
+            margin: 1rem auto;
+        }
+
+        .conv-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .conv-cell.input  { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+        .conv-cell.kernel { background: rgba(139, 92, 246, 0.3); color: #c4b5fd; }
+        .conv-cell.output { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+        .conv-cell.dim    { background: transparent; color: var(--text-muted); font-size: 0.7rem; }
+
+        .arch-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .arch-card {
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .arch-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .arch-card p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 700px) {
+            .arch-grid { grid-template-columns: 1fr; }
+            .article-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="readingProgress"
+        style="position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); z-index: 9999; width: 0%; transition: width 0.1s;">
+    </div>
+    <div class="background-animation"></div>
+
+    <nav class="navbar glass">
+        <div class="logo">Artificial Intelligence 2026, <span class="highlight">ASOIU</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="tutorial_10.html">Tutorial 10</a></li>
+            <li><a href="lecture_9.html">Lecture 9</a></li>
+        </ul>
+    </nav>
+
+    <article class="article-container">
+        <header class="article-header">
+            <span class="badge">Week 10 Lecture</span>
+            <h1>Computer Vision &amp; CNNs:<br>Teaching Machines to See</h1>
+            <p class="subtitle">Convolutions, Kernels, Padding, Pooling, VGG, ResNet, and Transfer Learning — how modern image classifiers work and why they dominate vision tasks.</p>
+
+            <div class="instructor-badge">
+                <img src="https://ui-avatars.com/api/?name=Elnur+Shahbalayev&background=3b82f6&color=fff&rounded=true"
+                    width="32" height="32" alt="Instructor">
+                <div>
+                    <strong>Elnur Shahbalayev</strong>
+                    <span style="color: var(--text-muted); font-size: 0.9rem;"> &bull; AI Engineer @ Bayraktar Tech</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 0: Roadmap -->
+        <section class="content-section text-content">
+            <h2>0. Lecture Roadmap</h2>
+            <blockquote>In 2012, a CNN called AlexNet cut the ImageNet error rate nearly in half — from 26% to 15% — defeating every non-deep-learning system by a margin so large it permanently ended the era of hand-crafted vision features. Understanding why requires understanding convolutions.</blockquote>
+
+            <p>Last week we built a fully-connected MLP that treats each pixel independently. This week we study <strong>Convolutional Neural Networks (CNNs)</strong>, which exploit the spatial structure of images through weight sharing and local connectivity — giving them a massive advantage on any visual task.</p>
+
+            <div class="note-box">
+                <h4><i data-lucide="map"></i> Today's Topics</h4>
+                <ol>
+                    <li>Why MLPs Fail on Images — The Spatial Structure Problem</li>
+                    <li>The Convolution Operation — Kernels, Stride, Padding</li>
+                    <li>Output Size Formula</li>
+                    <li>Multiple Channels and Multiple Filters</li>
+                    <li>Pooling — Max and Average Pooling</li>
+                    <li>The Full CNN Architecture</li>
+                    <li>Landmark Architectures — LeNet, AlexNet, VGG, ResNet</li>
+                    <li>Residual Connections — Why Deep Networks Stopped Degrading</li>
+                    <li>Transfer Learning — Standing on the Shoulders of Giants</li>
+                    <li>Fine-Tuning Strategies</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 1: Why not MLP -->
+        <section class="content-section text-content">
+            <h2>1. Why MLPs Fail on Images</h2>
+
+            <h3>1.1 The Curse of Dimensionality</h3>
+            <p>A 224×224 RGB image contains \(224 \times 224 \times 3 = 150{,}528\) pixels. A single fully-connected hidden layer of 1,024 neurons would require \(150{,}528 \times 1{,}024 \approx 154\) million parameters — just in the first layer. This is computationally wasteful and prone to overfitting.</p>
+
+            <p>But the deeper problem is structural. An MLP treats pixel (0,0) and pixel (223,223) as completely independent features. It ignores three fundamental properties of natural images:</p>
+
+            <table class="data-table">
+                <thead><tr><th>Property</th><th>Meaning</th><th>MLP Handles It?</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Local Correlation</strong></td>
+                        <td>Nearby pixels are statistically related — edges are local</td>
+                        <td>No — treats all pixels independently</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Translation Invariance</strong></td>
+                        <td>A cat in the top-left is the same cat in the bottom-right</td>
+                        <td>No — different weights for every position</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Compositional Hierarchy</strong></td>
+                        <td>Edges → textures → parts → objects</td>
+                        <td>Partially — but without spatial sharing</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="insight-box">
+                <strong>CNNs were designed to exploit all three properties.</strong> The convolution operation shares weights across all spatial positions, looks at local neighborhoods, and stacks layers to build hierarchical representations — solving all three problems at once.
+            </div>
+        </section>
+
+        <!-- Section 2: The Convolution Operation -->
+        <section class="content-section text-content">
+            <h2>2. The Convolution Operation</h2>
+
+            <h3>2.1 What a Convolution Does</h3>
+            <p>A convolution slides a small matrix called a <strong>kernel</strong> (or filter) across the input image and computes the dot product at each position. The result is a <strong>feature map</strong> that highlights wherever the pattern encoded by the kernel appears in the input.</p>
+
+            <div class="pipeline-flow">
+                Input (5×5) ──[slide 3×3 kernel]──→ Feature Map (3×3)<br><br>
+                At each position: output = Σ (kernel × input_patch) + bias
+            </div>
+
+            <h3>2.2 A Concrete Example</h3>
+            <p>A horizontal edge detector kernel:</p>
+
+            <div style="display:flex;gap:2rem;justify-content:center;align-items:flex-start;flex-wrap:wrap;margin:1.5rem 0;">
+                <div>
+                    <div style="text-align:center;margin-bottom:0.5rem;font-size:0.85rem;color:var(--text-muted);">Input (5×5)</div>
+                    <div class="conv-grid">
+                        <div class="conv-cell input">1</div><div class="conv-cell input">1</div><div class="conv-cell input">1</div><div class="conv-cell input">1</div><div class="conv-cell input">1</div>
+                        <div class="conv-cell input">1</div><div class="conv-cell input">1</div><div class="conv-cell input">1</div><div class="conv-cell input">1</div><div class="conv-cell input">1</div>
+                        <div class="conv-cell input">0</div><div class="conv-cell input">0</div><div class="conv-cell input">0</div><div class="conv-cell input">0</div><div class="conv-cell input">0</div>
+                        <div class="conv-cell input">-1</div><div class="conv-cell input">-1</div><div class="conv-cell input">-1</div><div class="conv-cell input">-1</div><div class="conv-cell input">-1</div>
+                        <div class="conv-cell input">-1</div><div class="conv-cell input">-1</div><div class="conv-cell input">-1</div><div class="conv-cell input">-1</div><div class="conv-cell input">-1</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="text-align:center;margin-bottom:0.5rem;font-size:0.85rem;color:var(--text-muted);">Kernel (3×3)</div>
+                    <div class="conv-grid" style="grid-template-columns:repeat(3,1fr);max-width:160px;">
+                        <div class="conv-cell kernel">1</div><div class="conv-cell kernel">1</div><div class="conv-cell kernel">1</div>
+                        <div class="conv-cell kernel">0</div><div class="conv-cell kernel">0</div><div class="conv-cell kernel">0</div>
+                        <div class="conv-cell kernel">-1</div><div class="conv-cell kernel">-1</div><div class="conv-cell kernel">-1</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="text-align:center;margin-bottom:0.5rem;font-size:0.85rem;color:var(--text-muted);">Output (3×3)</div>
+                    <div class="conv-grid" style="grid-template-columns:repeat(3,1fr);max-width:160px;">
+                        <div class="conv-cell output">2</div><div class="conv-cell output">2</div><div class="conv-cell output">2</div>
+                        <div class="conv-cell output">6</div><div class="conv-cell output">6</div><div class="conv-cell output">6</div>
+                        <div class="conv-cell output">2</div><div class="conv-cell output">2</div><div class="conv-cell output">2</div>
+                    </div>
+                </div>
+            </div>
+
+            <p>The middle row of the output (value 6) fires strongly where the transition from 1 → 0 → −1 occurs — exactly at the horizontal edge. This is <strong>feature detection through convolution</strong>.</p>
+
+            <h3>2.3 Formal Definition</h3>
+            <div class="math-block">
+                $$(I * K)[i,j] = \sum_{m=0}^{k_H-1} \sum_{n=0}^{k_W-1} I[i+m,\; j+n] \cdot K[m,n] + b$$
+            </div>
+
+            <p>Where \(I\) is the input, \(K\) is the kernel of size \(k_H \times k_W\), and \(b\) is the bias. In deep learning, the kernel weights \(K\) are <strong>learned</strong> — the network discovers which patterns to detect automatically.</p>
+
+            <h3>2.4 Stride</h3>
+            <p>Stride controls how many pixels the kernel moves at each step. Stride 1 moves one pixel at a time (maximum resolution); stride 2 skips every other position (halves the output size).</p>
+
+            <table class="data-table">
+                <thead><tr><th>Stride</th><th>Effect</th><th>Use Case</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>s = 1</strong></td><td>Dense feature map, preserves resolution</td><td>Most hidden conv layers</td></tr>
+                    <tr><td><strong>s = 2</strong></td><td>Halves spatial dimensions, downsamples</td><td>Replace pooling (e.g., ResNet)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>2.5 Padding</h3>
+            <p>Without padding, each convolution shrinks the feature map. After many layers, the spatial dimensions collapse. Padding adds zeros around the border to control output size:</p>
+
+            <table class="data-table">
+                <thead><tr><th>Padding</th><th>PyTorch argument</th><th>Effect</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Valid (no padding)</strong></td><td><code>padding=0</code></td><td>Output is smaller than input — spatial info lost at edges</td></tr>
+                    <tr><td><strong>Same (zero padding)</strong></td><td><code>padding=k//2</code></td><td>Output has the same H×W as input — standard choice</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 3: Output Size Formula -->
+        <section class="content-section text-content">
+            <h2>3. Output Size Formula</h2>
+
+            <p>Given an input of size \(H \times W\), a kernel of size \(k \times k\), padding \(p\), and stride \(s\):</p>
+
+            <div class="math-block">
+                $$H_{out} = \left\lfloor \frac{H + 2p - k}{s} \right\rfloor + 1 \qquad W_{out} = \left\lfloor \frac{W + 2p - k}{s} \right\rfloor + 1$$
+            </div>
+
+            <table class="data-table">
+                <thead><tr><th>Input H</th><th>Kernel k</th><th>Padding p</th><th>Stride s</th><th>Output H</th></tr></thead>
+                <tbody>
+                    <tr><td>32</td><td>3</td><td>1</td><td>1</td><td>\(\lfloor(32+2-3)/1\rfloor+1 = 32\) (same)</td></tr>
+                    <tr><td>32</td><td>3</td><td>0</td><td>1</td><td>\(\lfloor(32+0-3)/1\rfloor+1 = 30\) (shrinks)</td></tr>
+                    <tr><td>32</td><td>3</td><td>1</td><td>2</td><td>\(\lfloor(32+2-3)/2\rfloor+1 = 16\) (halves)</td></tr>
+                    <tr><td>224</td><td>7</td><td>3</td><td>2</td><td>\(\lfloor(224+6-7)/2\rfloor+1 = 112\) (ResNet first layer)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 4: Multiple Channels -->
+        <section class="content-section text-content">
+            <h2>4. Multiple Channels and Multiple Filters</h2>
+
+            <h3>4.1 Input with C Channels</h3>
+            <p>An RGB image has 3 channels. A kernel for a 3-channel input has shape \(k \times k \times C_{in}\) — it slides across all channels simultaneously and sums the results:</p>
+
+            <div class="math-block">
+                $$(I * K)[i,j] = \sum_{c=1}^{C_{in}} \sum_{m=0}^{k-1} \sum_{n=0}^{k-1} I_c[i+m,\,j+n] \cdot K_c[m,n] + b$$
+            </div>
+
+            <h3>4.2 Multiple Filters → Multiple Feature Maps</h3>
+            <p>Each filter detects one pattern. To detect \(C_{out}\) different patterns simultaneously, we apply \(C_{out}\) filters in parallel, each producing one feature map. The output has shape \(C_{out} \times H_{out} \times W_{out}\).</p>
+
+            <div class="insight-box">
+                <strong>Parameter count for one conv layer:</strong><br>
+                \(\text{Params} = C_{out} \times (k \times k \times C_{in} + 1)\)<br><br>
+                Example: <code>Conv2d(3, 64, kernel_size=3, padding=1)</code> has \(64 \times (3 \times 3 \times 3 + 1) = 1{,}792\) parameters — compared to 150M for a fully-connected layer on the same 224×224 input.
+            </div>
+        </section>
+
+        <!-- Section 5: Pooling -->
+        <section class="content-section text-content">
+            <h2>5. Pooling Layers</h2>
+
+            <p>Pooling reduces spatial dimensions while retaining the most important information. It provides <strong>spatial invariance</strong> — a detected feature remains active even if it shifts by a few pixels.</p>
+
+            <table class="data-table">
+                <thead><tr><th>Type</th><th>Operation</th><th>Use</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Max Pooling</strong></td>
+                        <td>Take the maximum value in each window</td>
+                        <td>Most common — retains the strongest feature activation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Average Pooling</strong></td>
+                        <td>Take the average value in each window</td>
+                        <td>Smoother downsampling; used in GoogLeNet and Global Average Pooling</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Global Average Pooling</strong></td>
+                        <td>Average across the entire spatial dimension → scalar per channel</td>
+                        <td>Replaces the flatten + FC layer in modern architectures (ResNet)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>A 2×2 max pool with stride 2 halves both spatial dimensions: a 28×28 feature map becomes 14×14. There are <strong>no learnable parameters</strong> in a pooling layer.</p>
+
+            <pre><code class="language-python">import torch.nn as nn
+
+# Max pool: 2×2 window, stride 2 → halves H and W
+max_pool = nn.MaxPool2d(kernel_size=2, stride=2)
+
+# Global Average Pooling → one value per channel
+gap = nn.AdaptiveAvgPool2d(output_size=(1, 1))</code></pre>
+        </section>
+
+        <!-- Section 6: Full CNN Architecture -->
+        <section class="content-section text-content">
+            <h2>6. The Full CNN Architecture</h2>
+
+            <p>A typical CNN alternates convolutional blocks with pooling, then flattens and passes through fully-connected layers for classification:</p>
+
+            <div class="pipeline-flow">
+                Input (3 × H × W)<br>
+                ↓<br>
+                Conv Block 1: Conv2d → BatchNorm → ReLU → MaxPool<br>
+                ↓<br>
+                Conv Block 2: Conv2d → BatchNorm → ReLU → MaxPool<br>
+                ↓<br>
+                Conv Block 3: Conv2d → BatchNorm → ReLU<br>
+                ↓<br>
+                Global Average Pooling<br>
+                ↓<br>
+                Fully Connected → Softmax (K classes)
+            </div>
+
+            <h3>6.1 Batch Normalization</h3>
+            <p>BatchNorm normalizes each feature map to zero mean and unit variance across the batch, then applies learnable scale and shift parameters:</p>
+
+            <div class="math-block">
+                $$\hat{x} = \frac{x - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}} \qquad y = \gamma \hat{x} + \beta$$
+            </div>
+
+            <p>Benefits: speeds up training (allows higher learning rates), reduces sensitivity to initialization, acts as mild regularization.</p>
+
+            <div class="note-box">
+                <strong>BatchNorm placement:</strong> Convention is Conv → BatchNorm → ReLU. BatchNorm is applied before activation because it normalizes the pre-activation values, keeping them in the range where ReLU is most informative.
+            </div>
+        </section>
+
+        <!-- Section 7: Landmark Architectures -->
+        <section class="content-section text-content">
+            <h2>7. Landmark CNN Architectures</h2>
+
+            <div class="arch-grid">
+                <div class="arch-card">
+                    <h4>LeNet-5 (1998)</h4>
+                    <p>LeCun et al. First successful CNN. 2 conv layers + 3 FC layers. Trained on MNIST. Proved the concept — but hardware limited scaling for 14 years.</p>
+                </div>
+                <div class="arch-card">
+                    <h4>AlexNet (2012)</h4>
+                    <p>Won ImageNet by 10 percentage points. 5 conv layers, ReLU activations, Dropout, GPU training. The paper that launched the deep learning era.</p>
+                </div>
+                <div class="arch-card">
+                    <h4>VGG-16/19 (2014)</h4>
+                    <p>Very simple rule: use only 3×3 kernels, always. 16–19 layers deep. Easy to understand and modify — still a strong baseline for transfer learning.</p>
+                </div>
+                <div class="arch-card">
+                    <h4>ResNet (2015)</h4>
+                    <p>Introduced residual (skip) connections. Trained networks 50–152 layers deep. Won every major ImageNet challenge. Default backbone for most vision tasks today.</p>
+                </div>
+            </div>
+
+            <h3>7.1 Why Deeper Networks Stopped Working — Before ResNet</h3>
+            <p>In 2015, it was well-known that adding more layers <em>hurt</em> accuracy — not just from overfitting, but even on the training set. A 56-layer network performed worse than a 20-layer network on training data. This was the <strong>degradation problem</strong>.</p>
+
+            <p>The root cause: gradients vanish over 50+ layers of standard convolutions. By the time the gradient reaches the early layers, it is effectively zero — those layers stop learning entirely.</p>
+        </section>
+
+        <!-- Section 8: ResNet & Residual Connections -->
+        <section class="content-section text-content">
+            <h2>8. Residual Connections — Why Deep Networks Finally Worked</h2>
+
+            <p>The key insight of ResNet (He et al., 2015): instead of learning a direct mapping \(H(x)\), let each block learn a <strong>residual</strong> \(F(x) = H(x) - x\). Then the output is:</p>
+
+            <div class="math-block">
+                $$\text{output} = F(\mathbf{x}) + \mathbf{x}$$
+            </div>
+
+            <p>This <strong>skip connection</strong> (or shortcut connection) bypasses the conv layers entirely and adds the input directly to the output:</p>
+
+            <div class="pipeline-flow">
+                Input x<br>
+                ├── Conv → BN → ReLU → Conv → BN ──→ F(x)<br>
+                └──────────────────────────────────→ x (skip)<br>
+                ↓<br>
+                Output: F(x) + x → ReLU
+            </div>
+
+            <h3>8.1 Why Does This Work?</h3>
+            <ul>
+                <li><strong>Gradient highways:</strong> The skip connection provides a direct path for gradients to flow back to early layers, bypassing the potentially vanishing-gradient-prone conv stack.</li>
+                <li><strong>Identity shortcut:</strong> If the optimal transformation is the identity, the conv layers simply learn \(F(x) \approx 0\). This is much easier than forcing a layer to learn the identity from scratch.</li>
+                <li><strong>Ensemble effect:</strong> Residual networks can be interpreted as an implicit ensemble of many shallower networks of varying depth.</li>
+            </ul>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class ResidualBlock(nn.Module):
+    def __init__(self, channels):
+        super().__init__()
+        self.conv1 = nn.Conv2d(channels, channels, 3, padding=1, bias=False)
+        self.bn1   = nn.BatchNorm2d(channels)
+        self.conv2 = nn.Conv2d(channels, channels, 3, padding=1, bias=False)
+        self.bn2   = nn.BatchNorm2d(channels)
+        self.relu  = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        residual = x                        # save input (the skip connection)
+
+        out = self.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))     # F(x)
+
+        out = out + residual                # F(x) + x
+        return self.relu(out)               # apply activation AFTER addition</code></pre>
+
+            <div class="insight-box">
+                <strong>ResNet results (ILSVRC 2015):</strong> A 152-layer ResNet achieved 3.57% top-5 error on ImageNet — better than average human performance (5.1%). The winner used an ensemble of 6 such networks.
+            </div>
+        </section>
+
+        <!-- Section 9: Transfer Learning -->
+        <section class="content-section text-content">
+            <h2>9. Transfer Learning</h2>
+
+            <p>Training a ResNet-50 on ImageNet from scratch requires ~1.2 million labeled images, weeks of GPU time, and significant expertise. Most practitioners never do this. Instead, they use <strong>transfer learning</strong>: start from a pretrained network and adapt it to a new task.</p>
+
+            <blockquote>The filters learned on ImageNet — edges, textures, color gradients, object parts — are useful for almost any visual recognition task. You don't need a million images; you need a smart starting point.</blockquote>
+
+            <h3>9.1 Why Transfer Learning Works</h3>
+            <p>The lower layers of any image CNN learn universal features:</p>
+            <ul>
+                <li><strong>Layer 1–2:</strong> Edge detectors, color blobs, Gabor-like filters — identical across datasets.</li>
+                <li><strong>Layer 3–5:</strong> Textures, corners, curves — general enough to transfer.</li>
+                <li><strong>Layer 6+:</strong> Object-specific parts (wheels, eyes, fur) — increasingly task-specific.</li>
+                <li><strong>Final layer:</strong> ImageNet class scores — completely task-specific, always replaced.</li>
+            </ul>
+
+            <h3>9.2 Two Transfer Learning Strategies</h3>
+
+            <table class="data-table">
+                <thead><tr><th>Strategy</th><th>Frozen Layers</th><th>Best For</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Feature Extraction</strong></td>
+                        <td>All layers frozen — only the new head is trained</td>
+                        <td>Very small datasets (&lt;1,000 images), similar domain to ImageNet</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Full Fine-Tuning</strong></td>
+                        <td>All layers unfrozen — entire network trained at a low learning rate</td>
+                        <td>Medium-large datasets, or domain very different from ImageNet</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gradual Unfreezing</strong></td>
+                        <td>Unfreeze from top down, train each stage separately</td>
+                        <td>Best practice for limited data — popularized by fast.ai</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code class="language-python">import torch
+import torchvision.models as models
+import torch.nn as nn
+
+# Load ResNet-18 pretrained on ImageNet
+model = models.resnet18(weights='IMAGENET1K_V1')
+
+# --- Strategy 1: Feature Extraction (freeze backbone) ---
+for param in model.parameters():
+    param.requires_grad = False
+
+# Replace the final FC layer for binary classification
+model.fc = nn.Linear(model.fc.in_features, 2)   # only this layer trains
+
+# --- Strategy 2: Full Fine-Tuning ---
+for param in model.parameters():
+    param.requires_grad = True    # unfreeze everything
+
+model.fc = nn.Linear(model.fc.in_features, 2)
+
+# Use a lower learning rate for the backbone than the head
+optimizer = torch.optim.Adam([
+    {'params': model.fc.parameters(),          'lr': 1e-3},
+    {'params': [p for n, p in model.named_parameters() if 'fc' not in n], 'lr': 1e-5}
+])</code></pre>
+
+            <div class="warning-box">
+                <strong>Always fine-tune with a lower learning rate.</strong> The pretrained weights are already good — large updates will destroy the useful features. A learning rate 10–100× smaller than normal (e.g., 1e-5 instead of 1e-3) is typical for fine-tuning.
+            </div>
+
+            <h3>9.3 Data Augmentation for Transfer Learning</h3>
+            <pre><code class="language-python">from torchvision import transforms
+
+# Training augmentation
+train_transform = transforms.Compose([
+    transforms.Resize((256, 256)),
+    transforms.RandomCrop(224),
+    transforms.RandomHorizontalFlip(p=0.5),
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],   # ImageNet mean
+                         std=[0.229, 0.224, 0.225])     # ImageNet std
+])
+
+# Validation / Test — no augmentation, just resize and center crop
+val_transform = transforms.Compose([
+    transforms.Resize((256, 256)),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225])
+])</code></pre>
+
+            <div class="note-box">
+                <strong>Always normalize with ImageNet statistics</strong> when fine-tuning a pretrained model. The pretrained weights were learned on data normalized this way — using different statistics shifts all the input distributions and partially invalidates the pretrained features.
+            </div>
+        </section>
+
+        <!-- Section 10: Key Equations -->
+        <section class="content-section text-content">
+            <h2>10. Key Equations — Quick Reference</h2>
+
+            <table class="data-table">
+                <thead><tr><th>Concept</th><th>Formula</th></tr></thead>
+                <tbody>
+                    <tr><td>Convolution output</td><td>\((I * K)[i,j] = \sum_{m,n} I[i+m,j+n] \cdot K[m,n] + b\)</td></tr>
+                    <tr><td>Output size</td><td>\(H_{out} = \lfloor(H + 2p - k)/s\rfloor + 1\)</td></tr>
+                    <tr><td>Conv layer params</td><td>\(C_{out} \times (k^2 \times C_{in} + 1)\)</td></tr>
+                    <tr><td>BatchNorm</td><td>\(y = \gamma \frac{x - \mu_B}{\sqrt{\sigma_B^2+\epsilon}} + \beta\)</td></tr>
+                    <tr><td>Residual block</td><td>\(\text{output} = \text{ReLU}(F(\mathbf{x}) + \mathbf{x})\)</td></tr>
+                    <tr><td>Global Avg Pool</td><td>\(\text{gap}_c = \frac{1}{H \cdot W}\sum_{i,j} A_c[i,j]\)</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 11: Summary -->
+        <section class="content-section text-content">
+            <h2>11. Summary</h2>
+
+            <div class="success-box">
+                <ol>
+                    <li><strong>MLPs fail on images</strong> because they ignore spatial structure, require enormous parameter counts, and have no translation invariance.</li>
+                    <li><strong>Convolution</strong> slides a learnable kernel across the image, computing dot products at each position — detecting the pattern encoded in the kernel everywhere it appears.</li>
+                    <li><strong>Stride</strong> controls how fast the kernel moves; <strong>padding</strong> controls whether the output shrinks.</li>
+                    <li><strong>Multiple filters</strong> detect multiple patterns in parallel, producing \(C_{out}\) feature maps per layer.</li>
+                    <li><strong>Pooling</strong> reduces spatial dimensions, increasing translation invariance — no learnable parameters.</li>
+                    <li><strong>BatchNorm</strong> normalizes activations, enabling higher learning rates and faster convergence.</li>
+                    <li><strong>VGG</strong> showed that stacking 3×3 convolutions is sufficient for high accuracy; depth matters more than large kernels.</li>
+                    <li><strong>Residual connections</strong> (ResNet) solved the degradation problem by providing gradient highways and making the identity mapping easy to learn.</li>
+                    <li><strong>Transfer learning</strong> repurposes ImageNet-pretrained features for new tasks — achieves high accuracy with far fewer images and training time.</li>
+                    <li><strong>Always normalize with ImageNet statistics</strong> and use a low learning rate when fine-tuning a pretrained CNN.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 12: Bridge to Tutorial -->
+        <section class="content-section text-content">
+            <h2>12. Bridge to the Tutorial</h2>
+            <p>In the tutorial session, you will:</p>
+            <ul>
+                <li>Build a small custom CNN from scratch in PyTorch and train it on a binary image classification task (Cars vs. Bikes).</li>
+                <li>Load a pretrained ResNet-18 and replace its classification head for the same task.</li>
+                <li>Compare from-scratch training vs. feature extraction vs. full fine-tuning — in terms of accuracy, training time, and data efficiency.</li>
+                <li>Visualize the learned convolutional filters from the first layer.</li>
+                <li>Use Grad-CAM to visualize which regions of an image the network focuses on when making a prediction.</li>
+            </ul>
+
+            <div style="text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <p style="font-size:1.2rem;color:var(--text-main);font-weight:600;">Convolutions are the reason machines can see. Transfer learning is the reason you don't need a million images to use them.</p>
+                <a href="tutorial_10.html" class="btn btn-primary"
+                    style="display:inline-flex;margin:1rem auto 0 auto;">
+                    Continue to Tutorial 10 <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Elnur Shahbalayev. All Rights Reserved.</p>
+            <p class="sm-text">Sabah Group | Computer Engineering &amp; InfoSec</p>
+        </div>
+    </footer>
+
+    <script>
+        hljs.highlightAll();
+        lucide.createIcons();
+
+        document.querySelectorAll('pre').forEach(block => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            block.parentNode.insertBefore(wrapper, block);
+            wrapper.appendChild(block);
+            const btn = document.createElement('button');
+            btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>';
+            btn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:4px 8px;color:#a1a1aa;cursor:pointer;transition:all 0.2s;';
+            btn.addEventListener('click', async () => {
+                const code = block.querySelector('code').innerText;
+                await navigator.clipboard.writeText(code);
+                btn.innerHTML = '<i data-lucide="check" width="14" height="14" style="color:#4ade80"></i>';
+                setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" width="14" height="14"></i>'; lucide.createIcons(); }, 2000);
+                lucide.createIcons();
+            });
+            btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.2)');
+            btn.addEventListener('mouseleave', () => btn.style.background = 'rgba(255,255,255,0.1)');
+            wrapper.appendChild(btn);
+        });
+        lucide.createIcons();
+
+        window.addEventListener('scroll', () => {
+            const s = document.documentElement.scrollTop;
+            const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById('readingProgress').style.width = (s / h * 100) + '%';
+        });
+    </script>
+</body>
+
+</html>
